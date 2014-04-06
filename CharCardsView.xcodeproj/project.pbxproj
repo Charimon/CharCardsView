@@ -1,0 +1,493 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		338A53C718F1696B00E4CDBA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53C618F1696B00E4CDBA /* Foundation.framework */; };
+		338A53C918F1696B00E4CDBA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53C818F1696B00E4CDBA /* CoreGraphics.framework */; };
+		338A53CB18F1696B00E4CDBA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53CA18F1696B00E4CDBA /* UIKit.framework */; };
+		338A53D118F1696B00E4CDBA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 338A53CF18F1696B00E4CDBA /* InfoPlist.strings */; };
+		338A53D318F1696B00E4CDBA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A53D218F1696B00E4CDBA /* main.m */; };
+		338A53D718F1696B00E4CDBA /* CharAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A53D618F1696B00E4CDBA /* CharAppDelegate.m */; };
+		338A53D918F1696B00E4CDBA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 338A53D818F1696B00E4CDBA /* Images.xcassets */; };
+		338A53E018F1696B00E4CDBA /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53DF18F1696B00E4CDBA /* XCTest.framework */; };
+		338A53E118F1696B00E4CDBA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53C618F1696B00E4CDBA /* Foundation.framework */; };
+		338A53E218F1696B00E4CDBA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53CA18F1696B00E4CDBA /* UIKit.framework */; };
+		338A53EA18F1696B00E4CDBA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 338A53E818F1696B00E4CDBA /* InfoPlist.strings */; };
+		338A53EC18F1696B00E4CDBA /* CharCardsViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A53EB18F1696B00E4CDBA /* CharCardsViewTests.m */; };
+		338A53FC18F17CFD00E4CDBA /* CharViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A53FB18F17CFD00E4CDBA /* CharViewController.m */; };
+		338A53FF18F17D7000E4CDBA /* CharCardsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A53FE18F17D7000E4CDBA /* CharCardsView.m */; };
+		338A540218F184E300E4CDBA /* CharCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A540118F184E300E4CDBA /* CharCardView.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		338A53E318F1696B00E4CDBA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 338A53BB18F1696B00E4CDBA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 338A53C218F1696B00E4CDBA;
+			remoteInfo = CharCardsView;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		338A53C318F1696B00E4CDBA /* CharCardsView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CharCardsView.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		338A53C618F1696B00E4CDBA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		338A53C818F1696B00E4CDBA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		338A53CA18F1696B00E4CDBA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		338A53CE18F1696B00E4CDBA /* CharCardsView-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CharCardsView-Info.plist"; sourceTree = "<group>"; };
+		338A53D018F1696B00E4CDBA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		338A53D218F1696B00E4CDBA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		338A53D418F1696B00E4CDBA /* CharCardsView-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CharCardsView-Prefix.pch"; sourceTree = "<group>"; };
+		338A53D518F1696B00E4CDBA /* CharAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CharAppDelegate.h; sourceTree = "<group>"; };
+		338A53D618F1696B00E4CDBA /* CharAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CharAppDelegate.m; sourceTree = "<group>"; };
+		338A53D818F1696B00E4CDBA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		338A53DE18F1696B00E4CDBA /* CharCardsViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CharCardsViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		338A53DF18F1696B00E4CDBA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		338A53E718F1696B00E4CDBA /* CharCardsViewTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CharCardsViewTests-Info.plist"; sourceTree = "<group>"; };
+		338A53E918F1696B00E4CDBA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		338A53EB18F1696B00E4CDBA /* CharCardsViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CharCardsViewTests.m; sourceTree = "<group>"; };
+		338A53FA18F17CFD00E4CDBA /* CharViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharViewController.h; path = controllers/CharViewController.h; sourceTree = "<group>"; };
+		338A53FB18F17CFD00E4CDBA /* CharViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharViewController.m; path = controllers/CharViewController.m; sourceTree = "<group>"; };
+		338A53FD18F17D7000E4CDBA /* CharCardsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsView.h; path = views/CharCardsView.h; sourceTree = "<group>"; };
+		338A53FE18F17D7000E4CDBA /* CharCardsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsView.m; path = views/CharCardsView.m; sourceTree = "<group>"; };
+		338A540018F184E300E4CDBA /* CharCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharCardView.h; sourceTree = "<group>"; };
+		338A540118F184E300E4CDBA /* CharCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CharCardView.m; sourceTree = "<group>"; };
+		338A540318F1B8B300E4CDBA /* CharCardsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharCardsConstants.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		338A53C018F1696B00E4CDBA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				338A53C918F1696B00E4CDBA /* CoreGraphics.framework in Frameworks */,
+				338A53CB18F1696B00E4CDBA /* UIKit.framework in Frameworks */,
+				338A53C718F1696B00E4CDBA /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		338A53DB18F1696B00E4CDBA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				338A53E018F1696B00E4CDBA /* XCTest.framework in Frameworks */,
+				338A53E218F1696B00E4CDBA /* UIKit.framework in Frameworks */,
+				338A53E118F1696B00E4CDBA /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		338A53BA18F1696B00E4CDBA = {
+			isa = PBXGroup;
+			children = (
+				338A53CC18F1696B00E4CDBA /* CharCardsView */,
+				338A53E518F1696B00E4CDBA /* CharCardsViewTests */,
+				338A53C518F1696B00E4CDBA /* Frameworks */,
+				338A53C418F1696B00E4CDBA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		338A53C418F1696B00E4CDBA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				338A53C318F1696B00E4CDBA /* CharCardsView.app */,
+				338A53DE18F1696B00E4CDBA /* CharCardsViewTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		338A53C518F1696B00E4CDBA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				338A53C618F1696B00E4CDBA /* Foundation.framework */,
+				338A53C818F1696B00E4CDBA /* CoreGraphics.framework */,
+				338A53CA18F1696B00E4CDBA /* UIKit.framework */,
+				338A53DF18F1696B00E4CDBA /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		338A53CC18F1696B00E4CDBA /* CharCardsView */ = {
+			isa = PBXGroup;
+			children = (
+				338A53F618F16A6F00E4CDBA /* controllers */,
+				338A53F518F16A6300E4CDBA /* views */,
+				338A53D818F1696B00E4CDBA /* Images.xcassets */,
+				338A53CD18F1696B00E4CDBA /* Supporting Files */,
+			);
+			path = CharCardsView;
+			sourceTree = "<group>";
+		};
+		338A53CD18F1696B00E4CDBA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				338A53D518F1696B00E4CDBA /* CharAppDelegate.h */,
+				338A53D618F1696B00E4CDBA /* CharAppDelegate.m */,
+				338A53CE18F1696B00E4CDBA /* CharCardsView-Info.plist */,
+				338A53CF18F1696B00E4CDBA /* InfoPlist.strings */,
+				338A53D218F1696B00E4CDBA /* main.m */,
+				338A53D418F1696B00E4CDBA /* CharCardsView-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		338A53E518F1696B00E4CDBA /* CharCardsViewTests */ = {
+			isa = PBXGroup;
+			children = (
+				338A53EB18F1696B00E4CDBA /* CharCardsViewTests.m */,
+				338A53E618F1696B00E4CDBA /* Supporting Files */,
+			);
+			path = CharCardsViewTests;
+			sourceTree = "<group>";
+		};
+		338A53E618F1696B00E4CDBA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				338A53E718F1696B00E4CDBA /* CharCardsViewTests-Info.plist */,
+				338A53E818F1696B00E4CDBA /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		338A53F518F16A6300E4CDBA /* views */ = {
+			isa = PBXGroup;
+			children = (
+				338A53FD18F17D7000E4CDBA /* CharCardsView.h */,
+				338A53FE18F17D7000E4CDBA /* CharCardsView.m */,
+				338A540018F184E300E4CDBA /* CharCardView.h */,
+				338A540118F184E300E4CDBA /* CharCardView.m */,
+				338A540318F1B8B300E4CDBA /* CharCardsConstants.h */,
+			);
+			name = views;
+			sourceTree = "<group>";
+		};
+		338A53F618F16A6F00E4CDBA /* controllers */ = {
+			isa = PBXGroup;
+			children = (
+				338A53FA18F17CFD00E4CDBA /* CharViewController.h */,
+				338A53FB18F17CFD00E4CDBA /* CharViewController.m */,
+			);
+			name = controllers;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		338A53C218F1696B00E4CDBA /* CharCardsView */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 338A53EF18F1696B00E4CDBA /* Build configuration list for PBXNativeTarget "CharCardsView" */;
+			buildPhases = (
+				338A53BF18F1696B00E4CDBA /* Sources */,
+				338A53C018F1696B00E4CDBA /* Frameworks */,
+				338A53C118F1696B00E4CDBA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CharCardsView;
+			productName = CharCardsView;
+			productReference = 338A53C318F1696B00E4CDBA /* CharCardsView.app */;
+			productType = "com.apple.product-type.application";
+		};
+		338A53DD18F1696B00E4CDBA /* CharCardsViewTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 338A53F218F1696B00E4CDBA /* Build configuration list for PBXNativeTarget "CharCardsViewTests" */;
+			buildPhases = (
+				338A53DA18F1696B00E4CDBA /* Sources */,
+				338A53DB18F1696B00E4CDBA /* Frameworks */,
+				338A53DC18F1696B00E4CDBA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				338A53E418F1696B00E4CDBA /* PBXTargetDependency */,
+			);
+			name = CharCardsViewTests;
+			productName = CharCardsViewTests;
+			productReference = 338A53DE18F1696B00E4CDBA /* CharCardsViewTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		338A53BB18F1696B00E4CDBA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = Char;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = Charimon;
+				TargetAttributes = {
+					338A53DD18F1696B00E4CDBA = {
+						TestTargetID = 338A53C218F1696B00E4CDBA;
+					};
+				};
+			};
+			buildConfigurationList = 338A53BE18F1696B00E4CDBA /* Build configuration list for PBXProject "CharCardsView" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 338A53BA18F1696B00E4CDBA;
+			productRefGroup = 338A53C418F1696B00E4CDBA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				338A53C218F1696B00E4CDBA /* CharCardsView */,
+				338A53DD18F1696B00E4CDBA /* CharCardsViewTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		338A53C118F1696B00E4CDBA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				338A53D118F1696B00E4CDBA /* InfoPlist.strings in Resources */,
+				338A53D918F1696B00E4CDBA /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		338A53DC18F1696B00E4CDBA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				338A53EA18F1696B00E4CDBA /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		338A53BF18F1696B00E4CDBA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				338A53FF18F17D7000E4CDBA /* CharCardsView.m in Sources */,
+				338A53D718F1696B00E4CDBA /* CharAppDelegate.m in Sources */,
+				338A53FC18F17CFD00E4CDBA /* CharViewController.m in Sources */,
+				338A53D318F1696B00E4CDBA /* main.m in Sources */,
+				338A540218F184E300E4CDBA /* CharCardView.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		338A53DA18F1696B00E4CDBA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				338A53EC18F1696B00E4CDBA /* CharCardsViewTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		338A53E418F1696B00E4CDBA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 338A53C218F1696B00E4CDBA /* CharCardsView */;
+			targetProxy = 338A53E318F1696B00E4CDBA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		338A53CF18F1696B00E4CDBA /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				338A53D018F1696B00E4CDBA /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		338A53E818F1696B00E4CDBA /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				338A53E918F1696B00E4CDBA /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		338A53ED18F1696B00E4CDBA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		338A53EE18F1696B00E4CDBA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		338A53F018F1696B00E4CDBA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CharCardsView/CharCardsView-Prefix.pch";
+				INFOPLIST_FILE = "CharCardsView/CharCardsView-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		338A53F118F1696B00E4CDBA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CharCardsView/CharCardsView-Prefix.pch";
+				INFOPLIST_FILE = "CharCardsView/CharCardsView-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		338A53F318F1696B00E4CDBA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/CharCardsView.app/CharCardsView";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CharCardsView/CharCardsView-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "CharCardsViewTests/CharCardsViewTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		338A53F418F1696B00E4CDBA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/CharCardsView.app/CharCardsView";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "CharCardsView/CharCardsView-Prefix.pch";
+				INFOPLIST_FILE = "CharCardsViewTests/CharCardsViewTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		338A53BE18F1696B00E4CDBA /* Build configuration list for PBXProject "CharCardsView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				338A53ED18F1696B00E4CDBA /* Debug */,
+				338A53EE18F1696B00E4CDBA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		338A53EF18F1696B00E4CDBA /* Build configuration list for PBXNativeTarget "CharCardsView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				338A53F018F1696B00E4CDBA /* Debug */,
+				338A53F118F1696B00E4CDBA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		338A53F218F1696B00E4CDBA /* Build configuration list for PBXNativeTarget "CharCardsViewTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				338A53F318F1696B00E4CDBA /* Debug */,
+				338A53F418F1696B00E4CDBA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 338A53BB18F1696B00E4CDBA /* Project object */;
+}
