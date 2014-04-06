@@ -19,9 +19,9 @@
 		338A53E218F1696B00E4CDBA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53CA18F1696B00E4CDBA /* UIKit.framework */; };
 		338A53EA18F1696B00E4CDBA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 338A53E818F1696B00E4CDBA /* InfoPlist.strings */; };
 		338A53EC18F1696B00E4CDBA /* CharCardsViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A53EB18F1696B00E4CDBA /* CharCardsViewTests.m */; };
-		338A53FC18F17CFD00E4CDBA /* CharViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A53FB18F17CFD00E4CDBA /* CharViewController.m */; };
-		338A53FF18F17D7000E4CDBA /* CharCardsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A53FE18F17D7000E4CDBA /* CharCardsView.m */; };
-		338A540218F184E300E4CDBA /* CharCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A540118F184E300E4CDBA /* CharCardView.m */; };
+		338A540B18F1F92400E4CDBA /* CharCardsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A540818F1F92400E4CDBA /* CharCardsView.m */; };
+		338A540C18F1F92400E4CDBA /* CharCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A540A18F1F92400E4CDBA /* CharCardView.m */; };
+		338A540F18F1F92E00E4CDBA /* CharViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A540E18F1F92E00E4CDBA /* CharViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,13 +51,13 @@
 		338A53E718F1696B00E4CDBA /* CharCardsViewTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CharCardsViewTests-Info.plist"; sourceTree = "<group>"; };
 		338A53E918F1696B00E4CDBA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		338A53EB18F1696B00E4CDBA /* CharCardsViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CharCardsViewTests.m; sourceTree = "<group>"; };
-		338A53FA18F17CFD00E4CDBA /* CharViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharViewController.h; path = controllers/CharViewController.h; sourceTree = "<group>"; };
-		338A53FB18F17CFD00E4CDBA /* CharViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharViewController.m; path = controllers/CharViewController.m; sourceTree = "<group>"; };
-		338A53FD18F17D7000E4CDBA /* CharCardsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsView.h; path = views/CharCardsView.h; sourceTree = "<group>"; };
-		338A53FE18F17D7000E4CDBA /* CharCardsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsView.m; path = views/CharCardsView.m; sourceTree = "<group>"; };
-		338A540018F184E300E4CDBA /* CharCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharCardView.h; sourceTree = "<group>"; };
-		338A540118F184E300E4CDBA /* CharCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CharCardView.m; sourceTree = "<group>"; };
-		338A540318F1B8B300E4CDBA /* CharCardsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharCardsConstants.h; sourceTree = "<group>"; };
+		338A540618F1F92400E4CDBA /* CharCardsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsConstants.h; path = lib/CharCardsConstants.h; sourceTree = "<group>"; };
+		338A540718F1F92400E4CDBA /* CharCardsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsView.h; path = lib/CharCardsView.h; sourceTree = "<group>"; };
+		338A540818F1F92400E4CDBA /* CharCardsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsView.m; path = lib/CharCardsView.m; sourceTree = "<group>"; };
+		338A540918F1F92400E4CDBA /* CharCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardView.h; path = lib/CharCardView.h; sourceTree = "<group>"; };
+		338A540A18F1F92400E4CDBA /* CharCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardView.m; path = lib/CharCardView.m; sourceTree = "<group>"; };
+		338A540D18F1F92E00E4CDBA /* CharViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharViewController.h; path = test/CharViewController.h; sourceTree = "<group>"; };
+		338A540E18F1F92E00E4CDBA /* CharViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharViewController.m; path = test/CharViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,8 +117,8 @@
 		338A53CC18F1696B00E4CDBA /* CharCardsView */ = {
 			isa = PBXGroup;
 			children = (
-				338A53F618F16A6F00E4CDBA /* controllers */,
-				338A53F518F16A6300E4CDBA /* views */,
+				338A53F618F16A6F00E4CDBA /* test */,
+				338A53F518F16A6300E4CDBA /* lib */,
 				338A53D818F1696B00E4CDBA /* Images.xcassets */,
 				338A53CD18F1696B00E4CDBA /* Supporting Files */,
 			);
@@ -156,25 +156,25 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		338A53F518F16A6300E4CDBA /* views */ = {
+		338A53F518F16A6300E4CDBA /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				338A53FD18F17D7000E4CDBA /* CharCardsView.h */,
-				338A53FE18F17D7000E4CDBA /* CharCardsView.m */,
-				338A540018F184E300E4CDBA /* CharCardView.h */,
-				338A540118F184E300E4CDBA /* CharCardView.m */,
-				338A540318F1B8B300E4CDBA /* CharCardsConstants.h */,
+				338A540618F1F92400E4CDBA /* CharCardsConstants.h */,
+				338A540718F1F92400E4CDBA /* CharCardsView.h */,
+				338A540818F1F92400E4CDBA /* CharCardsView.m */,
+				338A540918F1F92400E4CDBA /* CharCardView.h */,
+				338A540A18F1F92400E4CDBA /* CharCardView.m */,
 			);
-			name = views;
+			name = lib;
 			sourceTree = "<group>";
 		};
-		338A53F618F16A6F00E4CDBA /* controllers */ = {
+		338A53F618F16A6F00E4CDBA /* test */ = {
 			isa = PBXGroup;
 			children = (
-				338A53FA18F17CFD00E4CDBA /* CharViewController.h */,
-				338A53FB18F17CFD00E4CDBA /* CharViewController.m */,
+				338A540D18F1F92E00E4CDBA /* CharViewController.h */,
+				338A540E18F1F92E00E4CDBA /* CharViewController.m */,
 			);
-			name = controllers;
+			name = test;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -273,11 +273,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				338A53FF18F17D7000E4CDBA /* CharCardsView.m in Sources */,
 				338A53D718F1696B00E4CDBA /* CharAppDelegate.m in Sources */,
-				338A53FC18F17CFD00E4CDBA /* CharViewController.m in Sources */,
+				338A540C18F1F92400E4CDBA /* CharCardView.m in Sources */,
+				338A540B18F1F92400E4CDBA /* CharCardsView.m in Sources */,
+				338A540F18F1F92E00E4CDBA /* CharViewController.m in Sources */,
 				338A53D318F1696B00E4CDBA /* main.m in Sources */,
-				338A540218F184E300E4CDBA /* CharCardView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
