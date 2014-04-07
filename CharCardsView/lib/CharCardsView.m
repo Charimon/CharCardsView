@@ -16,7 +16,10 @@
 @implementation CharCardsView
 
 //if the view has moved less that maxMovementDistance*snapRatio, it will snap back to where it was
-CGFloat const snapRatio = .3333333f;
+CGFloat const SNAP_RATIO = .3333333f;
+CGFloat const DEFAULT_VERTICAL_DURATION = .5f;
+CGFloat const DEFAULT_VERTICAL_DAMPING = .8f;
+CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 
 -(instancetype) init {
     self = [super init];
@@ -125,15 +128,30 @@ CGFloat const snapRatio = .3333333f;
         
     } else if(dragRecognizer.state == UIGestureRecognizerStateEnded || dragRecognizer.state == UIGestureRecognizerStateCancelled || dragRecognizer.state == UIGestureRecognizerStateFailed) {
         self.panning = NO;
-        CGFloat distanceFromBottom = -self.minHeight - self.topConstraint.constant;
         CGFloat maxDistance = self.bounds.size.height - self.maxTopInset - self.minHeight;
+        CGFloat distanceFromBottom = -self.minHeight - self.topConstraint.constant;
+        CGFloat distanceFromTop = maxDistance-distanceFromBottom;
+        CGFloat yVelocity = [dragRecognizer velocityInView:dragRecognizer.view].y;
         
         if(self.state == CharCardsViewStateMin) {
-            if(distanceFromBottom < maxDistance*snapRatio) [self setState:CharCardsViewStateMin animated:YES callingDelegate:YES];
-            else [self setState:CharCardsViewStateMax animated:YES callingDelegate:YES];
+            if(yVelocity < -1000){
+                [self setState:CharCardsViewStateMax animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:.95f velocity:ABS(yVelocity/distanceFromTop) completion:nil];
+            }
+            else if(distanceFromBottom < maxDistance*SNAP_RATIO){
+                [self setState:CharCardsViewStateMin animated:YES callingDelegate:YES];
+            }
+            else {
+                [self setState:CharCardsViewStateMax animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:DEFAULT_VERTICAL_DAMPING velocity:ABS(yVelocity/distanceFromTop) completion:nil];
+            }
         } else if(self.state == CharCardsViewStateMax) {
-            if( (maxDistance-distanceFromBottom) < maxDistance*snapRatio) [self setState:CharCardsViewStateMax animated:YES callingDelegate:YES];
-            else [self setState:CharCardsViewStateMin animated:YES callingDelegate:YES];
+            if(yVelocity > 1000) {
+                [self setState:CharCardsViewStateMin animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:.95f velocity:ABS(yVelocity/distanceFromBottom) completion:nil];}
+            else if( (maxDistance-distanceFromBottom) < maxDistance*SNAP_RATIO) {
+                [self setState:CharCardsViewStateMax animated:YES callingDelegate:YES];
+            }
+            else {
+                [self setState:CharCardsViewStateMin animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:DEFAULT_VERTICAL_DAMPING velocity:ABS(yVelocity/distanceFromBottom) completion:nil];
+            }
         }
 
         self.card.contentView.scrollEnabled = YES;
@@ -237,8 +255,11 @@ CGFloat const snapRatio = .3333333f;
 -(void) setState:(CharCardsViewState) state animated:(BOOL) animated callingDelegate:(BOOL) shouldCallegate {
     [self setState:state animated:animated callingDelegate:shouldCallegate completion:nil];
 }
-
 -(void) setState:(CharCardsViewState) state animated:(BOOL) animated callingDelegate:(BOOL) shouldCallegate completion: (void (^)(void)) completion{
+    [self setState:state animated:animated callingDelegate:shouldCallegate duration:DEFAULT_VERTICAL_DURATION damping:DEFAULT_VERTICAL_DAMPING velocity:1.1f completion:completion];
+}
+
+-(void) setState:(CharCardsViewState) state animated:(BOOL) animated callingDelegate:(BOOL) shouldCallegate duration:(CGFloat) duration damping:(CGFloat) damping velocity:(CGFloat) velocity completion: (void (^)(void)) completion{
     if(!self.card) return;
     
     if(!self.card.superview) {
@@ -250,10 +271,11 @@ CGFloat const snapRatio = .3333333f;
     
     if(animated) {
         self.animating = YES;
-        [UIView animateWithDuration:.6f
+        self.card.contentView.bounces = NO;
+        [UIView animateWithDuration:duration
                               delay:0
-             usingSpringWithDamping:.8f
-              initialSpringVelocity:1.1f
+             usingSpringWithDamping:damping
+              initialSpringVelocity:velocity
                             options:UIViewAnimationOptionBeginFromCurrentState
                          animations:^{
                              [self willSetState:state];
@@ -271,6 +293,7 @@ CGFloat const snapRatio = .3333333f;
                              }
                              if(shouldCallegate) [self.card didChangeState:state fromOldState:self.state];
                              self.animating = NO;
+                             self.card.contentView.bounces = NO;
                              if(completion) completion();
                          }];
     } else {
@@ -355,7 +378,7 @@ CGFloat const snapRatio = .3333333f;
                 
                 if(animated) {
                     weakSelf.animating = YES;
-                    [UIView animateWithDuration:.3f
+                    [UIView animateWithDuration:DEFAULT_HORIZONTAL_DURATION
                                           delay:0
                          usingSpringWithDamping:1.f
                           initialSpringVelocity:1.f
@@ -379,7 +402,7 @@ CGFloat const snapRatio = .3333333f;
 
             if(animated) {
                 self.animating = YES;
-                [UIView animateWithDuration:.6f
+                [UIView animateWithDuration:DEFAULT_VERTICAL_DURATION
                                       delay:0
                      usingSpringWithDamping:1.f
                       initialSpringVelocity:1.f
@@ -469,7 +492,7 @@ CGFloat const snapRatio = .3333333f;
                 
                 if(animated) {
                     weakSelf.animating = YES;
-                    [UIView animateWithDuration:.3f
+                    [UIView animateWithDuration:DEFAULT_HORIZONTAL_DURATION
                                           delay:0
                          usingSpringWithDamping:1.f
                           initialSpringVelocity:1.f
@@ -493,7 +516,7 @@ CGFloat const snapRatio = .3333333f;
             
             if(animated) {
                 self.animating = YES;
-                [UIView animateWithDuration:.6f
+                [UIView animateWithDuration:DEFAULT_VERTICAL_DURATION
                                       delay:0
                      usingSpringWithDamping:1.f
                       initialSpringVelocity:1.f
