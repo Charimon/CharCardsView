@@ -22,6 +22,7 @@
 		338A540B18F1F92400E4CDBA /* CharCardsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A540818F1F92400E4CDBA /* CharCardsView.m */; };
 		338A540C18F1F92400E4CDBA /* CharCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A540A18F1F92400E4CDBA /* CharCardView.m */; };
 		338A540F18F1F92E00E4CDBA /* CharViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A540E18F1F92E00E4CDBA /* CharViewController.m */; };
+		338A541218F1F98B00E4CDBA /* CharCustomCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A541118F1F98B00E4CDBA /* CharCustomCardView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,8 @@
 		338A540A18F1F92400E4CDBA /* CharCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardView.m; path = lib/CharCardView.m; sourceTree = "<group>"; };
 		338A540D18F1F92E00E4CDBA /* CharViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharViewController.h; path = test/CharViewController.h; sourceTree = "<group>"; };
 		338A540E18F1F92E00E4CDBA /* CharViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharViewController.m; path = test/CharViewController.m; sourceTree = "<group>"; };
+		338A541018F1F98B00E4CDBA /* CharCustomCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharCustomCardView.h; sourceTree = "<group>"; };
+		338A541118F1F98B00E4CDBA /* CharCustomCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CharCustomCardView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,11 +162,11 @@
 		338A53F518F16A6300E4CDBA /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				338A540618F1F92400E4CDBA /* CharCardsConstants.h */,
 				338A540718F1F92400E4CDBA /* CharCardsView.h */,
 				338A540818F1F92400E4CDBA /* CharCardsView.m */,
 				338A540918F1F92400E4CDBA /* CharCardView.h */,
 				338A540A18F1F92400E4CDBA /* CharCardView.m */,
+				338A540618F1F92400E4CDBA /* CharCardsConstants.h */,
 			);
 			name = lib;
 			sourceTree = "<group>";
@@ -173,6 +176,8 @@
 			children = (
 				338A540D18F1F92E00E4CDBA /* CharViewController.h */,
 				338A540E18F1F92E00E4CDBA /* CharViewController.m */,
+				338A541018F1F98B00E4CDBA /* CharCustomCardView.h */,
+				338A541118F1F98B00E4CDBA /* CharCustomCardView.m */,
 			);
 			name = test;
 			sourceTree = "<group>";
@@ -278,6 +283,7 @@
 				338A540B18F1F92400E4CDBA /* CharCardsView.m in Sources */,
 				338A540F18F1F92E00E4CDBA /* CharViewController.m in Sources */,
 				338A53D318F1696B00E4CDBA /* main.m in Sources */,
+				338A541218F1F98B00E4CDBA /* CharCustomCardView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

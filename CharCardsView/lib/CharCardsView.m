@@ -214,7 +214,7 @@ CGFloat const snapRatio = .3333333f;
                                                             toItem:nil
                                                          attribute:NSLayoutAttributeNotAnAttribute
                                                         multiplier:1.f
-                                                          constant:0.f];
+                                                          constant:self.bounds.size.height - self.maxTopInset];
     [self addConstraint:self.widthConstraint];
     [self addConstraint:self.leadingConstraint];
     [self addConstraint:self.topConstraint];
@@ -226,7 +226,6 @@ CGFloat const snapRatio = .3333333f;
 }
 
 -(void) setState:(CharCardsViewState) state animated:(BOOL) animated callingDelegate:(BOOL) shouldCallegate completion: (void (^)(void)) completion{
-    
     if(!self.card) return;
     
     if(!self.card.superview) {
@@ -330,7 +329,7 @@ CGFloat const snapRatio = .3333333f;
 }
 
 -(void) appendCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated {
-    if(state == CharCardsViewStateNone) return;
+    if(!card ||  state == CharCardsViewStateNone) return;
     if(self.card == card) return;
     
     if(self.card) {
@@ -444,7 +443,7 @@ CGFloat const snapRatio = .3333333f;
 
 
 -(void) prependCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated {
-    if(state == CharCardsViewStateNone) return;
+    if(!card || state == CharCardsViewStateNone) return;
     if(self.card == card) return;
     
     if(self.card) {

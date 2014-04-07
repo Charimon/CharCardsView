@@ -9,9 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "CharCardsConstants.h"
 
+@class CharCardsView;
+//#import "CharCardsView.h"
 
 @interface CharCardView : UIView
 -(void) willChangeState:(CharCardsViewState) newState fromOldState: (CharCardsViewState) oldState;
 -(void) didChangeState:(CharCardsViewState) newState fromOldState: (CharCardsViewState) oldState;
 -(void) didChangeVerticalPositionFromBottom:(CGFloat) position inHeight:(CGFloat) height;
+@property (strong, nonatomic) UIView *contentView;
+@property (strong, nonatomic) UIView *insetView;
+
+@property (weak, nonatomic) CharCardsView *cardsView;
 @end
