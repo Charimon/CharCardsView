@@ -31,6 +31,7 @@ CGFloat const snapRatio = .3333333f;
 }
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    if(self.animating) return YES;
     if(!self.card || self.state == CharCardsViewStateNone) return NO;
     if(self.card && self.state != CharCardsViewStateMax) {
         return [self.card pointInside:[self convertPoint:point toView:self.card] withEvent:event];
@@ -87,6 +88,11 @@ CGFloat const snapRatio = .3333333f;
     } else if(dragRecognizer.state == UIGestureRecognizerStateChanged) {
         CGPoint translation = [dragRecognizer translationInView:dragRecognizer.view];
         
+        if(self.card.contentView.contentOffset.y > 0) {
+            [dragRecognizer setTranslation:CGPointZero inView:dragRecognizer.view];
+            return;
+        }
+        
         if(self.state == CharCardsViewStateMin) {
             self.topConstraint.constant = -self.minHeight + translation.y;
             if(self.topConstraint.constant > -self.minHeight){
@@ -98,6 +104,7 @@ CGFloat const snapRatio = .3333333f;
                 [dragRecognizer setTranslation:CGPointMake(0, translation.y) inView:dragRecognizer.view];
             }
         } else if(self.state == CharCardsViewStateMax) {
+            self.card.contentView.scrollEnabled = NO;
             self.topConstraint.constant = self.maxTopInset-self.bounds.size.height + translation.y;
             if(self.topConstraint.constant > -self.minHeight){
                 self.topConstraint.constant = -self.minHeight;
@@ -106,6 +113,7 @@ CGFloat const snapRatio = .3333333f;
             if(self.topConstraint.constant < self.maxTopInset-self.bounds.size.height){
                 self.topConstraint.constant = self.maxTopInset-self.bounds.size.height;
                 [dragRecognizer setTranslation:CGPointZero inView:dragRecognizer.view];
+                self.card.contentView.scrollEnabled = YES;
             }
         }
         CGFloat distanceFromBottom = -self.minHeight - self.topConstraint.constant;
@@ -128,6 +136,7 @@ CGFloat const snapRatio = .3333333f;
             else [self setState:CharCardsViewStateMin animated:YES callingDelegate:YES];
         }
 
+        self.card.contentView.scrollEnabled = YES;
         if(self.topInsetTapRecognizerEnabled) self.topInsetTapRecognizer.enabled = YES;
         if(self.minStateTapRecognizerEnabled) self.minStateTapRecognizer.enabled = YES;
     }
@@ -171,6 +180,8 @@ CGFloat const snapRatio = .3333333f;
         self.dragRecognizer.delegate = self;
         self.dragRecognizer.enabled = self.dragRecognizerEnabled;
         [self addGestureRecognizer:self.dragRecognizer];
+        
+        self.card.contentView.scrollEnabled = NO;
     } else if(state == CharCardsViewStateMax) {
         self.topInsetTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(topInsetTapRecognizerTapped:)];
         self.topInsetTapRecognizer.delegate = self;
@@ -181,6 +192,8 @@ CGFloat const snapRatio = .3333333f;
         self.dragRecognizer.delegate = self;
         self.dragRecognizer.enabled = self.dragRecognizerEnabled;
         [self addGestureRecognizer:self.dragRecognizer];
+        
+        self.card.contentView.scrollEnabled = YES;
     }
     
     self.state = state;

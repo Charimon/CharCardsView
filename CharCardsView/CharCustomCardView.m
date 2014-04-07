@@ -27,19 +27,19 @@ CGFloat const maxThumbHeight = 200.f;
     self = [super init];
     if(self) {
         self.minHeight = height;
-        self.insetView = [[CharInsetView alloc] init];
-        
-        [self addConstraints:@[ [NSLayoutConstraint constraintWithItem:self.thumbnailView
+//        self.insetView = [[CharInsetView alloc] init];
+        self.contentView.backgroundColor = [UIColor magentaColor];
+        [self.contentView addConstraints:@[ [NSLayoutConstraint constraintWithItem:self.thumbnailView
                                                              attribute:NSLayoutAttributeTop
                                                              relatedBy:NSLayoutRelationEqual
-                                                                toItem:self
+                                                                toItem:self.contentView
                                                              attribute:NSLayoutAttributeTop
                                                             multiplier:1.f
                                                               constant:0],
                                 [NSLayoutConstraint constraintWithItem:self.thumbnailView
                                                              attribute:NSLayoutAttributeLeading
                                                              relatedBy:NSLayoutRelationEqual
-                                                                toItem:self
+                                                                toItem:self.contentView
                                                              attribute:NSLayoutAttributeLeading
                                                             multiplier:1.f
                                                               constant:0],
@@ -60,7 +60,7 @@ CGFloat const maxThumbHeight = 200.f;
                                 [NSLayoutConstraint constraintWithItem:self.headerView
                                                              attribute:NSLayoutAttributeWidth
                                                              relatedBy:NSLayoutRelationEqual
-                                                                toItem:self
+                                                                toItem:self.contentView
                                                              attribute:NSLayoutAttributeWidth
                                                             multiplier:1.f
                                                               constant:-self.minHeight-16.f],
@@ -74,17 +74,25 @@ CGFloat const maxThumbHeight = 200.f;
                                 [NSLayoutConstraint constraintWithItem:self.descriptionView
                                                              attribute:NSLayoutAttributeLeading
                                                              relatedBy:NSLayoutRelationEqual
-                                                                toItem:self
+                                                                toItem:self.contentView
                                                              attribute:NSLayoutAttributeLeading
                                                             multiplier:1.f
                                                               constant:8.f],
+                                            
                                 [NSLayoutConstraint constraintWithItem:self.descriptionView
-                                                             attribute:NSLayoutAttributeTrailing
+                                                             attribute:NSLayoutAttributeWidth
                                                              relatedBy:NSLayoutRelationEqual
-                                                                toItem:self
-                                                             attribute:NSLayoutAttributeTrailing
+                                                                toItem:self.contentView
+                                                             attribute:NSLayoutAttributeWidth
                                                             multiplier:1.f
-                                                              constant:-8.f]
+                                                              constant:-16.f],
+                                [NSLayoutConstraint constraintWithItem:self.descriptionView
+                                                             attribute:NSLayoutAttributeHeight
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:nil
+                                                             attribute:NSLayoutAttributeNotAnAttribute
+                                                            multiplier:1.f
+                                                              constant:300.f]
                                ]];
         
         self.thumbHeightConstraint = [NSLayoutConstraint constraintWithItem:self.thumbnailView
@@ -113,15 +121,15 @@ CGFloat const maxThumbHeight = 200.f;
         self.descBottomConstraint = [NSLayoutConstraint constraintWithItem:self.descriptionView
                                                                  attribute:NSLayoutAttributeBottom
                                                                  relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self
+                                                                    toItem:self.contentView
                                                                  attribute:NSLayoutAttributeBottom
                                                                 multiplier:1.f
                                                                   constant:-8.f];
         
-        [self addConstraint:self.thumbHeightConstraint];
-        [self addConstraint:self.thumbWidthConstraint];
-        [self addConstraint:self.descTopConstraint];
-        [self addConstraint:self.descBottomConstraint];
+        [self.contentView addConstraint:self.thumbHeightConstraint];
+        [self.contentView addConstraint:self.thumbWidthConstraint];
+        [self.contentView addConstraint:self.descTopConstraint];
+        [self.contentView addConstraint:self.descBottomConstraint];
     }
     return self;
 }
@@ -131,7 +139,7 @@ CGFloat const maxThumbHeight = 200.f;
     _headerView = [[UIView alloc] init];
     _headerView.backgroundColor = [UIColor darkGrayColor];
     _headerView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:_headerView];
+    [self.contentView addSubview:_headerView];
     return _headerView;
 }
 
@@ -146,7 +154,7 @@ CGFloat const maxThumbHeight = 200.f;
     UIColor *randColor = [UIColor colorWithRed:aRedValue/255.0f green:aGreenValue/255.0f blue:aBlueValue/255.0f alpha:1.0f];
     _thumbnailView.backgroundColor = randColor;
     _thumbnailView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:_thumbnailView];
+    [self.contentView addSubview:_thumbnailView];
     return _thumbnailView;
 }
 
@@ -156,7 +164,8 @@ CGFloat const maxThumbHeight = 200.f;
     _descriptionView.backgroundColor = [UIColor darkGrayColor];
     _descriptionView.alpha = 0.f;
     _descriptionView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:_descriptionView];
+    _descriptionView.backgroundColor = [UIColor redColor];
+    [self.contentView addSubview:_descriptionView];
     return _descriptionView;
 }
 

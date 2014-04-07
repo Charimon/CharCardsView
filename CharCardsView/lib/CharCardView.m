@@ -41,6 +41,13 @@
                                                            multiplier:1.f
                                                              constant:0.f],
                                [NSLayoutConstraint constraintWithItem:self.contentView
+                                                            attribute:NSLayoutAttributeWidth
+                                                            relatedBy:NSLayoutRelationEqual
+                                                               toItem:self
+                                                            attribute:NSLayoutAttributeWidth
+                                                           multiplier:1.f
+                                                             constant:0.f],
+                               [NSLayoutConstraint constraintWithItem:self.contentView
                                                             attribute:NSLayoutAttributeTrailing
                                                             relatedBy:NSLayoutRelationEqual
                                                                toItem:self
@@ -120,9 +127,9 @@
     [self addConstraint:self.insetViewHeightConstraint];
 }
 
--(UIView *) contentView {
+-(UIScrollView *) contentView {
     if(_contentView) return _contentView;
-    _contentView = [[UIView alloc] init];
+    _contentView = [[UIScrollView alloc] init];
     [self addSubview:_contentView];
     _contentView.translatesAutoresizingMaskIntoConstraints = NO;
     return _contentView;
