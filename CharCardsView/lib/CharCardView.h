@@ -20,6 +20,7 @@
 //everything must be inside contentView
 @property (strong, nonatomic) UIScrollView *contentView;
 @property (strong, nonatomic) UIView *insetView;
+@property (strong, nonatomic) CAGradientLayer *shadow;
 
 @property (weak, nonatomic) CharCardsView *cardsView;
 @end
