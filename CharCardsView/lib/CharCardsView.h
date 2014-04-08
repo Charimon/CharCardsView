@@ -25,6 +25,7 @@
 -(void) prependCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated;
 @property (nonatomic) CGFloat minHeight; //height of card at MIN state
 @property (nonatomic) CGFloat maxTopInset; // spacing between top of view and card at MAX state
+-(void) setMaxTopInset:(CGFloat)maxTopInset animated:(BOOL) animated;
 
 //all 3 enabled by default
 @property (nonatomic) BOOL topInsetTapRecognizerEnabled; //tapping on space created by maxTopInset, causing it to got to MIN

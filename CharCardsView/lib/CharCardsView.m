@@ -84,9 +84,9 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     self.dragRecognizer.enabled = dragRecognizerEnabled;
 }
 
--(void) setMaxTopInset:(CGFloat)maxTopInset {
+-(void) setMaxTopInset:(CGFloat)maxTopInset animated:(BOOL) animated {
     _maxTopInset = maxTopInset;
-    [self setState:self.state animated:YES callingDelegate:YES];
+    if(animated) [self setState:self.state animated:YES callingDelegate:YES];
 }
 
 -(void) topInsetTapRecognizerTapped:(UITapGestureRecognizer *) topInsetTapRecognizer {
