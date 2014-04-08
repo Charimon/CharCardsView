@@ -84,6 +84,11 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     self.dragRecognizer.enabled = dragRecognizerEnabled;
 }
 
+-(void) setMaxTopInset:(CGFloat)maxTopInset {
+    _maxTopInset = maxTopInset;
+    [self setState:self.state animated:YES callingDelegate:YES];
+}
+
 -(void) topInsetTapRecognizerTapped:(UITapGestureRecognizer *) topInsetTapRecognizer {
     if(self.card.insetView) [self.card insetViewTapped];
     else [self setState:CharCardsViewStateMin animated:YES callingDelegate:YES];

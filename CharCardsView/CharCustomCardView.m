@@ -11,6 +11,7 @@
 @property (strong, nonatomic) UIView *headerView;
 @property (strong, nonatomic) UIView *thumbnailView;
 @property (strong, nonatomic) UIView *descriptionView;
+@property (strong, nonatomic) UIButton *toggleInsetButton;
 @property (nonatomic) CGFloat minHeight;
 
 @property (strong, nonatomic) NSLayoutConstraint *thumbHeightConstraint;
@@ -27,7 +28,7 @@ CGFloat const maxThumbHeight = 200.f;
     self = [super init];
     if(self) {
         self.minHeight = height;
-//        self.insetView = [[CharInsetView alloc] init];
+        self.insetView = [[CharInsetView alloc] init];
         
         [self.contentView addConstraints:@[ [NSLayoutConstraint constraintWithItem:self.thumbnailView
                                                              attribute:NSLayoutAttributeTop
@@ -92,7 +93,28 @@ CGFloat const maxThumbHeight = 200.f;
                                                                 toItem:nil
                                                              attribute:NSLayoutAttributeNotAnAttribute
                                                             multiplier:1.f
-                                                              constant:300.f]
+                                                              constant:300.f],
+                                [NSLayoutConstraint constraintWithItem:self.toggleInsetButton
+                                                             attribute:NSLayoutAttributeLeading
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.descriptionView
+                                                             attribute:NSLayoutAttributeLeading
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.toggleInsetButton
+                                                             attribute:NSLayoutAttributeTrailing
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.descriptionView
+                                                             attribute:NSLayoutAttributeTrailing
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.toggleInsetButton
+                                                             attribute:NSLayoutAttributeTop
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.descriptionView
+                                                             attribute:NSLayoutAttributeTop
+                                                            multiplier:1.f
+                                                              constant:0.f],
                                ]];
         
         self.thumbHeightConstraint = [NSLayoutConstraint constraintWithItem:self.thumbnailView
@@ -171,6 +193,27 @@ CGFloat const maxThumbHeight = 200.f;
     _descriptionView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:_descriptionView];
     return _descriptionView;
+}
+
+-(UIButton *) toggleInsetButton {
+    if(_toggleInsetButton) return _toggleInsetButton;
+    _toggleInsetButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_toggleInsetButton setTitle:@"Increase InsetSize" forState:UIControlStateNormal];
+    [_toggleInsetButton setTitle:@"Decrease InsetSize" forState:UIControlStateSelected];
+    [_toggleInsetButton addTarget:self action:@selector(toggleInsetButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    _toggleInsetButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.contentView addSubview:_toggleInsetButton];
+    return _toggleInsetButton;
+}
+
+-(void) toggleInsetButtonClicked: (UIButton *) sender {
+    sender.selected = !sender.selected;
+    
+    if(sender.selected) {
+        self.cardsView.maxTopInset = 200.f;
+    } else {
+        self.cardsView.maxTopInset = 100.f;
+    }
 }
 
 -(void) willChangeState:(CharCardsViewState) newState fromOldState: (CharCardsViewState) oldState {
