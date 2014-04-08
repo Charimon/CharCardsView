@@ -160,6 +160,13 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     }
 }
 
+-(void) setState:(CharCardsViewState) state animated:(BOOL) animated {
+    if(!self.card) return;
+    if(state == self.state) return;
+    
+    [self setState:state animated:animated callingDelegate:YES];
+}
+
 -(void) willSetState:(CharCardsViewState) state {
     if(state == CharCardsViewStateNone) {
         self.topConstraint.constant = 0;
@@ -480,7 +487,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 
 -(void) prependCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated {
     if(!card || state == CharCardsViewStateNone) return;
-    if(self.card == card) return;
+    if([self.card isEqual:card]) return;
     
     if(self.card) {
         if(self.state != state) {

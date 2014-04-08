@@ -20,6 +20,7 @@
 @interface CharCardsView : UIView
 //public
 @property (strong, nonatomic) id<CharCardsViewDelegate> delegate;
+-(void) setState:(CharCardsViewState) state animated:(BOOL) animated;
 -(void) appendCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated;
 -(void) prependCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated;
 @property (nonatomic) CGFloat minHeight; //height of card at MIN state
