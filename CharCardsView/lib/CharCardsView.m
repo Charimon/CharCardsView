@@ -81,7 +81,10 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     self.dragRecognizer.enabled = dragRecognizerEnabled;
 }
 
--(void) topInsetTapRecognizerTapped:(UITapGestureRecognizer *) topInsetTapRecognizer {[self setState:CharCardsViewStateMin animated:YES callingDelegate:YES];}
+-(void) topInsetTapRecognizerTapped:(UITapGestureRecognizer *) topInsetTapRecognizer {
+    if(self.card.insetView) [self.card insetViewTapped];
+    else [self setState:CharCardsViewStateMin animated:YES callingDelegate:YES];
+}
 -(void) minStateTapRecognizerTapped:(UITapGestureRecognizer *) minStateTapRecognizer {[self setState:CharCardsViewStateMax animated:YES callingDelegate:YES];}
 -(void) dragging:(UIPanGestureRecognizer *) dragRecognizer {
     if(dragRecognizer.state == UIGestureRecognizerStateBegan) {

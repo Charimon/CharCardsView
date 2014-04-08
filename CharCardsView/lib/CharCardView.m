@@ -63,7 +63,6 @@
     [super didMoveToSuperview];
     if([self.superview isKindOfClass:[CharCardsView class]]) {
         self.cardsView = (CharCardsView *) self.superview;
-        self.cardsView.topInsetTapRecognizerEnabled = !self.insetView;
     } else {
         self.cardsView = nil;
     }
@@ -76,11 +75,7 @@
         self.insetViewTopConstraint = nil;
     }
     
-    if(insetView) self.cardsView.topInsetTapRecognizerEnabled = NO;
-    else {
-        self.cardsView.topInsetTapRecognizerEnabled = YES;
-        return;
-    }
+    if(!insetView) return;
     
     _insetView = insetView;
     [self addSubview:_insetView];
@@ -151,4 +146,6 @@
     self.insetViewTopConstraint.constant = -self.cardsView.maxTopInset * (position/height);
     self.insetViewHeightConstraint.constant = self.cardsView.minHeight + (self.cardsView.maxTopInset - self.cardsView.minHeight)* (position/height);
 }
+
+-(void) insetViewTapped {}
 @end

@@ -15,6 +15,8 @@
 -(void) willChangeState:(CharCardsViewState) newState fromOldState: (CharCardsViewState) oldState;
 -(void) didChangeState:(CharCardsViewState) newState fromOldState: (CharCardsViewState) oldState;
 -(void) didChangeVerticalPositionFromBottom:(CGFloat) position inHeight:(CGFloat) height;
+-(void) insetViewTapped;
+
 //everything must be inside contentView
 @property (strong, nonatomic) UIScrollView *contentView;
 @property (strong, nonatomic) UIView *insetView;

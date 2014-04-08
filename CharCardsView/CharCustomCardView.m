@@ -27,8 +27,8 @@ CGFloat const maxThumbHeight = 200.f;
     self = [super init];
     if(self) {
         self.minHeight = height;
-        self.insetView = [[CharInsetView alloc] init];
-        self.contentView.backgroundColor = [UIColor magentaColor];
+//        self.insetView = [[CharInsetView alloc] init];
+        
         [self.contentView addConstraints:@[ [NSLayoutConstraint constraintWithItem:self.thumbnailView
                                                              attribute:NSLayoutAttributeTop
                                                              relatedBy:NSLayoutRelationEqual
@@ -164,7 +164,6 @@ CGFloat const maxThumbHeight = 200.f;
     _descriptionView.backgroundColor = [UIColor darkGrayColor];
     _descriptionView.alpha = 0.f;
     _descriptionView.translatesAutoresizingMaskIntoConstraints = NO;
-    _descriptionView.backgroundColor = [UIColor redColor];
     [self.contentView addSubview:_descriptionView];
     return _descriptionView;
 }
@@ -195,11 +194,21 @@ CGFloat const maxThumbHeight = 200.f;
     self.thumbHeightConstraint.constant = self.minHeight + (maxThumbHeight - self.minHeight)*(position/height);
     self.thumbWidthConstraint.constant = self.minHeight + (self.bounds.size.width - self.minHeight)*(position/height);
 }
+
+-(void) insetViewTapped {
+    NSInteger aRedValue = arc4random()%255;
+    NSInteger aGreenValue = arc4random()%255;
+    NSInteger aBlueValue = arc4random()%255;
+    
+    UIColor *randColor = [UIColor colorWithRed:aRedValue/255.0f green:aGreenValue/255.0f blue:aBlueValue/255.0f alpha:1.0f];
+    self.insetView.backgroundColor = randColor;
+    
+}
 @end
 
 
 @interface CharInsetView()
-@property (strong, nonatomic) UIButton *button;
+@property (strong, nonatomic) UILabel *label;
 @end
 
 @implementation CharInsetView: UIView
@@ -208,28 +217,28 @@ CGFloat const maxThumbHeight = 200.f;
     if(self) {
         self.backgroundColor = [UIColor whiteColor];
         
-        [self addConstraints:@[ [NSLayoutConstraint constraintWithItem:self.button
+        [self addConstraints:@[ [NSLayoutConstraint constraintWithItem:self.label
                                                              attribute:NSLayoutAttributeTop
                                                              relatedBy:NSLayoutRelationEqual
                                                                 toItem:self
                                                              attribute:NSLayoutAttributeTop
                                                             multiplier:1.f
                                                               constant:0],
-                                [NSLayoutConstraint constraintWithItem:self.button
+                                [NSLayoutConstraint constraintWithItem:self.label
                                                              attribute:NSLayoutAttributeLeading
                                                              relatedBy:NSLayoutRelationEqual
                                                                 toItem:self
                                                              attribute:NSLayoutAttributeLeading
                                                             multiplier:1.f
                                                               constant:0],
-                                [NSLayoutConstraint constraintWithItem:self.button
+                                [NSLayoutConstraint constraintWithItem:self.label
                                                              attribute:NSLayoutAttributeTrailing
                                                              relatedBy:NSLayoutRelationEqual
                                                                 toItem:self
                                                              attribute:NSLayoutAttributeTrailing
                                                             multiplier:1.f
                                                               constant:0],
-                                [NSLayoutConstraint constraintWithItem:self.button
+                                [NSLayoutConstraint constraintWithItem:self.label
                                                              attribute:NSLayoutAttributeBottom
                                                              relatedBy:NSLayoutRelationEqual
                                                                 toItem:self
@@ -242,18 +251,15 @@ CGFloat const maxThumbHeight = 200.f;
     return self;
 }
 
--(UIButton *) button {
-    if(_button) return _button;
-    _button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [_button setTitle:@"not clickable" forState:UIControlStateNormal];
-    [_button addTarget:self action:@selector(buttonClicked) forControlEvents:UIControlEventTouchUpInside];
-    _button.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:_button];
-    return _button;
-}
-
--(void) buttonClicked {
-    
+-(UILabel *) label {
+    if(_label) return _label;
+    _label = [[UILabel alloc] init];
+    _label.backgroundColor = [UIColor clearColor];
+    _label.textColor = [UIColor blackColor];
+    _label.textAlignment = NSTextAlignmentCenter;
+    _label.text = @"click me";
+    _label.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_label];
+    return _label;
 }
 @end;
