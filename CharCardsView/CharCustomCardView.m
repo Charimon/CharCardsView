@@ -27,7 +27,7 @@ CGFloat const maxThumbHeight = 200.f;
     self = [super init];
     if(self) {
         self.minHeight = height;
-//        self.insetView = [[CharInsetView alloc] init];
+        self.insetView = [[CharInsetView alloc] init];
         self.contentView.backgroundColor = [UIColor magentaColor];
         [self.contentView addConstraints:@[ [NSLayoutConstraint constraintWithItem:self.thumbnailView
                                                              attribute:NSLayoutAttributeTop

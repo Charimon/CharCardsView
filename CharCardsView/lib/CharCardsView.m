@@ -373,7 +373,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 
 -(void) appendCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated {
     if(!card ||  state == CharCardsViewStateNone) return;
-    if(self.card == card) return;
+    if([self.card isEqual:card]) return;
     
     if(self.card) {
         if(self.state != state){
