@@ -27,7 +27,7 @@ CGFloat const maxThumbHeight = 200.f;
     self = [super init];
     if(self) {
         self.minHeight = height;
-        self.insetView = [[CharInsetView alloc] init];
+//        self.insetView = [[CharInsetView alloc] init];
         
         [self.contentView addConstraints:@[ [NSLayoutConstraint constraintWithItem:self.thumbnailView
                                                              attribute:NSLayoutAttributeTop
@@ -132,6 +132,11 @@ CGFloat const maxThumbHeight = 200.f;
         [self.contentView addConstraint:self.descBottomConstraint];
     }
     return self;
+}
+
+-(void) didMoveToSuperview {
+    [super didMoveToSuperview];
+//    self.cardsView.topInsetTapRecognizerEnabled = NO;
 }
 
 -(UIView *) headerView {

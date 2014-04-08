@@ -39,6 +39,9 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     if(self.card && self.state != CharCardsViewStateMax) {
         return [self.card pointInside:[self convertPoint:point toView:self.card] withEvent:event];
     }
+    if(self.card && self.state == CharCardsViewStateMax && !self.topInsetTapRecognizerEnabled) {
+        return [self.card pointInside:[self convertPoint:point toView:self.card] withEvent:event];
+    }
     return YES;
 }
 
