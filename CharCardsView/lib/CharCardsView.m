@@ -64,8 +64,8 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 -(void) layoutSubviews {
     if(self.state == CharCardsViewStateMax && !self.animating && !self.panning) {
         //autolayout changes
-        self.topConstraint.constant = self.maxTopInset-self.bounds.size.height;
-        self.heightConstraint.constant = self.bounds.size.height - self.maxTopInset;
+        self.topConstraint.constant = self.card.maxTopInset-self.bounds.size.height;
+        self.heightConstraint.constant = self.bounds.size.height - self.card.maxTopInset;
     }
     //super must be after changes in autolayout
     [super layoutSubviews];
@@ -82,11 +82,6 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 -(void) setDragRecognizerEnabled:(BOOL)dragRecognizerEnabled {
     _dragRecognizerEnabled = dragRecognizerEnabled;
     self.dragRecognizer.enabled = dragRecognizerEnabled;
-}
-
--(void) setMaxTopInset:(CGFloat)maxTopInset animated:(BOOL) animated {
-    _maxTopInset = maxTopInset;
-    if(animated) [self setState:self.state animated:YES callingDelegate:YES];
 }
 
 -(void) topInsetTapRecognizerTapped:(UITapGestureRecognizer *) topInsetTapRecognizer {
@@ -113,25 +108,25 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                 self.topConstraint.constant = -self.minHeight;
                 [dragRecognizer setTranslation:CGPointZero inView:dragRecognizer.view];
             }
-            if(self.topConstraint.constant < self.maxTopInset-self.bounds.size.height){
-                self.topConstraint.constant = self.maxTopInset-self.bounds.size.height;
+            if(self.topConstraint.constant < self.card.maxTopInset-self.bounds.size.height){
+                self.topConstraint.constant = self.card.maxTopInset-self.bounds.size.height;
                 [dragRecognizer setTranslation:CGPointMake(0, translation.y) inView:dragRecognizer.view];
             }
         } else if(self.state == CharCardsViewStateMax) {
             self.card.contentView.scrollEnabled = NO;
-            self.topConstraint.constant = self.maxTopInset-self.bounds.size.height + translation.y;
+            self.topConstraint.constant = self.card.maxTopInset-self.bounds.size.height + translation.y;
             if(self.topConstraint.constant > -self.minHeight){
                 self.topConstraint.constant = -self.minHeight;
                 [dragRecognizer setTranslation:CGPointMake(0, translation.y) inView:dragRecognizer.view];
             }
-            if(self.topConstraint.constant < self.maxTopInset-self.bounds.size.height){
-                self.topConstraint.constant = self.maxTopInset-self.bounds.size.height;
+            if(self.topConstraint.constant < self.card.maxTopInset-self.bounds.size.height){
+                self.topConstraint.constant = self.card.maxTopInset-self.bounds.size.height;
                 [dragRecognizer setTranslation:CGPointZero inView:dragRecognizer.view];
                 self.card.contentView.scrollEnabled = YES;
             }
         }
         CGFloat distanceFromBottom = -self.minHeight - self.topConstraint.constant;
-        CGFloat maxDistance = self.bounds.size.height - self.maxTopInset - self.minHeight;
+        CGFloat maxDistance = self.bounds.size.height - self.card.maxTopInset - self.minHeight;
         if([self.delegate respondsToSelector:@selector(cardsView:didChangeVerticalPositionFromBottom:inHeight:)]) {
             [self.delegate cardsView:self didChangeVerticalPositionFromBottom:distanceFromBottom inHeight:maxDistance];
         }
@@ -139,7 +134,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         
     } else if(dragRecognizer.state == UIGestureRecognizerStateEnded || dragRecognizer.state == UIGestureRecognizerStateCancelled || dragRecognizer.state == UIGestureRecognizerStateFailed) {
         self.panning = NO;
-        CGFloat maxDistance = self.bounds.size.height - self.maxTopInset - self.minHeight;
+        CGFloat maxDistance = self.bounds.size.height - self.card.maxTopInset - self.minHeight;
         CGFloat distanceFromBottom = -self.minHeight - self.topConstraint.constant;
         CGFloat distanceFromTop = maxDistance-distanceFromBottom;
         CGFloat yVelocity = [dragRecognizer velocityInView:dragRecognizer.view].y;
@@ -173,7 +168,6 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 
 -(void) setState:(CharCardsViewState) state animated:(BOOL) animated {
     if(!self.card) return;
-    if(state == self.state) return;
     
     [self setState:state animated:animated callingDelegate:YES];
 }
@@ -184,10 +178,10 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     } else if(state == CharCardsViewStateMin) {
         self.topConstraint.constant = -self.minHeight;
 //        self.heightConstraint.constant = self.minHeight;
-        self.heightConstraint.constant = self.bounds.size.height - self.maxTopInset;
+        self.heightConstraint.constant = self.bounds.size.height - self.card.maxTopInset;
     } else if(state == CharCardsViewStateMax) {
-        self.topConstraint.constant = self.maxTopInset-self.bounds.size.height;
-        self.heightConstraint.constant = self.bounds.size.height - self.maxTopInset;
+        self.topConstraint.constant = self.card.maxTopInset-self.bounds.size.height;
+        self.heightConstraint.constant = self.bounds.size.height - self.card.maxTopInset;
     }
     
     [self removeGestureRecognizer:self.topInsetTapRecognizer];
@@ -261,7 +255,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                                                             toItem:nil
                                                          attribute:NSLayoutAttributeNotAnAttribute
                                                         multiplier:1.f
-                                                          constant:self.bounds.size.height - self.maxTopInset];
+                                                          constant:self.bounds.size.height - self.card.maxTopInset];
     [self addConstraint:self.widthConstraint];
     [self addConstraint:self.leadingConstraint];
     [self addConstraint:self.topConstraint];
@@ -392,7 +386,9 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
             [self setState:state animated:animated callingDelegate:NO completion:^{
                 weakSelf.oldCard = weakSelf.card;
                 
+                weakSelf.state = state;
                 [weakSelf createAppendCard: card];
+                
                 
                 if(animated) {
                     weakSelf.animating = YES;
@@ -406,6 +402,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                                          [weakSelf layoutIfNeeded];
                                      } completion:^(BOOL finished) {
                                          [weakSelf didAppendCard];
+                                         [weakSelf layoutIfNeeded];
                                          weakSelf.animating = NO;
                                      }];
                 } else {
@@ -430,6 +427,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                                      [self layoutIfNeeded];
                                  } completion:^(BOOL finished) {
                                      [self didAppendCard];
+                                     [self layoutIfNeeded];
                                      self.animating = NO;
                                  }];
             } else {
@@ -437,7 +435,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                 [self didAppendCard];
             }
         }
-        
+        return;
     } else {
         self.card = card;
         [self setState:state animated:animated callingDelegate:YES];
@@ -506,6 +504,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
             [self setState:state animated:animated callingDelegate:YES completion:^{
                 weakSelf.oldCard = weakSelf.card;
                 
+                weakSelf.state = state;
                 [weakSelf createPrependCard: card];
                 
                 if(animated) {
@@ -520,6 +519,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                                          [weakSelf layoutIfNeeded];
                                      } completion:^(BOOL finished) {
                                          [weakSelf didPrependCard];
+                                         [weakSelf layoutIfNeeded];
                                          weakSelf.animating = NO;
                                      }];
                 } else {
@@ -544,6 +544,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                                      [self layoutIfNeeded];
                                  } completion:^(BOOL finished) {
                                      [self didPrependCard];
+                                     [self layoutIfNeeded];
                                      self.animating = NO;
                                  }];
             } else {

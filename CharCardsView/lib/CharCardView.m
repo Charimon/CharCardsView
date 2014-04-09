@@ -92,6 +92,11 @@ CGFloat const GRADIENT_SIZE = 6.f;
     }
 }
 
+-(void) setMaxTopInset:(CGFloat)maxTopInset animated:(BOOL) animated {
+    _maxTopInset = maxTopInset;
+    if(animated) [self.cardsView setState:self.state animated:YES];
+}
+
 -(void) setInsetView:(UIView *)insetView {
     if(_insetView) {
         [_insetView removeFromSuperview];
@@ -136,8 +141,8 @@ CGFloat const GRADIENT_SIZE = 6.f;
                                                                  multiplier:0.f
                                                                    constant:0.f];
     if(self.state == CharCardsViewStateMax) {
-        self.insetViewTopConstraint.constant = -self.cardsView.maxTopInset;
-        self.insetViewHeightConstraint.constant = self.cardsView.maxTopInset;
+        self.insetViewTopConstraint.constant = -self.maxTopInset;
+        self.insetViewHeightConstraint.constant = self.maxTopInset;
     } else if (self.state == CharCardsViewStateMin) {
         self.insetViewTopConstraint.constant = 0;
         self.insetViewHeightConstraint.constant = self.cardsView.minHeight;
@@ -162,8 +167,8 @@ CGFloat const GRADIENT_SIZE = 6.f;
 
 -(void) willChangeState:(CharCardsViewState) newState fromOldState: (CharCardsViewState) oldState {
     if(newState == CharCardsViewStateMax) {
-        self.insetViewTopConstraint.constant = -self.cardsView.maxTopInset;
-        self.insetViewHeightConstraint.constant = self.cardsView.maxTopInset;
+        self.insetViewTopConstraint.constant = -self.maxTopInset;
+        self.insetViewHeightConstraint.constant = self.maxTopInset;
         self.shadowTopOffset = self.insetView?0.f:-GRADIENT_SIZE;
     } else if (newState == CharCardsViewStateMin) {
         self.insetViewTopConstraint.constant = 0;
@@ -175,8 +180,8 @@ CGFloat const GRADIENT_SIZE = 6.f;
     self.state = newState;
 }
 -(void) didChangeVerticalPositionFromBottom:(CGFloat) position inHeight:(CGFloat) height {
-    self.insetViewTopConstraint.constant = -self.cardsView.maxTopInset * (position/height);
-    self.insetViewHeightConstraint.constant = self.cardsView.minHeight + (self.cardsView.maxTopInset - self.cardsView.minHeight)* (position/height);
+    self.insetViewTopConstraint.constant = -self.maxTopInset * (position/height);
+    self.insetViewHeightConstraint.constant = self.cardsView.minHeight + (self.maxTopInset - self.cardsView.minHeight)* (position/height);
 }
 
 -(void) insetViewTapped {}

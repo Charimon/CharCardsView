@@ -23,6 +23,8 @@
 @property (strong, nonatomic) CAGradientLayer *shadow;
 
 @property (weak, nonatomic) CharCardsView *cardsView;
+@property (nonatomic) CGFloat maxTopInset;
+-(void) setMaxTopInset:(CGFloat)maxTopInset animated:(BOOL) animated;
 
 
 //protected keyboard events

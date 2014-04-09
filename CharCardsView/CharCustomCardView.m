@@ -28,7 +28,7 @@ CGFloat const maxThumbHeight = 200.f;
     self = [super init];
     if(self) {
         self.minHeight = height;
-        self.insetView = [[CharInsetView alloc] init];
+//        self.insetView = [[CharInsetView alloc] init];
         
         [self.contentView addConstraints:@[ [NSLayoutConstraint constraintWithItem:self.thumbnailView
                                                              attribute:NSLayoutAttributeTop
@@ -178,7 +178,7 @@ CGFloat const maxThumbHeight = 200.f;
     NSInteger aGreenValue = arc4random()%255;
     NSInteger aBlueValue = arc4random()%255;
     
-    UIColor *randColor = [UIColor colorWithRed:aRedValue/255.0f green:aGreenValue/255.0f blue:aBlueValue/255.0f alpha:1.0f];
+    UIColor *randColor = [UIColor colorWithRed:aRedValue/255.0f green:aGreenValue/255.0f blue:aBlueValue/255.0f alpha:.2f];
     _thumbnailView.backgroundColor = randColor;
     _thumbnailView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:_thumbnailView];
@@ -210,9 +210,9 @@ CGFloat const maxThumbHeight = 200.f;
     sender.selected = !sender.selected;
     
     if(sender.selected) {
-        [self.cardsView setMaxTopInset:200.f animated:YES];
+        [self setMaxTopInset:200.f animated:YES];
     } else {
-        [self.cardsView setMaxTopInset:100.f animated:YES];
+        [self setMaxTopInset:100.f animated:YES];
     }
 }
 
