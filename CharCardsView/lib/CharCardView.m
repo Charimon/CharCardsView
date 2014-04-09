@@ -13,6 +13,7 @@
 @property (nonatomic, readwrite) CharCardsViewState state;
 @property (strong, nonatomic) NSLayoutConstraint *insetViewHeightConstraint;
 @property (strong, nonatomic) NSLayoutConstraint *insetViewTopConstraint;
+@property (strong, nonatomic) NSLayoutConstraint *contentViewBottomConstraint;
 @property (nonatomic) CGFloat shadowTopOffset;
 @end
 
@@ -37,13 +38,6 @@ CGFloat const GRADIENT_SIZE = 6.f;
                                                            multiplier:1.f
                                                              constant:0.f],
                                [NSLayoutConstraint constraintWithItem:self.contentView
-                                                            attribute:NSLayoutAttributeBottom
-                                                            relatedBy:NSLayoutRelationEqual
-                                                               toItem:self
-                                                            attribute:NSLayoutAttributeBottom
-                                                           multiplier:1.f
-                                                             constant:0.f],
-                               [NSLayoutConstraint constraintWithItem:self.contentView
                                                             attribute:NSLayoutAttributeLeading
                                                             relatedBy:NSLayoutRelationEqual
                                                                toItem:self
@@ -65,6 +59,15 @@ CGFloat const GRADIENT_SIZE = 6.f;
                                                            multiplier:1.f
                                                              constant:0.f],
                                ]];
+        
+        self.contentViewBottomConstraint = [NSLayoutConstraint constraintWithItem:self.contentView
+                                                                        attribute:NSLayoutAttributeBottom
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:self
+                                                                        attribute:NSLayoutAttributeBottom
+                                                                       multiplier:1.f
+                                                                         constant:0.f];
+        [self addConstraint:self.contentViewBottomConstraint];
 
     }
     return self;
@@ -74,8 +77,18 @@ CGFloat const GRADIENT_SIZE = 6.f;
     [super didMoveToSuperview];
     if([self.superview isKindOfClass:[CharCardsView class]]) {
         self.cardsView = (CharCardsView *) self.superview;
+        
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidChangeFrame:) name:UIKeyboardDidChangeFrameNotification object:nil];
     } else {
         self.cardsView = nil;
+        [self resignFirstResponder];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
     }
 }
 
@@ -167,4 +180,22 @@ CGFloat const GRADIENT_SIZE = 6.f;
 }
 
 -(void) insetViewTapped {}
+
+#pragma mark NSNotificationCenter keybaord
+-(void) keyboardWillShow: (NSNotification *) notification {
+    CGRect keyboardFrameEnd = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    keyboardFrameEnd = [self.contentView convertRect:keyboardFrameEnd fromView:nil];
+    
+    CGFloat bottomInset = self.contentView.frame.size.height - keyboardFrameEnd.origin.y;
+    self.contentView.contentInset = UIEdgeInsetsMake(0, 0, bottomInset, 0);
+    self.contentView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, bottomInset, 0);
+}
+-(void) keyboardDidShow: (NSNotification *) notification {}
+-(void) keyboardWillHide: (NSNotification *) notification {
+    self.contentView.contentInset = UIEdgeInsetsZero;
+    self.contentView.scrollIndicatorInsets = UIEdgeInsetsZero;
+}
+-(void) keyboardDidHide: (NSNotification *) notification {}
+-(void) keyboardWillChangeFrame: (NSNotification *) notification {}
+-(void) keyboardDidChangeFrame: (NSNotification *) notification {}
 @end

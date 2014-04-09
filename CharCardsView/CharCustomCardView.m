@@ -10,13 +10,13 @@
 @interface CharCustomCardView()
 @property (strong, nonatomic) UIView *headerView;
 @property (strong, nonatomic) UIView *thumbnailView;
-@property (strong, nonatomic) UIView *descriptionView;
+@property (strong, nonatomic) UITextView *descriptionView;
 @property (strong, nonatomic) UIButton *toggleInsetButton;
+
 @property (nonatomic) CGFloat minHeight;
 
 @property (strong, nonatomic) NSLayoutConstraint *thumbHeightConstraint;
 @property (strong, nonatomic) NSLayoutConstraint *thumbWidthConstraint;
-@property (strong, nonatomic) NSLayoutConstraint *descTopConstraint;
 @property (strong, nonatomic) NSLayoutConstraint *descBottomConstraint;
 @end
 
@@ -72,6 +72,36 @@ CGFloat const maxThumbHeight = 200.f;
                                                              attribute:NSLayoutAttributeNotAnAttribute
                                                             multiplier:0.f
                                                               constant:self.minHeight-16.f],
+                                [NSLayoutConstraint constraintWithItem:self.toggleInsetButton
+                                                             attribute:NSLayoutAttributeLeading
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.descriptionView
+                                                             attribute:NSLayoutAttributeLeading
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.toggleInsetButton
+                                                             attribute:NSLayoutAttributeTrailing
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.descriptionView
+                                                             attribute:NSLayoutAttributeTrailing
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.toggleInsetButton
+                                                             attribute:NSLayoutAttributeTop
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.thumbnailView
+                                                             attribute:NSLayoutAttributeBottom
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                            
+                                [NSLayoutConstraint constraintWithItem:self.descriptionView
+                                                             attribute:NSLayoutAttributeTop
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.toggleInsetButton
+                                                             attribute:NSLayoutAttributeBottom
+                                                            multiplier:1.f
+                                                              constant:8.f],
+                                            
                                 [NSLayoutConstraint constraintWithItem:self.descriptionView
                                                              attribute:NSLayoutAttributeLeading
                                                              relatedBy:NSLayoutRelationEqual
@@ -94,27 +124,6 @@ CGFloat const maxThumbHeight = 200.f;
                                                              attribute:NSLayoutAttributeNotAnAttribute
                                                             multiplier:1.f
                                                               constant:300.f],
-                                [NSLayoutConstraint constraintWithItem:self.toggleInsetButton
-                                                             attribute:NSLayoutAttributeLeading
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.descriptionView
-                                                             attribute:NSLayoutAttributeLeading
-                                                            multiplier:1.f
-                                                              constant:0.f],
-                                [NSLayoutConstraint constraintWithItem:self.toggleInsetButton
-                                                             attribute:NSLayoutAttributeTrailing
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.descriptionView
-                                                             attribute:NSLayoutAttributeTrailing
-                                                            multiplier:1.f
-                                                              constant:0.f],
-                                [NSLayoutConstraint constraintWithItem:self.toggleInsetButton
-                                                             attribute:NSLayoutAttributeTop
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.descriptionView
-                                                             attribute:NSLayoutAttributeTop
-                                                            multiplier:1.f
-                                                              constant:0.f],
                                ]];
         
         self.thumbHeightConstraint = [NSLayoutConstraint constraintWithItem:self.thumbnailView
@@ -132,14 +141,6 @@ CGFloat const maxThumbHeight = 200.f;
                                                                 multiplier:0.f
                                                                   constant:self.minHeight];
         
-        self.descTopConstraint = [NSLayoutConstraint constraintWithItem:self.descriptionView
-                                                              attribute:NSLayoutAttributeTop
-                                                              relatedBy:NSLayoutRelationEqual
-                                                                 toItem:self.thumbnailView
-                                                              attribute:NSLayoutAttributeBottom
-                                                             multiplier:1.f
-                                                               constant:8.f];
-        
         self.descBottomConstraint = [NSLayoutConstraint constraintWithItem:self.descriptionView
                                                                  attribute:NSLayoutAttributeBottom
                                                                  relatedBy:NSLayoutRelationEqual
@@ -150,7 +151,6 @@ CGFloat const maxThumbHeight = 200.f;
         
         [self.contentView addConstraint:self.thumbHeightConstraint];
         [self.contentView addConstraint:self.thumbWidthConstraint];
-        [self.contentView addConstraint:self.descTopConstraint];
         [self.contentView addConstraint:self.descBottomConstraint];
     }
     return self;
@@ -185,9 +185,9 @@ CGFloat const maxThumbHeight = 200.f;
     return _thumbnailView;
 }
 
--(UIView *) descriptionView {
+-(UITextView *) descriptionView {
     if(_descriptionView) return _descriptionView;
-    _descriptionView = [[UIView alloc] init];
+    _descriptionView = [[UITextView alloc] init];
     _descriptionView.backgroundColor = [UIColor darkGrayColor];
     _descriptionView.alpha = 0.f;
     _descriptionView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -210,9 +210,9 @@ CGFloat const maxThumbHeight = 200.f;
     sender.selected = !sender.selected;
     
     if(sender.selected) {
-        self.cardsView.maxTopInset = 200.f;
+        [self.cardsView setMaxTopInset:200.f animated:YES];
     } else {
-        self.cardsView.maxTopInset = 100.f;
+        [self.cardsView setMaxTopInset:100.f animated:YES];
     }
 }
 
