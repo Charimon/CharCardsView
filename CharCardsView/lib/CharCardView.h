@@ -23,4 +23,13 @@
 @property (strong, nonatomic) CAGradientLayer *shadow;
 
 @property (weak, nonatomic) CharCardsView *cardsView;
+
+
+//protected keyboard events
+-(void) keyboardWillShow: (NSNotification *) notification;
+-(void) keyboardDidShow: (NSNotification *) notification;
+-(void) keyboardWillHide: (NSNotification *) notification;
+-(void) keyboardDidHide: (NSNotification *) notification;
+-(void) keyboardWillChangeFrame: (NSNotification *) notification;
+-(void) keyboardDidChangeFrame: (NSNotification *) notification;
 @end
