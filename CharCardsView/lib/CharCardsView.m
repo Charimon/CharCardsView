@@ -231,8 +231,6 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         
         self.card.contentView.scrollEnabled = YES;
     }
-    
-    self.state = state;
 }
 
 -(void) setBaseConstraints {
@@ -313,6 +311,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                              self.animating = NO;
                              self.card.contentView.bounces = NO;
                              if(completion) completion();
+                             self.state = state;
                          }];
     } else {
         [self willSetState:state];
@@ -328,6 +327,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         if(shouldCallegate) [self.card didChangeState:state fromOldState:self.state];
         
         if(completion) completion();
+        self.state = state;
     }
 }
 
