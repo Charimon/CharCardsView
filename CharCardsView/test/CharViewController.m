@@ -9,11 +9,15 @@
 #import "CharViewController.h"
 #import "CharCardsView.h"
 #import "CharCustomCardView.h"
+#import "UIColor+Random.h"
 
-@interface CharViewController () <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface CharViewController ()
 @property (strong, nonatomic) CharCardsView *cardsView;
-@property (strong, nonatomic) UICollectionView *buttonsView;
-@property (strong, nonatomic) NSMutableArray *buttonColors;
+@property (strong, nonatomic) UIButton *noneStateButton;
+@property (strong, nonatomic) UIButton *minStateButton;
+@property (strong, nonatomic) UIButton *maxStateButton;
+@property (strong, nonatomic) UIButton *autoStateButton;
+@property (strong, nonatomic) NSTimer *autoTimer;
 @end
 
 @implementation CharViewController
@@ -25,28 +29,113 @@ NSString *const COLLECTION_VIEW_CELL = @"COLLECTION_VIEW_CELL";
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self.view addConstraints:@[[NSLayoutConstraint constraintWithItem:self.buttonsView
-                                                             attribute:NSLayoutAttributeTop
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.view
-                                                             attribute:NSLayoutAttributeTop
-                                                            multiplier:1.f
-                                                              constant:0.f],
-                                [NSLayoutConstraint constraintWithItem:self.buttonsView
+    [self.view addConstraints:@[[NSLayoutConstraint constraintWithItem:self.noneStateButton
                                                              attribute:NSLayoutAttributeBottom
                                                              relatedBy:NSLayoutRelationEqual
                                                                 toItem:self.view
                                                              attribute:NSLayoutAttributeBottom
                                                             multiplier:1.f
                                                               constant:0.f],
-                                [NSLayoutConstraint constraintWithItem:self.buttonsView
+                                [NSLayoutConstraint constraintWithItem:self.noneStateButton
                                                              attribute:NSLayoutAttributeLeading
                                                              relatedBy:NSLayoutRelationEqual
                                                                 toItem:self.view
                                                              attribute:NSLayoutAttributeLeading
                                                             multiplier:1.f
                                                               constant:0.f],
-                                [NSLayoutConstraint constraintWithItem:self.buttonsView
+                                [NSLayoutConstraint constraintWithItem:self.minStateButton
+                                                             attribute:NSLayoutAttributeBottom
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeBottom
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.minStateButton
+                                                             attribute:NSLayoutAttributeLeading
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.noneStateButton
+                                                             attribute:NSLayoutAttributeTrailing
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.minStateButton
+                                                             attribute:NSLayoutAttributeWidth
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.noneStateButton
+                                                             attribute:NSLayoutAttributeWidth
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.maxStateButton
+                                                             attribute:NSLayoutAttributeBottom
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeBottom
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.maxStateButton
+                                                             attribute:NSLayoutAttributeLeading
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.minStateButton
+                                                             attribute:NSLayoutAttributeTrailing
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.maxStateButton
+                                                             attribute:NSLayoutAttributeWidth
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.minStateButton
+                                                             attribute:NSLayoutAttributeWidth
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.autoStateButton
+                                                             attribute:NSLayoutAttributeBottom
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeBottom
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.autoStateButton
+                                                             attribute:NSLayoutAttributeLeading
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.maxStateButton
+                                                             attribute:NSLayoutAttributeTrailing
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.autoStateButton
+                                                             attribute:NSLayoutAttributeTrailing
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeTrailing
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.autoStateButton
+                                                             attribute:NSLayoutAttributeWidth
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.maxStateButton
+                                                             attribute:NSLayoutAttributeWidth
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                
+                                [NSLayoutConstraint constraintWithItem:self.cardsView
+                                                             attribute:NSLayoutAttributeTop
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeTop
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.cardsView
+                                                             attribute:NSLayoutAttributeBottom
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.noneStateButton
+                                                             attribute:NSLayoutAttributeTop
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.cardsView
+                                                             attribute:NSLayoutAttributeLeading
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeLeading
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.cardsView
                                                              attribute:NSLayoutAttributeTrailing
                                                              relatedBy:NSLayoutRelationEqual
                                                                 toItem:self.view
@@ -54,63 +143,6 @@ NSString *const COLLECTION_VIEW_CELL = @"COLLECTION_VIEW_CELL";
                                                             multiplier:1.f
                                                               constant:0.f]
                                 ]];
-    
-    [self.view addConstraints:@[[NSLayoutConstraint constraintWithItem:self.cardsView
-                                                             attribute:NSLayoutAttributeTop
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.view
-                                                             attribute:NSLayoutAttributeTop
-                                                            multiplier:1.f
-                                                              constant:8.f],
-                                [NSLayoutConstraint constraintWithItem:self.cardsView
-                                                             attribute:NSLayoutAttributeBottom
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.view
-                                                             attribute:NSLayoutAttributeBottom
-                                                            multiplier:1.f
-                                                              constant:-8.f],
-                                [NSLayoutConstraint constraintWithItem:self.cardsView
-                                                             attribute:NSLayoutAttributeLeading
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.view
-                                                             attribute:NSLayoutAttributeLeading
-                                                            multiplier:1.f
-                                                              constant:8.f],
-                                [NSLayoutConstraint constraintWithItem:self.cardsView
-                                                             attribute:NSLayoutAttributeTrailing
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.view
-                                                             attribute:NSLayoutAttributeTrailing
-                                                            multiplier:1.f
-                                                              constant:-8.f]
-                                ]];
-    
-    self.buttonColors = [[NSMutableArray alloc] init];
-    int i = 15;
-    while(i-- > 0) {
-        NSInteger aRedValue = arc4random()%255;
-        NSInteger aGreenValue = arc4random()%255;
-        NSInteger aBlueValue = arc4random()%255;
-        UIColor *randColor = [UIColor colorWithRed:aRedValue/255.0f green:aGreenValue/255.0f blue:aBlueValue/255.0f alpha:1.0f];
-        
-        NSString *title = [@[@"MIN", @"MAX", @"NONE"] objectAtIndex:arc4random()%3];
-        [self.buttonColors addObject:[[Tuple alloc] initWithText:title color:randColor]];
-    }
-    
-}
-
--(UICollectionView *) buttonsView {
-    if(_buttonsView) return _buttonsView;
-    UICollectionViewFlowLayout *flow = [[UICollectionViewFlowLayout alloc] init];
-    _buttonsView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:flow];
-    _buttonsView.backgroundColor = [UIColor clearColor];
-    _buttonsView.dataSource = self;
-    _buttonsView.delegate = self;
-    [_buttonsView registerClass:[CharUICollectionViewCell class] forCellWithReuseIdentifier:COLLECTION_VIEW_CELL];
-    
-    [self.view addSubview:_buttonsView];
-    _buttonsView.translatesAutoresizingMaskIntoConstraints = NO;
-    return _buttonsView;
 }
 
 -(void) buttonClicked {
@@ -126,107 +158,95 @@ NSString *const COLLECTION_VIEW_CELL = @"COLLECTION_VIEW_CELL";
     [self.cardsView appendCard:card atState:CharCardsViewStateMin animated:YES];
 }
 
+-(UIButton *) noneStateButton {
+    if(_noneStateButton) return _noneStateButton;
+    _noneStateButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_noneStateButton setContentEdgeInsets:UIEdgeInsetsMake(20, 0, 20, 0)];
+    [_noneStateButton setTitle:@"NONE" forState:UIControlStateNormal];
+    [_noneStateButton setTitleColor:[UIColor colorWithWhite:.2 alpha:1.f] forState:UIControlStateNormal];
+    [_noneStateButton addTarget:self action:@selector(noneStateButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_noneStateButton];
+    _noneStateButton.translatesAutoresizingMaskIntoConstraints = NO;
+    return _noneStateButton;
+}
+-(void) noneStateButtonClicked:(id) sender {
+    [self.cardsView setState:CharCardsViewStateNone animated:YES];
+}
+
+-(UIButton *) minStateButton {
+    if(_minStateButton) return _minStateButton;
+    _minStateButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_minStateButton setTitle:@"MIN" forState:UIControlStateNormal];
+    [_minStateButton setContentEdgeInsets:UIEdgeInsetsMake(20, 0, 20, 0)];
+    [_minStateButton addTarget:self action:@selector(minStateButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    _minStateButton.backgroundColor = [UIColor randomColor];
+    [self.view addSubview:_minStateButton];
+    _minStateButton.translatesAutoresizingMaskIntoConstraints = NO;
+    return _minStateButton;
+}
+-(void) minStateButtonClicked:(id) sender {
+    CharCustomCardView *card = [[CharCustomCardView alloc] initWithMinHeight:MIN_HEIGHT];
+    card.maxTopInset = MAX_TOP_INSET;
+    card.contentView.backgroundColor = [UIColor randomColor];
+    [self.cardsView appendCard:card atState:CharCardsViewStateMin animated:YES];
+}
+
+-(UIButton *) maxStateButton {
+    if(_maxStateButton) return _maxStateButton;
+    _maxStateButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_maxStateButton setTitle:@"MAX" forState:UIControlStateNormal];
+    [_maxStateButton setContentEdgeInsets:UIEdgeInsetsMake(20, 0, 20, 0)];
+    [_maxStateButton addTarget:self action:@selector(maxStateButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    _maxStateButton.backgroundColor = [UIColor randomColor];
+    [self.view addSubview:_maxStateButton];
+    _maxStateButton.translatesAutoresizingMaskIntoConstraints = NO;
+    return _maxStateButton;
+}
+-(void) maxStateButtonClicked:(id) sender {
+    CharCustomCardView *card = [[CharCustomCardView alloc] initWithMinHeight:MIN_HEIGHT];
+    card.maxTopInset = MAX_TOP_INSET;
+    card.contentView.backgroundColor = [UIColor randomColor];
+    [self.cardsView appendCard:card atState:CharCardsViewStateMax animated:YES];
+}
+
+-(UIButton *) autoStateButton {
+    if(_autoStateButton) return _autoStateButton;
+    _autoStateButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_autoStateButton setTitle:@"auto" forState:UIControlStateNormal];
+    [_autoStateButton setTitle:@"AUTO" forState:UIControlStateSelected];
+    [_autoStateButton setContentEdgeInsets:UIEdgeInsetsMake(20, 0, 20, 0)];
+    [_autoStateButton addTarget:self action:@selector(autoStateButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    _autoStateButton.backgroundColor = [UIColor randomColor];
+    [self.view addSubview:_autoStateButton];
+    _autoStateButton.translatesAutoresizingMaskIntoConstraints = NO;
+    return _autoStateButton;
+}
+-(void) autoStateButtonClicked:(UIButton *) sender {
+    sender.selected = !sender.selected;
+    if(sender.selected) {
+        self.autoTimer = [NSTimer scheduledTimerWithTimeInterval:2.f target:self selector:@selector(autoChange:) userInfo:nil repeats:YES];
+    } else {
+        [self.autoTimer invalidate];
+    }
+}
+
+-(void) autoChange: (NSTimer *) sender {
+    if(sender.isValid) {
+        CharCustomCardView *card = [[CharCustomCardView alloc] initWithMinHeight:MIN_HEIGHT];
+        card.maxTopInset = MAX_TOP_INSET;
+        card.contentView.backgroundColor = [UIColor randomColor];
+        [self.cardsView appendCard:card animated:YES];
+    }
+}
+
 -(CharCardsView *) cardsView {
     if(_cardsView) return _cardsView;
     _cardsView = [[CharCardsView alloc] init];
     _cardsView.minHeight = MIN_HEIGHT;
+    _cardsView.backgroundColor = [UIColor grayColor];
     _cardsView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:_cardsView];
     return _cardsView;
 }
 
-#pragma mark UICollectionViewDataSource
-- (NSInteger) numberOfSectionsInCollectionView:(UICollectionView *)collectionView { return 1; }
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section { return self.buttonColors.count;}
-- (CharUICollectionViewCell *) collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CharUICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:COLLECTION_VIEW_CELL forIndexPath:indexPath];
-    Tuple *t = [self.buttonColors objectAtIndex:indexPath.row];
-    cell.contentView.backgroundColor = t.color;
-    cell.label.text = t.text;
-    
-    return cell;
-}
-
-#pragma mark UICollectionViewDelegate
-- (CGFloat) collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section { return 0.f; }
-- (CGFloat) collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section { return 0; }
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(((int)collectionView.bounds.size.width/3), ((int)collectionView.bounds.size.width/3));
-}
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsZero;
-}
--(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
-    CharCustomCardView *card = [[CharCustomCardView alloc] initWithMinHeight:MIN_HEIGHT];
-    card.contentView.backgroundColor = [[self.buttonColors objectAtIndex:indexPath.row] color];
-    NSString *title = [[self.buttonColors objectAtIndex:indexPath.row] text];
-    if([title isEqualToString:@"MIN"]) [self.cardsView appendCard:card atState:CharCardsViewStateMin animated:YES];
-    else if([title isEqualToString:@"MAX"]) [self.cardsView appendCard:card atState:CharCardsViewStateMax animated:YES];
-    else if([title isEqualToString:@"NONE"]) [self.cardsView setState:CharCardsViewStateNone animated:YES];
-
-}
-
-@end
-
-@implementation CharUICollectionViewCell: UICollectionViewCell
--(instancetype) initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    if(self) {
-        [self.contentView addConstraints:@[[NSLayoutConstraint constraintWithItem:self.label
-                                                                 attribute:NSLayoutAttributeTop
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.contentView
-                                                                 attribute:NSLayoutAttributeTop
-                                                                multiplier:1.f
-                                                                  constant:0.f],
-                                    [NSLayoutConstraint constraintWithItem:self.label
-                                                                 attribute:NSLayoutAttributeBottom
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.contentView
-                                                                 attribute:NSLayoutAttributeBottom
-                                                                multiplier:1.f
-                                                                  constant:0.f],
-                                    [NSLayoutConstraint constraintWithItem:self.label
-                                                                 attribute:NSLayoutAttributeLeading
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.contentView
-                                                                 attribute:NSLayoutAttributeLeading
-                                                                multiplier:1.f
-                                                                  constant:0.f],
-                                    [NSLayoutConstraint constraintWithItem:self.label
-                                                                 attribute:NSLayoutAttributeTrailing
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:self.contentView
-                                                                 attribute:NSLayoutAttributeTrailing
-                                                                multiplier:1.f
-                                                                  constant:0.f]
-                                    ]];
-
-    }
-    return self;
-}
-
--(UILabel *) label {
-    if(_label) return _label;
-    _label = [[UILabel alloc] init];
-    _label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
-    _label.textColor = [UIColor colorWithWhite:.1 alpha:1.f];
-    _label.textAlignment = NSTextAlignmentCenter;
-    [self.contentView addSubview:_label];
-    _label.translatesAutoresizingMaskIntoConstraints = NO;
-    return _label;
-}
-
-@end
-
-@implementation Tuple
--(instancetype) initWithText: (NSString *) text color: (UIColor *) color {
-    self = [super init];
-    if(self) {
-        self.text = text;
-        self.color = color;
-    }
-    return self;
-}
 @end

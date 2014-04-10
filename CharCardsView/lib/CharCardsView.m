@@ -11,6 +11,7 @@
 @interface CharCardsView() <UIGestureRecognizerDelegate>
 @property (atomic) BOOL animating;
 @property (atomic) BOOL panning;
+@property (atomic) BOOL changingState;
 @end
 
 @implementation CharCardsView
@@ -34,6 +35,8 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 }
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    BOOL superPointInside = [super pointInside:point withEvent:event];
+    if (!superPointInside) return NO;
     if(self.animating) return YES;
     if(!self.card || self.state == CharCardsViewStateNone) return NO;
     if(self.card && self.state != CharCardsViewStateMax) {
@@ -42,7 +45,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     if(self.card && self.state == CharCardsViewStateMax && !self.topInsetTapRecognizerEnabled) {
         return [self.card pointInside:[self convertPoint:point toView:self.card] withEvent:event];
     }
-    return YES;
+    return superPointInside;
 }
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
@@ -86,9 +89,23 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 
 -(void) topInsetTapRecognizerTapped:(UITapGestureRecognizer *) topInsetTapRecognizer {
     if(self.card.insetView) [self.card insetViewTapped];
-    else [self setState:CharCardsViewStateMin animated:YES callingDelegate:YES];
+    else {
+        if(self.changingState) return;
+        self.changingState = YES;
+        __typeof__(self) __weak weakSelf = self;
+        [self setState:CharCardsViewStateMin animated:YES callingDelegate:YES completion:^{
+            weakSelf.changingState = NO;
+        }];
+    }
 }
--(void) minStateTapRecognizerTapped:(UITapGestureRecognizer *) minStateTapRecognizer {[self setState:CharCardsViewStateMax animated:YES callingDelegate:YES];}
+-(void) minStateTapRecognizerTapped:(UITapGestureRecognizer *) minStateTapRecognizer {
+    if(self.changingState) return;
+    self.changingState = YES;
+    __typeof__(self) __weak weakSelf = self;
+    [self setState:CharCardsViewStateMax animated:YES callingDelegate:YES completion:^{
+        weakSelf.changingState = NO;
+    }];
+}
 -(void) dragging:(UIPanGestureRecognizer *) dragRecognizer {
     if(dragRecognizer.state == UIGestureRecognizerStateBegan) {
         self.panning = YES;
@@ -139,6 +156,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         CGFloat distanceFromTop = maxDistance-distanceFromBottom;
         CGFloat yVelocity = [dragRecognizer velocityInView:dragRecognizer.view].y;
         
+        
         if(self.state == CharCardsViewStateMin) {
             if(yVelocity < -1000){
                 [self setState:CharCardsViewStateMax animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:.95f velocity:ABS(yVelocity/distanceFromTop) completion:nil];
@@ -168,8 +186,13 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 
 -(void) setState:(CharCardsViewState) state animated:(BOOL) animated {
     if(!self.card) return;
+    if(self.changingState) return;
     
-    [self setState:state animated:animated callingDelegate:YES];
+    self.changingState = YES;
+    __typeof__(self) __weak weakSelf = self;
+    [self setState:state animated:animated callingDelegate:YES completion:^{
+        weakSelf.changingState = NO;
+    }];
 }
 
 -(void) willSetState:(CharCardsViewState) state {
@@ -177,7 +200,6 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         self.topConstraint.constant = 0;
     } else if(state == CharCardsViewStateMin) {
         self.topConstraint.constant = -self.minHeight;
-//        self.heightConstraint.constant = self.minHeight;
         self.heightConstraint.constant = self.bounds.size.height - self.card.maxTopInset;
     } else if(state == CharCardsViewStateMax) {
         self.topConstraint.constant = self.card.maxTopInset-self.bounds.size.height;
@@ -228,6 +250,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 }
 
 -(void) setBaseConstraints {
+    if(!self.card) return;
     self.widthConstraint = [NSLayoutConstraint constraintWithItem:self.card
                                                         attribute:NSLayoutAttributeWidth
                                                         relatedBy:NSLayoutRelationEqual
@@ -379,69 +402,63 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     if(self.state == CharCardsViewStateNone) [self appendCard:card atState:CharCardsViewStateMin animated:animated];
     else [self appendCard:card atState:self.state animated:animated];
 }
+
+-(void) transitionAppendCard: (CharCardView *) card animated:(BOOL) animated  completion: (void (^)(void)) completion{
+    [self createAppendCard: card];
+    if(animated) {
+        self.animating = YES;
+        [UIView animateWithDuration:DEFAULT_VERTICAL_DURATION
+                              delay:0
+             usingSpringWithDamping:1.f
+              initialSpringVelocity:1.f
+                            options:UIViewAnimationOptionBeginFromCurrentState
+                         animations:^{
+                             [self willAppendCard];
+                             [self layoutIfNeeded];
+                         } completion:^(BOOL finished) {
+                             [self didAppendCard];
+                             [self layoutIfNeeded];
+                             if(completion) return completion();
+                             self.animating = NO;
+                         }];
+    } else {
+        [self willAppendCard];
+        [self didAppendCard];
+        if(completion) return completion();
+    }
+}
 -(void) appendCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated {
     if(!card ||  state == CharCardsViewStateNone) return;
     if([self.card isEqual:card]) return;
-    
+    if(self.changingState) return;
+
+    NSLog(@"locking state");
+    self.changingState = YES;
     if(self.card) {
         if(self.state != state){
             __typeof__(self) __weak weakSelf = self;
-            [self setState:state animated:animated callingDelegate:NO completion:^{
+            [self setState:state animated:animated callingDelegate:YES completion:^{
                 weakSelf.oldCard = weakSelf.card;
-                
                 weakSelf.state = state;
-                [weakSelf createAppendCard: card];
-                
-                
-                if(animated) {
-                    weakSelf.animating = YES;
-                    [UIView animateWithDuration:DEFAULT_HORIZONTAL_DURATION
-                                          delay:0
-                         usingSpringWithDamping:1.f
-                          initialSpringVelocity:1.f
-                                        options:UIViewAnimationOptionBeginFromCurrentState
-                                     animations:^{
-                                         [weakSelf willAppendCard];
-                                         [weakSelf layoutIfNeeded];
-                                     } completion:^(BOOL finished) {
-                                         [weakSelf didAppendCard];
-                                         [weakSelf layoutIfNeeded];
-                                         weakSelf.animating = NO;
-                                     }];
-                } else {
-                    [weakSelf willAppendCard];
-                    [weakSelf didAppendCard];
-                }
+                [weakSelf transitionAppendCard:card animated:animated completion:^{
+                    weakSelf.changingState = NO;
+                    NSLog(@"unlocking state");
+                }];
             }];
         } else {
             self.oldCard = self.card;
-            
-            [self createAppendCard: card];
-
-            if(animated) {
-                self.animating = YES;
-                [UIView animateWithDuration:DEFAULT_VERTICAL_DURATION
-                                      delay:0
-                     usingSpringWithDamping:1.f
-                      initialSpringVelocity:1.f
-                                    options:UIViewAnimationOptionBeginFromCurrentState
-                                 animations:^{
-                                     [self willAppendCard];
-                                     [self layoutIfNeeded];
-                                 } completion:^(BOOL finished) {
-                                     [self didAppendCard];
-                                     [self layoutIfNeeded];
-                                     self.animating = NO;
-                                 }];
-            } else {
-                [self willAppendCard];
-                [self didAppendCard];
-            }
+            [self transitionAppendCard:card animated:animated completion:^{
+                self.changingState = NO;
+            NSLog(@"unlocking state");
+            }];
         }
-        return;
     } else {
         self.card = card;
-        [self setState:state animated:animated callingDelegate:YES];
+        __typeof__(self) __weak weakSelf = self;
+        [self setState:state animated:animated callingDelegate:YES completion:^{
+            weakSelf.changingState = NO;
+            NSLog(@"unlocking state");
+        }];
     }
 }
 
@@ -495,7 +512,31 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     //don't call delgate methods again, we already called them earlier
     [self setState:self.state animated:NO callingDelegate:NO];
 }
-
+-(void) transitionPrependCard: (CharCardView *) card animated:(BOOL) animated completion: (void (^)(void)) completion{
+    [self createPrependCard: card];
+    
+    if(animated) {
+        self.animating = YES;
+        [UIView animateWithDuration:DEFAULT_VERTICAL_DURATION
+                              delay:0
+             usingSpringWithDamping:1.f
+              initialSpringVelocity:1.f
+                            options:UIViewAnimationOptionBeginFromCurrentState
+                         animations:^{
+                             [self willPrependCard];
+                             [self layoutIfNeeded];
+                         } completion:^(BOOL finished) {
+                             [self didPrependCard];
+                             [self layoutIfNeeded];
+                             if(completion) completion();
+                             self.animating = NO;
+                         }];
+    } else {
+        [self willPrependCard];
+        [self didPrependCard];
+        if(completion) completion();
+    }
+}
 -(void) prependCard: (CharCardView *) card animated:(BOOL) animated {
     if(self.state == CharCardsViewStateNone) [self prependCard:card atState:CharCardsViewStateMin animated:animated];
     else [self prependCard:card atState:self.state animated:animated];
@@ -503,65 +544,32 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 -(void) prependCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated {
     if(!card || state == CharCardsViewStateNone) return;
     if([self.card isEqual:card]) return;
+    if(self.changingState) return;
     
+    self.changingState = YES;
     if(self.card) {
         if(self.state != state) {
             __typeof__(self) __weak weakSelf = self;
             [self setState:state animated:animated callingDelegate:YES completion:^{
                 weakSelf.oldCard = weakSelf.card;
-                
                 weakSelf.state = state;
-                [weakSelf createPrependCard: card];
-                
-                if(animated) {
-                    weakSelf.animating = YES;
-                    [UIView animateWithDuration:DEFAULT_HORIZONTAL_DURATION
-                                          delay:0
-                         usingSpringWithDamping:1.f
-                          initialSpringVelocity:1.f
-                                        options:UIViewAnimationOptionBeginFromCurrentState
-                                     animations:^{
-                                         [weakSelf willPrependCard];
-                                         [weakSelf layoutIfNeeded];
-                                     } completion:^(BOOL finished) {
-                                         [weakSelf didPrependCard];
-                                         [weakSelf layoutIfNeeded];
-                                         weakSelf.animating = NO;
-                                     }];
-                } else {
-                    [weakSelf willPrependCard];
-                    [weakSelf didPrependCard];
-                }
+                [weakSelf transitionPrependCard:card animated:animated completion:^{
+                    weakSelf.changingState = NO;
+                }];
             }];
         } else {
             self.oldCard = self.card;
-            
-            [self createPrependCard: card];
-            
-            if(animated) {
-                self.animating = YES;
-                [UIView animateWithDuration:DEFAULT_VERTICAL_DURATION
-                                      delay:0
-                     usingSpringWithDamping:1.f
-                      initialSpringVelocity:1.f
-                                    options:UIViewAnimationOptionBeginFromCurrentState
-                                 animations:^{
-                                     [self willPrependCard];
-                                     [self layoutIfNeeded];
-                                 } completion:^(BOOL finished) {
-                                     [self didPrependCard];
-                                     [self layoutIfNeeded];
-                                     self.animating = NO;
-                                 }];
-            } else {
-                [self willPrependCard];
-                [self didPrependCard];
-            }
+            [self transitionPrependCard:card animated:animated completion:^{
+                self.changingState = NO;
+            }];
         }
         
     } else {
         self.card = card;
-        [self setState:state animated:animated callingDelegate:YES];
+        __typeof__(self) __weak weakSelf = self;
+        [self setState:state animated:animated callingDelegate:YES completion:^{
+            weakSelf.changingState = NO;
+        }];
     }
 }
 
