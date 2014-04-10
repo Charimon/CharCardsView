@@ -418,13 +418,13 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                          } completion:^(BOOL finished) {
                              [self didAppendCard];
                              [self layoutIfNeeded];
-                             if(completion) return completion();
+                             if(completion) completion();
                              self.animating = NO;
                          }];
     } else {
         [self willAppendCard];
         [self didAppendCard];
-        if(completion) return completion();
+        if(completion) completion();
     }
 }
 -(void) appendCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated {
@@ -432,7 +432,6 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     if([self.card isEqual:card]) return;
     if(self.changingState) return;
 
-    NSLog(@"locking state");
     self.changingState = YES;
     if(self.card) {
         if(self.state != state){
@@ -442,14 +441,12 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                 weakSelf.state = state;
                 [weakSelf transitionAppendCard:card animated:animated completion:^{
                     weakSelf.changingState = NO;
-                    NSLog(@"unlocking state");
                 }];
             }];
         } else {
             self.oldCard = self.card;
             [self transitionAppendCard:card animated:animated completion:^{
                 self.changingState = NO;
-            NSLog(@"unlocking state");
             }];
         }
     } else {
@@ -457,7 +454,6 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         __typeof__(self) __weak weakSelf = self;
         [self setState:state animated:animated callingDelegate:YES completion:^{
             weakSelf.changingState = NO;
-            NSLog(@"unlocking state");
         }];
     }
 }
