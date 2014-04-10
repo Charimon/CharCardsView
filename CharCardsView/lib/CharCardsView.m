@@ -375,7 +375,10 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     //don't call delgate methods again, we already called them earlier
     [self setState:self.state animated:NO callingDelegate:NO];
 }
-
+-(void) appendCard: (CharCardView *) card animated:(BOOL) animated {
+    if(self.state == CharCardsViewStateNone) [self appendCard:card atState:CharCardsViewStateMin animated:animated];
+    else [self appendCard:card atState:self.state animated:animated];
+}
 -(void) appendCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated {
     if(!card ||  state == CharCardsViewStateNone) return;
     if([self.card isEqual:card]) return;
@@ -493,7 +496,10 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     [self setState:self.state animated:NO callingDelegate:NO];
 }
 
-
+-(void) prependCard: (CharCardView *) card animated:(BOOL) animated {
+    if(self.state == CharCardsViewStateNone) [self prependCard:card atState:CharCardsViewStateMin animated:animated];
+    else [self prependCard:card atState:self.state animated:animated];
+}
 -(void) prependCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated {
     if(!card || state == CharCardsViewStateNone) return;
     if([self.card isEqual:card]) return;

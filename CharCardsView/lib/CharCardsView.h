@@ -21,7 +21,11 @@
 //public
 @property (strong, nonatomic) id<CharCardsViewDelegate> delegate;
 -(void) setState:(CharCardsViewState) state animated:(BOOL) animated;
+//appends at current state, or MIN if current state is NONE
+-(void) appendCard: (CharCardView *) card animated:(BOOL) animated;
 -(void) appendCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated;
+//prepends at current state, or MIN if current state is NONE
+-(void) prependCard: (CharCardView *) card animated:(BOOL) animated;
 -(void) prependCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated;
 @property (nonatomic) CGFloat minHeight; //height of card at MIN state
 
