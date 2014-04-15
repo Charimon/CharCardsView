@@ -74,6 +74,11 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     [super layoutSubviews];
 }
 
+-(void) setCard:(CharCardView *)card {
+    if(_card) [_card removeFromSuperview];
+    _card = card;
+}
+
 //-(CharCardView *) card {
 //    if(_card && _state != CharCardsViewStateNone) return _card;
 //    return nil;
