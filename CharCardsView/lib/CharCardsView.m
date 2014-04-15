@@ -440,9 +440,6 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         }
     } else {
         self.card = card;
-        
-        NSLog(@"card: %@", card);
-        NSLog(@"self.card: %@", self.card);
         [self _setState:state animated:animated callingDelegate:YES];
     }
 }
