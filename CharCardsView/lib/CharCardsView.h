@@ -19,14 +19,14 @@
 
 @interface CharCardsView : UIView
 //public
+@property (strong, nonatomic) CharCardView *card;
 @property (strong, nonatomic) id<CharCardsViewDelegate> delegate;
 -(void) setState:(CharCardsViewState) state animated:(BOOL) animated;
-//appends at current state, or MIN if current state is NONE
--(void) appendCard: (CharCardView *) card animated:(BOOL) animated;
+-(void) appendCard: (CharCardView *) card animated:(BOOL) animated; //appends at current state, or MIN if current state is NONE
 -(void) appendCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated;
 //prepends at current state, or MIN if current state is NONE
--(void) prependCard: (CharCardView *) card animated:(BOOL) animated;
--(void) prependCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated;
+//-(void) prependCard: (CharCardView *) card animated:(BOOL) animated;
+//-(void) prependCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated;
 @property (nonatomic) CGFloat minHeight; //height of card at MIN state
 
 //all 3 enabled by default
@@ -37,7 +37,6 @@
 
 //protected
 @property (strong, nonatomic) CharCardView *oldCard; //only exists during animation
-@property (strong, nonatomic) CharCardView *card;
 @property (nonatomic) CharCardsViewState state;
 @property (strong, nonatomic) NSLayoutConstraint *topConstraint;
 @property (strong, nonatomic) NSLayoutConstraint *leadingConstraint;
