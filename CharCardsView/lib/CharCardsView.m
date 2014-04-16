@@ -299,9 +299,11 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         [self layoutIfNeeded];
     }
     
+    CharCardsViewState oldState = self.state;
     if(animated) {
         self.animating = YES;
         self.card.contentView.bounces = NO;
+        
         [UIView animateWithDuration:duration
                               delay:0
              usingSpringWithDamping:damping
@@ -311,18 +313,19 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                              [self willSetState:state];
                              
                              if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:willChangeState:fromOldState:)]) {
-                                 [self.delegate cardsView:self willChangeState:state fromOldState:self.state];
+                                 [self.delegate cardsView:self willChangeState:state fromOldState:oldState];
                              }
-                             if(shouldCallegate) [self.card willChangeState:state fromOldState:self.state];
+                             if(shouldCallegate) [self.card willChangeState:state fromOldState:oldState];
                              [self layoutIfNeeded];
                          } completion:^(BOOL finished) {
                              if(finished) {
+                                 
                                  [self didSetState:state];
                                  
                                  if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:didChangeState:fromOldState:)]) {
-                                     [self.delegate cardsView:self didChangeState:state fromOldState:self.state];
+                                     [self.delegate cardsView:self didChangeState:state fromOldState:oldState];
                                  }
-                                 if(shouldCallegate) [self.card didChangeState:state fromOldState:self.state];
+                                 if(shouldCallegate) [self.card didChangeState:state fromOldState:oldState];
                                  self.animating = NO;
                                  self.card.contentView.bounces = NO;
                                  self.state = state;
@@ -332,15 +335,15 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     } else {
         [self willSetState:state];
         if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:willChangeState:fromOldState:)]) {
-            [self.delegate cardsView:self willChangeState:state fromOldState:self.state];
+            [self.delegate cardsView:self willChangeState:state fromOldState:oldState];
         }
-        if(shouldCallegate) [self.card willChangeState:state fromOldState:self.state];
+        if(shouldCallegate) [self.card willChangeState:state fromOldState:oldState];
         
         [self didSetState:state];
         if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:didChangeState:fromOldState:)]) {
-            [self.delegate cardsView:self didChangeState:state fromOldState:self.state];
+            [self.delegate cardsView:self didChangeState:state fromOldState:oldState];
         }
-        if(shouldCallegate) [self.card didChangeState:state fromOldState:self.state];
+        if(shouldCallegate) [self.card didChangeState:state fromOldState:oldState];
         
         if(completion) completion();
         self.state = state;
