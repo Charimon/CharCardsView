@@ -148,8 +148,8 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         }
         CGFloat distanceFromBottom = -self.minHeight - self.topConstraint.constant;
         CGFloat maxDistance = self.bounds.size.height - self.card.maxTopInset - self.minHeight;
-        if([self.delegate respondsToSelector:@selector(cardsView:didChangeVerticalPositionFromBottom:inHeight:)]) {
-            [self.delegate cardsView:self didChangeVerticalPositionFromBottom:distanceFromBottom inHeight:maxDistance];
+        if([self.delegate respondsToSelector:@selector(cardsView:didChangeVerticalPositionFromBottom:inHeight:forCard:)]) {
+            [self.delegate cardsView:self didChangeVerticalPositionFromBottom:distanceFromBottom inHeight:maxDistance forCard:self.card];
         }
         [self.card didChangeVerticalPositionFromBottom:distanceFromBottom inHeight:maxDistance];
         
@@ -313,8 +313,8 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                          animations:^{
                              [self willSetState:state];
                              
-                             if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:willChangeState:fromOldState:)]) {
-                                 [self.delegate cardsView:self willChangeState:state fromOldState:oldState];
+                             if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:willChangeState:fromOldState:forCard:)]) {
+                                 [self.delegate cardsView:self willChangeState:state fromOldState:oldState forCard:card];
                              }
                              if(shouldCallegate) [card willChangeState:state fromOldState:oldState];
                              [self layoutIfNeeded];
@@ -323,8 +323,8 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                                  
                                  [self didSetState:state];
                                  
-                                 if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:didChangeState:fromOldState:)]) {
-                                     [self.delegate cardsView:self didChangeState:state fromOldState:oldState];
+                                 if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:didChangeState:fromOldState:forCard:)]) {
+                                     [self.delegate cardsView:self didChangeState:state fromOldState:oldState forCard:card];
                                  }
                                  if(shouldCallegate) [card didChangeState:state fromOldState:oldState];
                                  self.animating = NO;
@@ -335,14 +335,14 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                          }];
     } else {
         [self willSetState:state];
-        if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:willChangeState:fromOldState:)]) {
-            [self.delegate cardsView:self willChangeState:state fromOldState:oldState];
+        if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:willChangeState:fromOldState:forCard:)]) {
+            [self.delegate cardsView:self willChangeState:state fromOldState:oldState forCard:card];
         }
         if(shouldCallegate) [card willChangeState:state fromOldState:oldState];
         
         [self didSetState:state];
-        if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:didChangeState:fromOldState:)]) {
-            [self.delegate cardsView:self didChangeState:state fromOldState:oldState];
+        if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:didChangeState:fromOldState:forCard:)]) {
+            [self.delegate cardsView:self didChangeState:state fromOldState:oldState forCard:card];
         }
         if(shouldCallegate) [card didChangeState:state fromOldState:oldState];
         
