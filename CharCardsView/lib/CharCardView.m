@@ -107,6 +107,7 @@ CGFloat const GRADIENT_SIZE = 6.f;
     if(!insetView) return;
     
     _insetView = insetView;
+    _insetView.clipsToBounds = YES;
     [self addSubview:_insetView];
     [self sendSubviewToBack:_insetView];
     _insetView.translatesAutoresizingMaskIntoConstraints = NO;
