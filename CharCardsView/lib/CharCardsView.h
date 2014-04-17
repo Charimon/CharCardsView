@@ -29,6 +29,9 @@
 //-(void) prependCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated;
 @property (nonatomic) CGFloat minHeight; //height of card at MIN state
 
+//most useful for debug, any animation durations are multiplied by this multiplier, 1.f by default
+@property (nonatomic) CGFloat animationMultiplier;
+
 //all 3 enabled by default
 @property (nonatomic) BOOL topInsetTapRecognizerEnabled; //tapping on space created by maxTopInset, causing it to got to MIN
 @property (nonatomic) BOOL minStateTapRecognizerEnabled; //tapping on the card in MIN state, causing it to go to MAX

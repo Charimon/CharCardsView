@@ -30,6 +30,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         self.topInsetTapRecognizerEnabled = YES;
         self.minStateTapRecognizerEnabled = YES;
         self.dragRecognizerEnabled = YES;
+        self.animationMultiplier = 1.f;
     }
     return self;
 }
@@ -104,10 +105,10 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 
 -(void) topInsetTapRecognizerTapped:(UITapGestureRecognizer *) topInsetTapRecognizer {
     if(self.card.insetView) [self.card insetViewTapped];
-    else [self _setState:CharCardsViewStateMin animated:YES callingDelegate:YES];
+    else [self _cardView:self.card setState:CharCardsViewStateMin animated:YES callingDelegate:YES];
 }
 -(void) minStateTapRecognizerTapped:(UITapGestureRecognizer *) minStateTapRecognizer {
-    [self _setState:CharCardsViewStateMax animated:YES callingDelegate:YES];
+    [self _cardView:self.card setState:CharCardsViewStateMax animated:YES callingDelegate:YES];
 }
 -(void) dragging:(UIPanGestureRecognizer *) dragRecognizer {
     if(dragRecognizer.state == UIGestureRecognizerStateBegan) {
@@ -162,22 +163,22 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         
         if(self.state == CharCardsViewStateMin) {
             if(yVelocity < -1000){
-                [self _setState:CharCardsViewStateMax animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:.95f velocity:ABS(yVelocity/distanceFromTop) completion:nil];
+                [self _cardView:self.card setState:CharCardsViewStateMax animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:.95f velocity:ABS(yVelocity/distanceFromTop) completion:nil];
             }
             else if(distanceFromBottom < maxDistance*SNAP_RATIO){
-                [self _setState:CharCardsViewStateMin animated:YES callingDelegate:YES];
+                [self _cardView:self.card setState:CharCardsViewStateMin animated:YES callingDelegate:YES];
             }
             else {
-                [self _setState:CharCardsViewStateMax animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:DEFAULT_VERTICAL_DAMPING velocity:ABS(yVelocity/distanceFromTop) completion:nil];
+                [self _cardView:self.card setState:CharCardsViewStateMax animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:DEFAULT_VERTICAL_DAMPING velocity:ABS(yVelocity/distanceFromTop) completion:nil];
             }
         } else if(self.state == CharCardsViewStateMax) {
             if(yVelocity > 1000) {
-                [self _setState:CharCardsViewStateMin animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:.95f velocity:ABS(yVelocity/distanceFromBottom) completion:nil];}
+                [self _cardView:self.card setState:CharCardsViewStateMin animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:.95f velocity:ABS(yVelocity/distanceFromBottom) completion:nil];}
             else if( (maxDistance-distanceFromBottom) < maxDistance*SNAP_RATIO) {
-                [self _setState:CharCardsViewStateMax animated:YES callingDelegate:YES];
+                [self _cardView:self.card setState:CharCardsViewStateMax animated:YES callingDelegate:YES];
             }
             else {
-                [self _setState:CharCardsViewStateMin animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:DEFAULT_VERTICAL_DAMPING velocity:ABS(yVelocity/distanceFromBottom) completion:nil];
+                [self _cardView:self.card setState:CharCardsViewStateMin animated:YES callingDelegate:YES duration:DEFAULT_VERTICAL_DURATION damping:DEFAULT_VERTICAL_DAMPING velocity:ABS(yVelocity/distanceFromBottom) completion:nil];
             }
         }
 
@@ -189,7 +190,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 
 -(void) setState:(CharCardsViewState) state animated:(BOOL) animated {
     if(!self.card) return;
-    [self _setState:state animated:animated callingDelegate:YES];
+    [self _cardView:self.card setState:state animated:animated callingDelegate:YES];
 }
 
 -(void) willSetState:(CharCardsViewState) state {
@@ -282,29 +283,29 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     [self addConstraint:self.heightConstraint];
 }
 
--(void) _setState:(CharCardsViewState) state animated:(BOOL) animated callingDelegate:(BOOL) shouldCallegate {
-    [self _setState:state animated:animated callingDelegate:shouldCallegate completion:nil];
+-(void) _cardView:(CharCardView *) card setState:(CharCardsViewState) state animated:(BOOL) animated callingDelegate:(BOOL) shouldCallegate {
+    [self _cardView:card setState:state animated:animated callingDelegate:shouldCallegate completion:nil];
 }
--(void) _setState:(CharCardsViewState) state animated:(BOOL) animated callingDelegate:(BOOL) shouldCallegate completion: (void (^)(void)) completion{
-    [self _setState:state animated:animated callingDelegate:shouldCallegate duration:DEFAULT_VERTICAL_DURATION damping:DEFAULT_VERTICAL_DAMPING velocity:1.1f completion:completion];
+-(void) _cardView:(CharCardView *) card setState:(CharCardsViewState) state animated:(BOOL) animated callingDelegate:(BOOL) shouldCallegate completion: (void (^)(void)) completion{
+    [self _cardView:card setState:state animated:animated callingDelegate:shouldCallegate duration:DEFAULT_VERTICAL_DURATION damping:DEFAULT_VERTICAL_DAMPING velocity:1.1f completion:completion];
 }
 
--(void) _setState:(CharCardsViewState) state animated:(BOOL) animated callingDelegate:(BOOL) shouldCallegate duration:(CGFloat) duration damping:(CGFloat) damping velocity:(CGFloat) velocity completion: (void (^)(void)) completion{
-    NSAssert(self.card, @"self.card must exist");
+-(void) _cardView:(CharCardView *) card setState:(CharCardsViewState) state animated:(BOOL) animated callingDelegate:(BOOL) shouldCallegate duration:(CGFloat) duration damping:(CGFloat) damping velocity:(CGFloat) velocity completion: (void (^)(void)) completion{
+    NSAssert(card, @"card must exist");
     
-    if(!self.card.superview) {
-        self.card.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addSubview:self.card];
-        [self setBaseConstraints:self.card];
+    if(!card.superview) {
+        card.translatesAutoresizingMaskIntoConstraints = NO;
+        [self addSubview:card];
+        [self setBaseConstraints:card];
         [self layoutIfNeeded];
     }
     
     CharCardsViewState oldState = self.state;
     if(animated) {
         self.animating = YES;
-        self.card.contentView.bounces = NO;
+        card.contentView.bounces = NO;
         
-        [UIView animateWithDuration:duration
+        [UIView animateWithDuration:duration * self.animationMultiplier
                               delay:0
              usingSpringWithDamping:damping
               initialSpringVelocity:velocity
@@ -315,7 +316,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                              if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:willChangeState:fromOldState:)]) {
                                  [self.delegate cardsView:self willChangeState:state fromOldState:oldState];
                              }
-                             if(shouldCallegate) [self.card willChangeState:state fromOldState:oldState];
+                             if(shouldCallegate) [card willChangeState:state fromOldState:oldState];
                              [self layoutIfNeeded];
                          } completion:^(BOOL finished) {
                              if(finished) {
@@ -325,9 +326,9 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                                  if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:didChangeState:fromOldState:)]) {
                                      [self.delegate cardsView:self didChangeState:state fromOldState:oldState];
                                  }
-                                 if(shouldCallegate) [self.card didChangeState:state fromOldState:oldState];
+                                 if(shouldCallegate) [card didChangeState:state fromOldState:oldState];
                                  self.animating = NO;
-                                 self.card.contentView.bounces = NO;
+                                 card.contentView.bounces = NO;
                                  self.state = state;
                                  if(completion) completion();
                              }
@@ -337,13 +338,13 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:willChangeState:fromOldState:)]) {
             [self.delegate cardsView:self willChangeState:state fromOldState:oldState];
         }
-        if(shouldCallegate) [self.card willChangeState:state fromOldState:oldState];
+        if(shouldCallegate) [card willChangeState:state fromOldState:oldState];
         
         [self didSetState:state];
         if(shouldCallegate && [self.delegate respondsToSelector:@selector(cardsView:didChangeState:fromOldState:)]) {
             [self.delegate cardsView:self didChangeState:state fromOldState:oldState];
         }
-        if(shouldCallegate) [self.card didChangeState:state fromOldState:oldState];
+        if(shouldCallegate) [card didChangeState:state fromOldState:oldState];
         
         if(completion) completion();
         self.state = state;
@@ -384,7 +385,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                                                          constant:0.f]
                            ]];
     [self layoutIfNeeded];
-    [self _setState:self.state animated:NO callingDelegate:YES];
+    [self _cardView:card setState:self.state animated:NO callingDelegate:YES];
 }
 
 -(void) willAppendCard { self.leadingConstraint.constant = - self.frame.size.width; }
@@ -398,18 +399,19 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     
     //don't call delgate methods again, we already called them earlier
     self.card = card;
-    [self _setState:self.state animated:NO callingDelegate:NO];
+    [self _cardView:card setState:self.state animated:NO callingDelegate:NO];
 }
 -(void) appendCard: (CharCardView *) card animated:(BOOL) animated {
     if(self.state == CharCardsViewStateNone) [self appendCard:card atState:CharCardsViewStateMin animated:animated];
     else [self appendCard:card atState:self.state animated:animated];
 }
 
+//this actually does the horizontal sliding animation
 -(void) transitionAppendCard: (CharCardView *) card animated:(BOOL) animated  completion: (void (^)(void)) completion{
     [self createAppendCard: card to:self.oldCard];
     if(animated) {
         self.animating = YES;
-        [UIView animateWithDuration:DEFAULT_VERTICAL_DURATION
+        [UIView animateWithDuration:DEFAULT_VERTICAL_DURATION * self.animationMultiplier
                               delay:0
              usingSpringWithDamping:1.f
               initialSpringVelocity:1.f
@@ -438,7 +440,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     if(self.card) {
         if(self.state != state){
             __typeof__(self) __weak weakSelf = self;
-            [self _setState:state animated:animated callingDelegate:YES completion:^{
+            [self _cardView:self.card setState:state animated:animated callingDelegate:YES completion:^{
                 weakSelf.oldCard = weakSelf.card;
                 [weakSelf transitionAppendCard:card animated:animated completion:nil];
             }];
@@ -448,7 +450,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         }
     } else {
         self.card = card;
-        [self _setState:state animated:animated callingDelegate:YES];
+        [self _cardView:self.card setState:state animated:animated callingDelegate:YES];
     }
 }
 
