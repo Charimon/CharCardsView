@@ -12,6 +12,7 @@
 @class CharCardsView;
 
 @protocol CharCardsViewDelegate <NSObject>
+@optional
 -(void) cardsView:(CharCardsView *) cardsView willChangeState:(CharCardsViewState) newState fromOldState:(CharCardsViewState) oldState forCard:(CharCardView *) card;
 -(void) cardsView:(CharCardsView *) cardsView didChangeState:(CharCardsViewState) newState fromOldState:(CharCardsViewState) oldState forCard:(CharCardView *) card;
 -(void) cardsView:(CharCardsView *) cardsView didChangeVerticalPositionFromBottom:(CGFloat) position inHeight:(CGFloat) height forCard:(CharCardView *) card;;

@@ -411,7 +411,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     [self createAppendCard: card to:self.oldCard];
     if(animated) {
         self.animating = YES;
-        [UIView animateWithDuration:DEFAULT_VERTICAL_DURATION * self.animationMultiplier
+        [UIView animateWithDuration:DEFAULT_HORIZONTAL_DURATION * self.animationMultiplier
                               delay:0
              usingSpringWithDamping:1.f
               initialSpringVelocity:1.f
