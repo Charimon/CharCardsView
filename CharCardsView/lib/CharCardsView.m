@@ -80,11 +80,6 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     _card = card;
 }
 
-//-(CharCardView *) card {
-//    if(_card && _state != CharCardsViewStateNone) return _card;
-//    return nil;
-//}
-
 -(CharCardsViewState) state {
     if(!_card) return CharCardsViewStateNone;
     return _state;
@@ -327,10 +322,10 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                                      [self.delegate cardsView:self didChangeState:state fromOldState:oldState forCard:card];
                                  }
                                  if(shouldCallegate) [card didChangeState:state fromOldState:oldState];
-                                 self.animating = NO;
                                  card.contentView.bounces = NO;
                                  self.state = state;
                                  if(completion) completion();
+                                 self.animating = NO;
                              }
                          }];
     } else {
@@ -442,124 +437,24 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
             __typeof__(self) __weak weakSelf = self;
             [self _cardView:self.card setState:state animated:animated callingDelegate:YES completion:^{
                 weakSelf.oldCard = weakSelf.card;
-                [weakSelf transitionAppendCard:card animated:animated completion:nil];
+                [weakSelf transitionAppendCard:card animated:animated completion:^{
+                    weakSelf.animating = NO;
+                }];
             }];
         } else {
             self.oldCard = self.card;
-            [self transitionAppendCard:card animated:animated completion:nil];
+            __typeof__(self) __weak weakSelf = self;
+            [self transitionAppendCard:card animated:animated completion:^{
+                weakSelf.animating = NO;
+            }];
         }
     } else {
         self.card = card;
-        [self _cardView:self.card setState:state animated:animated callingDelegate:YES];
+        __typeof__(self) __weak weakSelf = self;
+        [self _cardView:self.card setState:state animated:animated callingDelegate:YES completion:^{
+            weakSelf.animating = NO;
+        }];
     }
 }
-
-//-(void) createPrependCard:(CharCardView *) card {
-//    self.card = card;
-//    self.card.translatesAutoresizingMaskIntoConstraints = NO;
-//    [self addSubview:self.card];
-//    
-//    [self addConstraints:@[[NSLayoutConstraint constraintWithItem:self.card
-//                                                        attribute:NSLayoutAttributeWidth
-//                                                        relatedBy:NSLayoutRelationEqual
-//                                                           toItem:self.oldCard
-//                                                        attribute:NSLayoutAttributeWidth
-//                                                       multiplier:1.f
-//                                                         constant:0.f],
-//                           [NSLayoutConstraint constraintWithItem:self.card
-//                                                        attribute:NSLayoutAttributeHeight
-//                                                        relatedBy:NSLayoutRelationEqual
-//                                                           toItem:self.oldCard
-//                                                        attribute:NSLayoutAttributeHeight
-//                                                       multiplier:1.f
-//                                                         constant:0.f],
-//                           [NSLayoutConstraint constraintWithItem:self.card
-//                                                        attribute:NSLayoutAttributeTop
-//                                                        relatedBy:NSLayoutRelationEqual
-//                                                           toItem:self.oldCard
-//                                                        attribute:NSLayoutAttributeTop
-//                                                       multiplier:1.f
-//                                                         constant:0.f],
-//                           [NSLayoutConstraint constraintWithItem:self.card
-//                                                        attribute:NSLayoutAttributeTrailing
-//                                                        relatedBy:NSLayoutRelationEqual
-//                                                           toItem:self.oldCard
-//                                                        attribute:NSLayoutAttributeLeading
-//                                                       multiplier:1.f
-//                                                         constant:0.f]
-//                           ]];
-//    [self layoutIfNeeded];
-//    [self setState:self.state animated:NO callingDelegate:YES];
-//}
-
-//-(void) willPrependCard { self.leadingConstraint.constant = + self.frame.size.width; }
-//-(void) didPrependCard {
-//    [self.oldCard removeFromSuperview];
-//    self.oldCard = nil;
-//    [self.constraints enumerateObjectsUsingBlock:^(NSLayoutConstraint *con, NSUInteger idx, BOOL *stop) {
-//        if(con.firstItem == self.card) [self removeConstraint:con];
-//    }];
-//    [self setBaseConstraints];
-//    
-//    //don't call delgate methods again, we already called them earlier
-//    [self setState:self.state animated:NO callingDelegate:NO];
-//}
-//-(void) transitionPrependCard: (CharCardView *) card animated:(BOOL) animated completion: (void (^)(void)) completion{
-//    [self createPrependCard: card];
-//    
-//    if(animated) {
-//        self.animating = YES;
-//        [UIView animateWithDuration:DEFAULT_VERTICAL_DURATION
-//                              delay:0
-//             usingSpringWithDamping:1.f
-//              initialSpringVelocity:1.f
-//                            options:UIViewAnimationOptionBeginFromCurrentState
-//                         animations:^{
-//                             [self willPrependCard];
-//                             [self layoutIfNeeded];
-//                         } completion:^(BOOL finished) {
-//                             if(finished) {
-//                                 [self didPrependCard];
-//                                 [self layoutIfNeeded];
-//                                 if(completion) completion();
-//                                 self.animating = NO;
-//                             }
-//                         }];
-//    } else {
-//        [self willPrependCard];
-//        [self didPrependCard];
-//        if(completion) completion();
-//    }
-//}
-//-(void) prependCard: (CharCardView *) card animated:(BOOL) animated {
-//    if(self.state == CharCardsViewStateNone) [self prependCard:card atState:CharCardsViewStateMin animated:animated];
-//    else [self prependCard:card atState:self.state animated:animated];
-//}
-//-(void) prependCard: (CharCardView *) card atState:(CharCardsViewState) state animated:(BOOL) animated {
-//    if(!card || state == CharCardsViewStateNone) return;
-//    if([self.card isEqual:card]) return;
-//
-//    if(self.card) {
-//        if(self.state != state) {
-//            __typeof__(self) __weak weakSelf = self;
-//            [self setState:state animated:animated callingDelegate:YES completion:^{
-//                weakSelf.oldCard = weakSelf.card;
-//                weakSelf.state = state;
-//                [weakSelf transitionPrependCard:card animated:animated completion:nil];
-//            }];
-//        } else {
-//            self.oldCard = self.card;
-//            [self transitionPrependCard:card animated:animated completion:^{
-//            
-//            }];
-//        }
-//        
-//    } else {
-//        __typeof__(self) __weak weakSelf = self;
-//        [self setState:state animated:animated callingDelegate:YES completion:^{
-//            weakSelf.card = card;
-//        }];
-//    }
-//}
 
 @end
