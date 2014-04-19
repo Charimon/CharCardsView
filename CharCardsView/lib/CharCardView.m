@@ -89,6 +89,8 @@ CGFloat const GRADIENT_SIZE = 6.f;
         self.cardsView = nil;
         [self resignFirstResponder];
         [[NSNotificationCenter defaultCenter] removeObserver:self];
+        [self.shadow removeFromSuperlayer];
+        self.shadow = nil;
     }
 }
 
@@ -204,4 +206,5 @@ CGFloat const GRADIENT_SIZE = 6.f;
 -(void) keyboardDidHide: (NSNotification *) notification {}
 -(void) keyboardWillChangeFrame: (NSNotification *) notification {}
 -(void) keyboardDidChangeFrame: (NSNotification *) notification {}
+
 @end

@@ -155,6 +155,7 @@ NSString *const COLLECTION_VIEW_CELL = @"COLLECTION_VIEW_CELL";
     
     UIColor *randColor = [UIColor colorWithRed:aRedValue/255.0f green:aGreenValue/255.0f blue:aBlueValue/255.0f alpha:1.0f];
     card.contentView.backgroundColor = randColor;
+    card.shadow.backgroundColor = randColor.CGColor;
     [self.cardsView appendCard:card atState:CharCardsViewStateMin animated:YES];
 }
 
@@ -187,7 +188,9 @@ NSString *const COLLECTION_VIEW_CELL = @"COLLECTION_VIEW_CELL";
 -(void) minStateButtonClicked:(id) sender {
     CharCustomCardView *card = [[CharCustomCardView alloc] initWithMinHeight:MIN_HEIGHT];
     card.maxTopInset = MAX_TOP_INSET;
-    card.contentView.backgroundColor = [UIColor randomColor];
+    UIColor *randColor = [UIColor randomColor];
+    card.contentView.backgroundColor = randColor;
+    card.shadow.backgroundColor = randColor.CGColor;
     [self.cardsView appendCard:card atState:CharCardsViewStateMin animated:YES];
 }
 
@@ -205,7 +208,9 @@ NSString *const COLLECTION_VIEW_CELL = @"COLLECTION_VIEW_CELL";
 -(void) maxStateButtonClicked:(id) sender {
     CharCustomCardView *card = [[CharCustomCardView alloc] initWithMinHeight:MIN_HEIGHT];
     card.maxTopInset = MAX_TOP_INSET;
-    card.contentView.backgroundColor = [UIColor randomColor];
+    UIColor *randColor = [UIColor randomColor];
+    card.contentView.backgroundColor = randColor;
+    card.shadow.backgroundColor = randColor.CGColor;
     [self.cardsView appendCard:card atState:CharCardsViewStateMax animated:YES];
 }
 
@@ -234,7 +239,9 @@ NSString *const COLLECTION_VIEW_CELL = @"COLLECTION_VIEW_CELL";
     if(sender.isValid) {
         CharCustomCardView *card = [[CharCustomCardView alloc] initWithMinHeight:MIN_HEIGHT];
         card.maxTopInset = MAX_TOP_INSET;
-        card.contentView.backgroundColor = [UIColor randomColor];
+        UIColor *randColor = [UIColor randomColor];
+        card.contentView.backgroundColor = randColor;
+        card.shadow.backgroundColor = randColor.CGColor;
         [self.cardsView appendCard:card animated:YES];
     }
 }

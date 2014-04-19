@@ -11,7 +11,6 @@
 @interface CharCardsView() <UIGestureRecognizerDelegate>
 @property (atomic) BOOL animating;
 @property (atomic) BOOL panning;
-//@property (atomic) BOOL changingState;
 @end
 
 @implementation CharCardsView
@@ -350,35 +349,37 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     card.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:card];
     
-    [self addConstraints:@[[NSLayoutConstraint constraintWithItem:card
-                                                        attribute:NSLayoutAttributeWidth
-                                                        relatedBy:NSLayoutRelationEqual
-                                                           toItem:oldCard
-                                                        attribute:NSLayoutAttributeWidth
-                                                       multiplier:1.f
-                                                         constant:0.f],
-                           [NSLayoutConstraint constraintWithItem:card
-                                                        attribute:NSLayoutAttributeHeight
-                                                        relatedBy:NSLayoutRelationEqual
-                                                           toItem:oldCard
-                                                        attribute:NSLayoutAttributeHeight
-                                                       multiplier:1.f
-                                                         constant:0.f],
-                           [NSLayoutConstraint constraintWithItem:card
-                                                        attribute:NSLayoutAttributeTop
-                                                        relatedBy:NSLayoutRelationEqual
-                                                           toItem:oldCard
-                                                        attribute:NSLayoutAttributeTop
-                                                       multiplier:1.f
-                                                         constant:0.f],
-                           [NSLayoutConstraint constraintWithItem:card
-                                                        attribute:NSLayoutAttributeLeading
-                                                        relatedBy:NSLayoutRelationEqual
-                                                           toItem:oldCard
-                                                        attribute:NSLayoutAttributeTrailing
-                                                       multiplier:1.f
-                                                         constant:0.f]
-                           ]];
+    if([oldCard superview] && [card superview]) {
+        [self addConstraints:@[[NSLayoutConstraint constraintWithItem:card
+                                                            attribute:NSLayoutAttributeWidth
+                                                            relatedBy:NSLayoutRelationEqual
+                                                               toItem:oldCard
+                                                            attribute:NSLayoutAttributeWidth
+                                                           multiplier:1.f
+                                                             constant:0.f],
+                               [NSLayoutConstraint constraintWithItem:card
+                                                            attribute:NSLayoutAttributeHeight
+                                                            relatedBy:NSLayoutRelationEqual
+                                                               toItem:oldCard
+                                                            attribute:NSLayoutAttributeHeight
+                                                           multiplier:1.f
+                                                             constant:0.f],
+                               [NSLayoutConstraint constraintWithItem:card
+                                                            attribute:NSLayoutAttributeTop
+                                                            relatedBy:NSLayoutRelationEqual
+                                                               toItem:oldCard
+                                                            attribute:NSLayoutAttributeTop
+                                                           multiplier:1.f
+                                                             constant:0.f],
+                               [NSLayoutConstraint constraintWithItem:card
+                                                            attribute:NSLayoutAttributeLeading
+                                                            relatedBy:NSLayoutRelationEqual
+                                                               toItem:oldCard
+                                                            attribute:NSLayoutAttributeTrailing
+                                                           multiplier:1.f
+                                                             constant:0.f]
+                               ]];
+    }
     [self layoutIfNeeded];
     [self _cardView:card setState:self.state animated:NO callingDelegate:YES];
 }
@@ -393,6 +394,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
     [self setBaseConstraints:card];
     
     //don't call delgate methods again, we already called them earlier
+    [self.card removeFromSuperview];
     self.card = card;
     [self _cardView:card setState:self.state animated:NO callingDelegate:NO];
 }
@@ -402,8 +404,8 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
 }
 
 //this actually does the horizontal sliding animation
--(void) transitionAppendCard: (CharCardView *) card animated:(BOOL) animated  completion: (void (^)(void)) completion{
-    [self createAppendCard: card to:self.oldCard];
+-(void) _transitionAppendCard: (CharCardView *) card animated:(BOOL) animated  completion: (void (^)(void)) completion{
+    [self createAppendCard: card to:self.card];
     if(animated) {
         self.animating = YES;
         [UIView animateWithDuration:DEFAULT_HORIZONTAL_DURATION * self.animationMultiplier
@@ -416,7 +418,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                              [self layoutIfNeeded];
                          } completion:^(BOOL finished) {
                              if(finished) {
-                                 [self didAppendCard:card to:self.oldCard];
+                                 [self didAppendCard:card to:self.card];
                                  [self layoutIfNeeded];
                                  if(completion) completion();
                                  self.animating = NO;
@@ -424,7 +426,7 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
                          }];
     } else {
         [self willAppendCard];
-        [self didAppendCard:card to:self.oldCard];
+        [self didAppendCard:card to:self.card];
         if(completion) completion();
     }
 }
@@ -436,19 +438,22 @@ CGFloat const DEFAULT_HORIZONTAL_DURATION = .3f;
         if(self.state != state){
             __typeof__(self) __weak weakSelf = self;
             [self _cardView:self.card setState:state animated:animated callingDelegate:YES completion:^{
-                weakSelf.oldCard = weakSelf.card;
-                [weakSelf transitionAppendCard:card animated:animated completion:^{
+//                [weakSelf.oldCard removeFromSuperview];
+//                weakSelf.oldCard = weakSelf.card;
+                [weakSelf _transitionAppendCard:card animated:animated completion:^{
                     weakSelf.animating = NO;
                 }];
             }];
         } else {
-            self.oldCard = self.card;
+//            [self.oldCard removeFromSuperview];
+//            self.oldCard = self.card;
             __typeof__(self) __weak weakSelf = self;
-            [self transitionAppendCard:card animated:animated completion:^{
+            [self _transitionAppendCard:card animated:animated completion:^{
                 weakSelf.animating = NO;
             }];
         }
     } else {
+        [self.card removeFromSuperview];
         self.card = card;
         __typeof__(self) __weak weakSelf = self;
         [self _cardView:self.card setState:state animated:animated callingDelegate:YES completion:^{

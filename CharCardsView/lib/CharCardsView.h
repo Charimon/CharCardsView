@@ -40,7 +40,6 @@
 
 
 //protected
-@property (strong, nonatomic) CharCardView *oldCard; //only exists during animation
 @property (nonatomic) CharCardsViewState state;
 @property (strong, nonatomic) NSLayoutConstraint *topConstraint;
 @property (strong, nonatomic) NSLayoutConstraint *leadingConstraint;
