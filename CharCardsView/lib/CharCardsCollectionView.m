@@ -217,14 +217,14 @@ CGFloat const CCV_SNAP_RATIO = .3333333f;
 
         if(self.state == CharCardsViewStateMin) {
             if(yVelocity < -1000){
-                [self _setState:CharCardsViewStateMax withVelocity:CCV_DEFAULT_VERTICAL_VELOCITY];
+                [self _setState:CharCardsViewStateMax withVelocity:ABS(yVelocity/distanceFromTop)];
             }
             else if(distanceFromBottom < maxDistance*CCV_SNAP_RATIO){
                 [self _setState:CharCardsViewStateMin withVelocity:CCV_DEFAULT_VERTICAL_VELOCITY];
             }
             else {
                 NSLog(@"distance: %f", distanceFromTop);
-                [self _setState:CharCardsViewStateMax withVelocity:CCV_DEFAULT_VERTICAL_VELOCITY];
+                [self _setState:CharCardsViewStateMax withVelocity:ABS(yVelocity/distanceFromTop)];
             }
         } else if(self.state == CharCardsViewStateMax) {
             if(yVelocity > 1000) [self _setState:CharCardsViewStateMin withVelocity:ABS(yVelocity/distanceFromBottom)];
@@ -247,7 +247,7 @@ CGFloat const CCV_SNAP_RATIO = .3333333f;
     _collectionView.allowsSelection = NO;
     _collectionView.showsHorizontalScrollIndicator = NO;
     _collectionView.showsVerticalScrollIndicator = NO;
-    _collectionView.clipsToBounds = YES;
+    _collectionView.clipsToBounds = NO;
     _collectionView.backgroundColor = [UIColor clearColor];
     _collectionView.translatesAutoresizingMaskIntoConstraints = NO;
     
@@ -331,8 +331,12 @@ CGFloat const CCV_SNAP_RATIO = .3333333f;
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
     CGPoint collectinoViewPoint = [self convertPoint:point toView:self.collectionView];
     BOOL pointInside = [self.collectionView pointInside:collectinoViewPoint withEvent:event];
-    NSLog(@"point inside: %@", pointInside?@"YES":@"NO");
     return pointInside;
+}
+
+-(void) setNeedsDisplay {
+    [super setNeedsDisplay];
+    self.visibleCard.bounds = self.collectionView.bounds;
 }
 
 @end

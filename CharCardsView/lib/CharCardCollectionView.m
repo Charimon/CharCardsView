@@ -11,7 +11,12 @@
 
 @interface CharCardCollectionView() <UIGestureRecognizerDelegate, UIScrollViewDelegate>
 @property (strong, nonatomic) NSLayoutConstraint *scrollViewTopConstraint;
+@property (strong, nonatomic) CAGradientLayer *shadow;
+@property (strong, nonatomic) UIView *shadowView;
+@property (nonatomic) CGFloat shadowTopOffset;
 @end
+
+CGFloat const CC_GRADIENT_SIZE = 6.f;
 
 @implementation CharCardCollectionView
 -(instancetype) initWithFrame:(CGRect)frame {
@@ -39,6 +44,34 @@
                                                             attribute:NSLayoutAttributeBottom
                                                            multiplier:1.f
                                                              constant:0.f],
+                                           [NSLayoutConstraint constraintWithItem:self.shadowView
+                                                                        attribute:NSLayoutAttributeLeading
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:self.contentView
+                                                                        attribute:NSLayoutAttributeLeading
+                                                                       multiplier:1.f
+                                                                         constant:0.f],
+                                           [NSLayoutConstraint constraintWithItem:self.shadowView
+                                                                        attribute:NSLayoutAttributeTrailing
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:self.contentView
+                                                                        attribute:NSLayoutAttributeTrailing
+                                                                       multiplier:1.f
+                                                                         constant:0.f],
+                                           [NSLayoutConstraint constraintWithItem:self.shadowView
+                                                                        attribute:NSLayoutAttributeTop
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:self.scrollView
+                                                                        attribute:NSLayoutAttributeTop
+                                                                       multiplier:1.f
+                                                                         constant:-CC_GRADIENT_SIZE],
+                                           [NSLayoutConstraint constraintWithItem:self.shadowView
+                                                                        attribute:NSLayoutAttributeHeight
+                                                                        relatedBy:NSLayoutRelationEqual
+                                                                           toItem:nil
+                                                                        attribute:NSLayoutAttributeNotAnAttribute
+                                                                       multiplier:0.f
+                                                                         constant:CC_GRADIENT_SIZE],
                                ]];
         self.scrollViewTopConstraint = [NSLayoutConstraint constraintWithItem:self.scrollView
                                                                     attribute:NSLayoutAttributeTop
@@ -52,6 +85,20 @@
         [self addGestureRecognizer:self.maxInsetTapRecognizer];
     }
     return self;
+}
+
+-(UIView *) shadowView {
+    if(_shadowView) return _shadowView;
+    _shadowView = [[UIView alloc] init];
+    
+    self.shadow = [CAGradientLayer layer];
+    self.shadow.colors = @[ (id)[UIColor colorWithWhite:79.f/255.f alpha:0].CGColor, (id)[UIColor colorWithWhite:79.f/255.f alpha:.22f].CGColor, (id)[UIColor colorWithWhite:79.f/255.f alpha:.6f].CGColor ];
+    self.shadow.locations = @[ [NSNumber numberWithFloat:0], [NSNumber numberWithFloat:.8f], [NSNumber numberWithFloat:1.f] ];
+    [_shadowView.layer addSublayer:self.shadow];
+    
+    [self.contentView addSubview:_shadowView];
+    _shadowView.translatesAutoresizingMaskIntoConstraints = NO;
+    return _shadowView;
 }
 
 -(UITapGestureRecognizer *) maxInsetTapRecognizer {
@@ -71,8 +118,13 @@
     [self.contentView addSubview:_scrollView];
     _scrollView.opaque = YES;
     _scrollView.delegate = self;
+    _scrollView.clipsToBounds = NO;
     _scrollView.translatesAutoresizingMaskIntoConstraints = NO;
     return _scrollView;
+}
+
+-(void) layoutSubviews {
+    self.shadow.frame = self.shadowView.bounds;
 }
 
 -(void) updateWithState:(CharCardsViewState) state data:(id)data {}
