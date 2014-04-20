@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		332FA1801902ACFE003BA9C3 /* CharCardsCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 332FA17F1902ACFE003BA9C3 /* CharCardsCollectionView.m */; };
+		332FA1831902B1F7003BA9C3 /* CharCardCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 332FA1821902B1F7003BA9C3 /* CharCardCollectionView.m */; };
+		332FA1861902C1E3003BA9C3 /* CharCustomCardCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 332FA1851902C1E3003BA9C3 /* CharCustomCardCollectionView.m */; };
+		332FA1891902CB1B003BA9C3 /* CharCardsCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 332FA1881902CB1B003BA9C3 /* CharCardsCollectionViewLayout.m */; };
 		338A53C718F1696B00E4CDBA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53C618F1696B00E4CDBA /* Foundation.framework */; };
 		338A53C918F1696B00E4CDBA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53C818F1696B00E4CDBA /* CoreGraphics.framework */; };
 		338A53CB18F1696B00E4CDBA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53CA18F1696B00E4CDBA /* UIKit.framework */; };
@@ -37,6 +41,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		332FA17E1902ACFE003BA9C3 /* CharCardsCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsCollectionView.h; path = lib/CharCardsCollectionView.h; sourceTree = "<group>"; };
+		332FA17F1902ACFE003BA9C3 /* CharCardsCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsCollectionView.m; path = lib/CharCardsCollectionView.m; sourceTree = "<group>"; };
+		332FA1811902B1F7003BA9C3 /* CharCardCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardCollectionView.h; path = lib/CharCardCollectionView.h; sourceTree = "<group>"; };
+		332FA1821902B1F7003BA9C3 /* CharCardCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardCollectionView.m; path = lib/CharCardCollectionView.m; sourceTree = "<group>"; };
+		332FA1841902C1E3003BA9C3 /* CharCustomCardCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCustomCardCollectionView.h; path = test/CharCustomCardCollectionView.h; sourceTree = "<group>"; };
+		332FA1851902C1E3003BA9C3 /* CharCustomCardCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCustomCardCollectionView.m; path = test/CharCustomCardCollectionView.m; sourceTree = "<group>"; };
+		332FA1871902CB1B003BA9C3 /* CharCardsCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsCollectionViewLayout.h; path = lib/CharCardsCollectionViewLayout.h; sourceTree = "<group>"; };
+		332FA1881902CB1B003BA9C3 /* CharCardsCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsCollectionViewLayout.m; path = lib/CharCardsCollectionViewLayout.m; sourceTree = "<group>"; };
 		338A53C318F1696B00E4CDBA /* CharCardsView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CharCardsView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		338A53C618F1696B00E4CDBA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		338A53C818F1696B00E4CDBA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -170,6 +182,12 @@
 				338A540918F1F92400E4CDBA /* CharCardView.h */,
 				338A540A18F1F92400E4CDBA /* CharCardView.m */,
 				338A540618F1F92400E4CDBA /* CharCardsConstants.h */,
+				332FA17E1902ACFE003BA9C3 /* CharCardsCollectionView.h */,
+				332FA17F1902ACFE003BA9C3 /* CharCardsCollectionView.m */,
+				332FA1811902B1F7003BA9C3 /* CharCardCollectionView.h */,
+				332FA1821902B1F7003BA9C3 /* CharCardCollectionView.m */,
+				332FA1871902CB1B003BA9C3 /* CharCardsCollectionViewLayout.h */,
+				332FA1881902CB1B003BA9C3 /* CharCardsCollectionViewLayout.m */,
 			);
 			name = lib;
 			sourceTree = "<group>";
@@ -183,6 +201,8 @@
 				338A541118F1F98B00E4CDBA /* CharCustomCardView.m */,
 				33BAF45918F6489C004EC40F /* UIColor+Random.h */,
 				33BAF45A18F6489C004EC40F /* UIColor+Random.m */,
+				332FA1841902C1E3003BA9C3 /* CharCustomCardCollectionView.h */,
+				332FA1851902C1E3003BA9C3 /* CharCustomCardCollectionView.m */,
 			);
 			name = test;
 			sourceTree = "<group>";
@@ -287,11 +307,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				33BAF45B18F6489C004EC40F /* UIColor+Random.m in Sources */,
+				332FA1891902CB1B003BA9C3 /* CharCardsCollectionViewLayout.m in Sources */,
 				338A53D718F1696B00E4CDBA /* CharAppDelegate.m in Sources */,
 				338A540C18F1F92400E4CDBA /* CharCardView.m in Sources */,
 				338A540B18F1F92400E4CDBA /* CharCardsView.m in Sources */,
+				332FA1831902B1F7003BA9C3 /* CharCardCollectionView.m in Sources */,
 				338A540F18F1F92E00E4CDBA /* CharViewController.m in Sources */,
 				338A53D318F1696B00E4CDBA /* main.m in Sources */,
+				332FA1861902C1E3003BA9C3 /* CharCustomCardCollectionView.m in Sources */,
+				332FA1801902ACFE003BA9C3 /* CharCardsCollectionView.m in Sources */,
 				338A541218F1F98B00E4CDBA /* CharCustomCardView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8,11 +8,13 @@
 
 #import "CharViewController.h"
 #import "CharCardsView.h"
+#import "CharCardsCollectionView.h"
 #import "CharCustomCardView.h"
 #import "UIColor+Random.h"
+#import "CharCustomCardCollectionView.h"
 
 @interface CharViewController ()
-@property (strong, nonatomic) CharCardsView *cardsView;
+@property (strong, nonatomic) CharCardsCollectionView *cardsView;
 @property (strong, nonatomic) UIButton *noneStateButton;
 @property (strong, nonatomic) UIButton *minStateButton;
 @property (strong, nonatomic) UIButton *maxStateButton;
@@ -25,6 +27,7 @@
 CGFloat const MIN_HEIGHT = 110.f;
 CGFloat const MAX_TOP_INSET = 100.f;
 NSString *const COLLECTION_VIEW_CELL = @"COLLECTION_VIEW_CELL";
+NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
 
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -136,27 +139,13 @@ NSString *const COLLECTION_VIEW_CELL = @"COLLECTION_VIEW_CELL";
                                                             multiplier:1.f
                                                               constant:0.f],
                                 [NSLayoutConstraint constraintWithItem:self.cardsView
-                                                             attribute:NSLayoutAttributeTrailing
+                                                             attribute:NSLayoutAttributeWidth
                                                              relatedBy:NSLayoutRelationEqual
                                                                 toItem:self.view
-                                                             attribute:NSLayoutAttributeTrailing
+                                                             attribute:NSLayoutAttributeWidth
                                                             multiplier:1.f
                                                               constant:0.f]
                                 ]];
-}
-
--(void) buttonClicked {
-    CharCustomCardView *card = [[CharCustomCardView alloc] initWithMinHeight:MIN_HEIGHT];
-    card.maxTopInset = MAX_TOP_INSET;
-    
-    NSInteger aRedValue = arc4random()%255;
-    NSInteger aGreenValue = arc4random()%255;
-    NSInteger aBlueValue = arc4random()%255;
-    
-    UIColor *randColor = [UIColor colorWithRed:aRedValue/255.0f green:aGreenValue/255.0f blue:aBlueValue/255.0f alpha:1.0f];
-    card.contentView.backgroundColor = randColor;
-    card.shadow.backgroundColor = randColor.CGColor;
-    [self.cardsView appendCard:card atState:CharCardsViewStateMin animated:YES];
 }
 
 -(UIButton *) noneStateButton {
@@ -191,7 +180,7 @@ NSString *const COLLECTION_VIEW_CELL = @"COLLECTION_VIEW_CELL";
     UIColor *randColor = [UIColor randomColor];
     card.contentView.backgroundColor = randColor;
     card.shadow.backgroundColor = randColor.CGColor;
-    [self.cardsView appendCard:card atState:CharCardsViewStateMin animated:YES];
+    [self.cardsView appendWithIdentifier:CARD_VIEW_ID data:[UIColor randomColor] atState:CharCardsViewStateMin animated:YES];
 }
 
 -(UIButton *) maxStateButton {
@@ -211,7 +200,7 @@ NSString *const COLLECTION_VIEW_CELL = @"COLLECTION_VIEW_CELL";
     UIColor *randColor = [UIColor randomColor];
     card.contentView.backgroundColor = randColor;
     card.shadow.backgroundColor = randColor.CGColor;
-    [self.cardsView appendCard:card atState:CharCardsViewStateMax animated:YES];
+    [self.cardsView appendWithIdentifier:CARD_VIEW_ID data:[UIColor randomColor] atState:CharCardsViewStateMax animated:YES];
 }
 
 -(UIButton *) autoStateButton {
@@ -242,15 +231,16 @@ NSString *const COLLECTION_VIEW_CELL = @"COLLECTION_VIEW_CELL";
         UIColor *randColor = [UIColor randomColor];
         card.contentView.backgroundColor = randColor;
         card.shadow.backgroundColor = randColor.CGColor;
-        [self.cardsView appendCard:card animated:YES];
+//        [self.cardsView appendCard:card animated:YES];
     }
 }
 
--(CharCardsView *) cardsView {
+-(CharCardsCollectionView *) cardsView {
     if(_cardsView) return _cardsView;
-    _cardsView = [[CharCardsView alloc] init];
+    _cardsView = [[CharCardsCollectionView alloc] init];
+    [_cardsView registerClass:[CharCustomCardCollectionView class] forCardWithReuseIdentifier:CARD_VIEW_ID];
     _cardsView.minHeight = MIN_HEIGHT;
-    _cardsView.backgroundColor = [UIColor grayColor];
+    _cardsView.backgroundColor = [UIColor magentaColor];
     _cardsView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:_cardsView];
     return _cardsView;
