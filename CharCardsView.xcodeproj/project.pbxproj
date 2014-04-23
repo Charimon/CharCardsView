@@ -10,7 +10,7 @@
 		332FA1801902ACFE003BA9C3 /* CharCardsCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 332FA17F1902ACFE003BA9C3 /* CharCardsCollectionView.m */; };
 		332FA1831902B1F7003BA9C3 /* CharCardCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 332FA1821902B1F7003BA9C3 /* CharCardCollectionView.m */; };
 		332FA1861902C1E3003BA9C3 /* CharCustomCardCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 332FA1851902C1E3003BA9C3 /* CharCustomCardCollectionView.m */; };
-		332FA1891902CB1B003BA9C3 /* CharCardsCollectionViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 332FA1881902CB1B003BA9C3 /* CharCardsCollectionViewLayout.m */; };
+		332FA1891902CB1B003BA9C3 /* CharCardsMinViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 332FA1881902CB1B003BA9C3 /* CharCardsMinViewLayout.m */; };
 		338A53C718F1696B00E4CDBA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53C618F1696B00E4CDBA /* Foundation.framework */; };
 		338A53C918F1696B00E4CDBA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53C818F1696B00E4CDBA /* CoreGraphics.framework */; };
 		338A53CB18F1696B00E4CDBA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53CA18F1696B00E4CDBA /* UIKit.framework */; };
@@ -28,6 +28,11 @@
 		338A540F18F1F92E00E4CDBA /* CharViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A540E18F1F92E00E4CDBA /* CharViewController.m */; };
 		338A541218F1F98B00E4CDBA /* CharCustomCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A541118F1F98B00E4CDBA /* CharCustomCardView.m */; };
 		33BAF45B18F6489C004EC40F /* UIColor+Random.m in Sources */ = {isa = PBXBuildFile; fileRef = 33BAF45A18F6489C004EC40F /* UIColor+Random.m */; };
+		33C955A31906771200937C32 /* CharCards2CollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955A21906771200937C32 /* CharCards2CollectionView.m */; };
+		33C955A61906973200937C32 /* CharCardsMaxViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955A51906973200937C32 /* CharCardsMaxViewLayout.m */; };
+		33C955A91906B32F00937C32 /* CharCardsTransitionalViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955A81906B32F00937C32 /* CharCardsTransitionalViewLayout.m */; };
+		33C955AD1906B8EC00937C32 /* CharCard2CollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955AC1906B8EC00937C32 /* CharCard2CollectionView.m */; };
+		33C955B01907259900937C32 /* CharCardsLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955AF1907259900937C32 /* CharCardsLayoutAttributes.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,8 +52,8 @@
 		332FA1821902B1F7003BA9C3 /* CharCardCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardCollectionView.m; path = lib/CharCardCollectionView.m; sourceTree = "<group>"; };
 		332FA1841902C1E3003BA9C3 /* CharCustomCardCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCustomCardCollectionView.h; path = test/CharCustomCardCollectionView.h; sourceTree = "<group>"; };
 		332FA1851902C1E3003BA9C3 /* CharCustomCardCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCustomCardCollectionView.m; path = test/CharCustomCardCollectionView.m; sourceTree = "<group>"; };
-		332FA1871902CB1B003BA9C3 /* CharCardsCollectionViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsCollectionViewLayout.h; path = lib/CharCardsCollectionViewLayout.h; sourceTree = "<group>"; };
-		332FA1881902CB1B003BA9C3 /* CharCardsCollectionViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsCollectionViewLayout.m; path = lib/CharCardsCollectionViewLayout.m; sourceTree = "<group>"; };
+		332FA1871902CB1B003BA9C3 /* CharCardsMinViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsMinViewLayout.h; path = lib/CharCardsMinViewLayout.h; sourceTree = "<group>"; };
+		332FA1881902CB1B003BA9C3 /* CharCardsMinViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsMinViewLayout.m; path = lib/CharCardsMinViewLayout.m; sourceTree = "<group>"; };
 		338A53C318F1696B00E4CDBA /* CharCardsView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CharCardsView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		338A53C618F1696B00E4CDBA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		338A53C818F1696B00E4CDBA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -76,6 +81,16 @@
 		338A541118F1F98B00E4CDBA /* CharCustomCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CharCustomCardView.m; sourceTree = "<group>"; };
 		33BAF45918F6489C004EC40F /* UIColor+Random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Random.h"; sourceTree = "<group>"; };
 		33BAF45A18F6489C004EC40F /* UIColor+Random.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Random.m"; sourceTree = "<group>"; };
+		33C955A11906771200937C32 /* CharCards2CollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCards2CollectionView.h; path = lib/CharCards2CollectionView.h; sourceTree = "<group>"; };
+		33C955A21906771200937C32 /* CharCards2CollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCards2CollectionView.m; path = lib/CharCards2CollectionView.m; sourceTree = "<group>"; };
+		33C955A41906973200937C32 /* CharCardsMaxViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsMaxViewLayout.h; path = lib/CharCardsMaxViewLayout.h; sourceTree = "<group>"; };
+		33C955A51906973200937C32 /* CharCardsMaxViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsMaxViewLayout.m; path = lib/CharCardsMaxViewLayout.m; sourceTree = "<group>"; };
+		33C955A71906B32F00937C32 /* CharCardsTransitionalViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsTransitionalViewLayout.h; path = lib/CharCardsTransitionalViewLayout.h; sourceTree = "<group>"; };
+		33C955A81906B32F00937C32 /* CharCardsTransitionalViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsTransitionalViewLayout.m; path = lib/CharCardsTransitionalViewLayout.m; sourceTree = "<group>"; };
+		33C955AB1906B8EC00937C32 /* CharCard2CollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCard2CollectionView.h; path = lib/CharCard2CollectionView.h; sourceTree = "<group>"; };
+		33C955AC1906B8EC00937C32 /* CharCard2CollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCard2CollectionView.m; path = lib/CharCard2CollectionView.m; sourceTree = "<group>"; };
+		33C955AE1907259900937C32 /* CharCardsLayoutAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsLayoutAttributes.h; path = lib/CharCardsLayoutAttributes.h; sourceTree = "<group>"; };
+		33C955AF1907259900937C32 /* CharCardsLayoutAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsLayoutAttributes.m; path = lib/CharCardsLayoutAttributes.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +192,8 @@
 		338A53F518F16A6300E4CDBA /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				33C955B11907259F00937C32 /* attributes */,
+				33C955AA1906B35300937C32 /* layouts */,
 				338A540718F1F92400E4CDBA /* CharCardsView.h */,
 				338A540818F1F92400E4CDBA /* CharCardsView.m */,
 				338A540918F1F92400E4CDBA /* CharCardView.h */,
@@ -186,8 +203,10 @@
 				332FA17F1902ACFE003BA9C3 /* CharCardsCollectionView.m */,
 				332FA1811902B1F7003BA9C3 /* CharCardCollectionView.h */,
 				332FA1821902B1F7003BA9C3 /* CharCardCollectionView.m */,
-				332FA1871902CB1B003BA9C3 /* CharCardsCollectionViewLayout.h */,
-				332FA1881902CB1B003BA9C3 /* CharCardsCollectionViewLayout.m */,
+				33C955A11906771200937C32 /* CharCards2CollectionView.h */,
+				33C955A21906771200937C32 /* CharCards2CollectionView.m */,
+				33C955AB1906B8EC00937C32 /* CharCard2CollectionView.h */,
+				33C955AC1906B8EC00937C32 /* CharCard2CollectionView.m */,
 			);
 			name = lib;
 			sourceTree = "<group>";
@@ -205,6 +224,28 @@
 				332FA1851902C1E3003BA9C3 /* CharCustomCardCollectionView.m */,
 			);
 			name = test;
+			sourceTree = "<group>";
+		};
+		33C955AA1906B35300937C32 /* layouts */ = {
+			isa = PBXGroup;
+			children = (
+				332FA1871902CB1B003BA9C3 /* CharCardsMinViewLayout.h */,
+				332FA1881902CB1B003BA9C3 /* CharCardsMinViewLayout.m */,
+				33C955A41906973200937C32 /* CharCardsMaxViewLayout.h */,
+				33C955A51906973200937C32 /* CharCardsMaxViewLayout.m */,
+				33C955A71906B32F00937C32 /* CharCardsTransitionalViewLayout.h */,
+				33C955A81906B32F00937C32 /* CharCardsTransitionalViewLayout.m */,
+			);
+			name = layouts;
+			sourceTree = "<group>";
+		};
+		33C955B11907259F00937C32 /* attributes */ = {
+			isa = PBXGroup;
+			children = (
+				33C955AE1907259900937C32 /* CharCardsLayoutAttributes.h */,
+				33C955AF1907259900937C32 /* CharCardsLayoutAttributes.m */,
+			);
+			name = attributes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -307,11 +348,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				33BAF45B18F6489C004EC40F /* UIColor+Random.m in Sources */,
-				332FA1891902CB1B003BA9C3 /* CharCardsCollectionViewLayout.m in Sources */,
+				33C955AD1906B8EC00937C32 /* CharCard2CollectionView.m in Sources */,
+				33C955A31906771200937C32 /* CharCards2CollectionView.m in Sources */,
+				332FA1891902CB1B003BA9C3 /* CharCardsMinViewLayout.m in Sources */,
 				338A53D718F1696B00E4CDBA /* CharAppDelegate.m in Sources */,
+				33C955A91906B32F00937C32 /* CharCardsTransitionalViewLayout.m in Sources */,
+				33C955B01907259900937C32 /* CharCardsLayoutAttributes.m in Sources */,
 				338A540C18F1F92400E4CDBA /* CharCardView.m in Sources */,
 				338A540B18F1F92400E4CDBA /* CharCardsView.m in Sources */,
 				332FA1831902B1F7003BA9C3 /* CharCardCollectionView.m in Sources */,
+				33C955A61906973200937C32 /* CharCardsMaxViewLayout.m in Sources */,
 				338A540F18F1F92E00E4CDBA /* CharViewController.m in Sources */,
 				338A53D318F1696B00E4CDBA /* main.m in Sources */,
 				332FA1861902C1E3003BA9C3 /* CharCustomCardCollectionView.m in Sources */,

@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Charimon. All rights reserved.
 //
 
-#import "CharCardCollectionView.h"
+#import "CharCard2CollectionView.h"
 
-@interface CharCustomCardCollectionView : CharCardCollectionView
+@interface CharCustomCardCollectionView : CharCard2CollectionView
 
 @end

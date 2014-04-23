@@ -8,17 +8,20 @@
 
 #import "CharViewController.h"
 #import "CharCardsView.h"
-#import "CharCardsCollectionView.h"
+#import "CharCards2CollectionView.h"
 #import "CharCustomCardView.h"
 #import "UIColor+Random.h"
 #import "CharCustomCardCollectionView.h"
+#import "CharCard2CollectionView.h"
+#import <MapKit/MapKit.h>
 
 @interface CharViewController ()
-@property (strong, nonatomic) CharCardsCollectionView *cardsView;
+@property (strong, nonatomic) CharCards2CollectionView *cardsView;
 @property (strong, nonatomic) UIButton *noneStateButton;
 @property (strong, nonatomic) UIButton *minStateButton;
 @property (strong, nonatomic) UIButton *maxStateButton;
 @property (strong, nonatomic) UIButton *autoStateButton;
+@property (strong, nonatomic) MKMapView *mapView;
 @property (strong, nonatomic) NSTimer *autoTimer;
 @end
 
@@ -32,7 +35,36 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [self.view addConstraints:@[[NSLayoutConstraint constraintWithItem:self.noneStateButton
+    [self.view addConstraints:@[[NSLayoutConstraint constraintWithItem:self.mapView
+                                                             attribute:NSLayoutAttributeTop
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeTop
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.mapView
+                                                             attribute:NSLayoutAttributeLeading
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeLeading
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.mapView
+                                                             attribute:NSLayoutAttributeTrailing
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeTrailing
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                [NSLayoutConstraint constraintWithItem:self.mapView
+                                                             attribute:NSLayoutAttributeBottom
+                                                             relatedBy:NSLayoutRelationEqual
+                                                                toItem:self.view
+                                                             attribute:NSLayoutAttributeBottom
+                                                            multiplier:1.f
+                                                              constant:0.f],
+                                
+                                [NSLayoutConstraint constraintWithItem:self.noneStateButton
                                                              attribute:NSLayoutAttributeBottom
                                                              relatedBy:NSLayoutRelationEqual
                                                                 toItem:self.view
@@ -123,7 +155,7 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
                                                                 toItem:self.view
                                                              attribute:NSLayoutAttributeTop
                                                             multiplier:1.f
-                                                              constant:0.f],
+                                                              constant:20.f],
                                 [NSLayoutConstraint constraintWithItem:self.cardsView
                                                              attribute:NSLayoutAttributeBottom
                                                              relatedBy:NSLayoutRelationEqual
@@ -148,9 +180,19 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
                                 ]];
 }
 
+-(MKMapView *) mapView {
+    if(_mapView) return _mapView;
+    _mapView = [[MKMapView alloc] init];
+    _mapView.backgroundColor = [UIColor blueColor];
+    [self.view addSubview:_mapView];
+    _mapView.translatesAutoresizingMaskIntoConstraints = NO;
+    return _mapView;
+}
+
 -(UIButton *) noneStateButton {
     if(_noneStateButton) return _noneStateButton;
     _noneStateButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _noneStateButton.backgroundColor = [UIColor whiteColor];
     [_noneStateButton setContentEdgeInsets:UIEdgeInsetsMake(20, 0, 20, 0)];
     [_noneStateButton setTitle:@"NONE" forState:UIControlStateNormal];
     [_noneStateButton setTitleColor:[UIColor colorWithWhite:.2 alpha:1.f] forState:UIControlStateNormal];
@@ -160,7 +202,7 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
     return _noneStateButton;
 }
 -(void) noneStateButtonClicked:(id) sender {
-    [self.cardsView setState:CharCardsViewStateNone animated:YES];
+    [self.cardsView setState:CharCardsViewStateNone];
 }
 
 -(UIButton *) minStateButton {
@@ -180,7 +222,8 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
     UIColor *randColor = [UIColor randomColor];
     card.contentView.backgroundColor = randColor;
     card.shadow.backgroundColor = randColor.CGColor;
-    [self.cardsView appendWithIdentifier:CARD_VIEW_ID data:[UIColor randomColor] atState:CharCardsViewStateMin animated:YES];
+    [self.cardsView push:@"" withIdentifier:CARD_VIEW_ID state:CharCardsViewStateMin];
+//    [self.cardsView appendWithIdentifier:CARD_VIEW_ID data:[UIColor randomColor] atState:CharCardsViewStateMin animated:YES];
 }
 
 -(UIButton *) maxStateButton {
@@ -200,7 +243,8 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
     UIColor *randColor = [UIColor randomColor];
     card.contentView.backgroundColor = randColor;
     card.shadow.backgroundColor = randColor.CGColor;
-    [self.cardsView appendWithIdentifier:CARD_VIEW_ID data:[UIColor randomColor] atState:CharCardsViewStateMax animated:YES];
+    [self.cardsView push:@"" withIdentifier:CARD_VIEW_ID state:CharCardsViewStateMax];
+//    [self.cardsView appendWithIdentifier:CARD_VIEW_ID data:[UIColor randomColor] atState:CharCardsViewStateMax animated:YES];
 }
 
 -(UIButton *) autoStateButton {
@@ -235,12 +279,13 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
     }
 }
 
--(CharCardsCollectionView *) cardsView {
+-(CharCards2CollectionView *) cardsView {
     if(_cardsView) return _cardsView;
-    _cardsView = [[CharCardsCollectionView alloc] init];
+    _cardsView = [[CharCards2CollectionView alloc] init];
     [_cardsView registerClass:[CharCustomCardCollectionView class] forCardWithReuseIdentifier:CARD_VIEW_ID];
     _cardsView.minHeight = MIN_HEIGHT;
-    _cardsView.backgroundColor = [UIColor magentaColor];
+    _cardsView.topInset = MAX_TOP_INSET;
+    _cardsView.backgroundColor = [UIColor clearColor];
     _cardsView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:_cardsView];
     return _cardsView;

@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CharCardsConstants.h"
 
-@interface CharCardsCollectionViewLayout : UICollectionViewFlowLayout
-
+@interface CharCardsMinViewLayout : UICollectionViewLayout
+@property (nonatomic) CGFloat minHeight;
+-(instancetype) initWithMinHeight:(CGFloat) minHeight;
 @end
