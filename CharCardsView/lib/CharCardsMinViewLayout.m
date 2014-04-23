@@ -12,6 +12,7 @@
 @property (nonatomic, strong) NSMutableSet *deleteIndexPaths;
 @property (nonatomic, strong) NSMutableSet *insertIndexPaths;
 @property (nonatomic) NSUInteger numberOfItems;
+@property (nonatomic) BOOL animatingBoundsChange;
 @end
 
 @implementation CharCardsMinViewLayout
@@ -50,8 +51,10 @@
 }
 
 -(UICollectionViewLayoutAttributes *) initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    if(self.animatingBoundsChange) return nil;
+    
     UICollectionViewLayoutAttributes *attributes = [super initialLayoutAttributesForAppearingItemAtIndexPath: itemIndexPath];
-    if (![self.insertIndexPaths containsObject:itemIndexPath]) return attributes;
+    if (!self.insertIndexPaths || ![self.insertIndexPaths containsObject:itemIndexPath]) return attributes;
     
     CGFloat attrCenterX = self.collectionView.center.x;
     CGFloat attrCenterY = self.collectionView.bounds.size.height + self.minHeight/2;
@@ -67,8 +70,10 @@
 }
 
 -(UICollectionViewLayoutAttributes *) finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    if (self.animatingBoundsChange) return [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+    
     UICollectionViewLayoutAttributes *attributes = [super finalLayoutAttributesForDisappearingItemAtIndexPath: itemIndexPath];
-    if (![self.deleteIndexPaths containsObject:itemIndexPath]) return attributes;
+    if (!self.deleteIndexPaths || ![self.deleteIndexPaths containsObject:itemIndexPath]) return attributes;
     
     CGFloat attrCenterX = self.collectionView.center.x;
     CGFloat attrCenterY = self.collectionView.bounds.size.height + self.minHeight/2;
@@ -104,6 +109,16 @@
     attributes.size = CGSizeMake(self.collectionView.bounds.size.width, self.minHeight);
     attributes.center = CGPointMake(attrCenterX, attrCenterY);
     return attributes;
+}
+
+-(void) prepareForAnimatedBoundsChange:(CGRect)oldBounds {
+    [super prepareForAnimatedBoundsChange:oldBounds];
+    self.animatingBoundsChange = YES;
+}
+
+-(void)finalizeAnimatedBoundsChange {
+    [super finalizeAnimatedBoundsChange];
+    self.animatingBoundsChange = NO;
 }
 
 -(BOOL) shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {

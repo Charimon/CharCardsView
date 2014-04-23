@@ -13,6 +13,7 @@
 @property (nonatomic, strong) NSMutableSet *deleteIndexPaths;
 @property (nonatomic, strong) NSMutableSet *insertIndexPaths;
 @property (nonatomic) NSUInteger numberOfItems;
+@property (nonatomic) BOOL animatingBoundsChange;
 @end
 
 @implementation CharCardsMaxViewLayout
@@ -53,6 +54,8 @@
 }
 
 -(UICollectionViewLayoutAttributes *) initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    if(self.animatingBoundsChange) return nil;
+    
     UICollectionViewLayoutAttributes *attributes = [super initialLayoutAttributesForAppearingItemAtIndexPath: itemIndexPath];
     if (![self.insertIndexPaths containsObject:itemIndexPath]) return attributes;
     
@@ -71,6 +74,8 @@
 }
 
 -(UICollectionViewLayoutAttributes *) finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    if (self.animatingBoundsChange) return [self layoutAttributesForItemAtIndexPath:itemIndexPath];
+    
     UICollectionViewLayoutAttributes *attributes = [super finalLayoutAttributesForDisappearingItemAtIndexPath: itemIndexPath];
     if (![self.deleteIndexPaths containsObject:itemIndexPath]) return attributes;
     
@@ -111,8 +116,15 @@
     return attributes;
 }
 
--(BOOL) shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
-    return YES;
+-(void) prepareForAnimatedBoundsChange:(CGRect)oldBounds {
+    [super prepareForAnimatedBoundsChange:oldBounds];
+    self.animatingBoundsChange = YES;
 }
+
+-(void)finalizeAnimatedBoundsChange {
+    [super finalizeAnimatedBoundsChange];
+    self.animatingBoundsChange = NO;
+}
+-(BOOL) shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds { return YES; }
 
 @end
