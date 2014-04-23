@@ -1,5 +1,5 @@
 //
-//  CharCards2CollectionView.h
+//  CharCardsCollectionView.h
 //  CharCardsView
 //
 //  Created by Andrew Charkin on 4/22/14.
@@ -9,19 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "CharCardsConstants.h"
 #import "CharCardCollectionView.h"
-@class CharCards2CollectionView;
+@class CharCardsCollectionView;
 
 @protocol CharCardsCollectionViewDelegate <NSObject>
 @optional
--(void) cardsView:(CharCards2CollectionView *) cardsView willChangeState:(CharCardsViewState) newState fromOldState:(CharCardsViewState) oldState;
--(void) cardsView:(CharCards2CollectionView *) cardsView didChangeState:(CharCardsViewState) newState fromOldState:(CharCardsViewState) oldState;
+-(void) cardsView:(CharCardsCollectionView *) cardsView willChangeState:(CharCardsViewState) newState fromOldState:(CharCardsViewState) oldState;
+-(void) cardsView:(CharCardsCollectionView *) cardsView didChangeState:(CharCardsViewState) newState fromOldState:(CharCardsViewState) oldState;
 @end
 
-@interface CharCards2CollectionView : UIView
+@interface CharCardsCollectionView : UIView
 @property (nonatomic) CGFloat minHeight;
 @property (nonatomic) CGFloat topInset;
 @property (strong, nonatomic, readonly) CharCardCollectionView *topCard;
-@property (nonatomic) CharCardsViewState currentState;
 @property (weak, nonatomic) id<CharCardsCollectionViewDelegate> delegate;
 
 -(void) registerClass:(Class)cardClass forCardWithReuseIdentifier:(NSString *)identifier;
