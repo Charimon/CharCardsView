@@ -297,7 +297,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     NSString *identifier = [self.cardsType objectAtIndex:indexPath.row];
     id data = [self.cardsData objectAtIndex:indexPath.row];
     CharCard2CollectionView *card = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
-    [card updateWithData:data];
+    [card updateWithData:data layout:self.collectionView.collectionViewLayout];
     return card;
 }
 

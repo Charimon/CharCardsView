@@ -102,7 +102,25 @@
     else self.minHeight = 0.f;
 }
 
--(void) updateWithData:(id) data {}
+-(void) updateWithData:(id) data layout:(UICollectionViewLayout *) layout {
+    CharCardsMaxViewLayout *maxLayout;
+    CharCardsMinViewLayout *minLayout;
+    if([layout isKindOfClass:[CharCardsMaxViewLayout class]]) maxLayout = (id) layout;
+    else if([layout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id) layout;
+    else if([layout isKindOfClass:[UICollectionViewTransitionLayout class]]) {
+        UICollectionViewTransitionLayout *transitional = (id) layout;
+        if([transitional.nextLayout isKindOfClass:[CharCardsMaxViewLayout class]]) maxLayout = (id)transitional.nextLayout;
+        else if([transitional.currentLayout isKindOfClass:[CharCardsMaxViewLayout class]]) maxLayout = (id)transitional.currentLayout;
+        
+        if([transitional.nextLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id)transitional.nextLayout;
+        else if([transitional.currentLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id)transitional.currentLayout;
+    }
+    if(maxLayout) self.topInset = maxLayout.topInset;
+    else self.topInset = 0;
+    
+    if(minLayout) self.minHeight = minLayout.minHeight;
+    else self.minHeight = 0.f;
+}
 
 
 #pragma mark UIScrollViewDelegate

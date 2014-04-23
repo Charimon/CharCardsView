@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface CharCard2CollectionView : UICollectionViewCell
--(void) updateWithData:(id) data;
+-(void) updateWithData:(id) data layout:(UICollectionViewLayout *) layout;
 
 @property (strong, nonatomic) UIScrollView *scrollView;
 @property (strong, nonatomic) CAGradientLayer *shadow;
