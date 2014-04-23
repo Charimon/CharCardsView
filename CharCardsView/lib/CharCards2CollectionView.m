@@ -313,4 +313,9 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     return YES;
 }
 
+-(void) setNeedsDisplay {
+    [super setNeedsDisplay];
+    [self.collectionView.collectionViewLayout invalidateLayout];
+}
+
 @end

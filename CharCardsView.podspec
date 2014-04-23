@@ -1,6 +1,6 @@
 Pod::Spec.new do |s| 
   s.name = 'CharCardsView'
-  s.version = '0.2.8'
+  s.version = '0.2.9'
   s.platform = :ios
   s.ios.deployment_target = '7.0'
   s.prefix_header_file = 'CharCardsView/CharCardsView-Prefix.pch'

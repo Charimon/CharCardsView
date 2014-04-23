@@ -11,6 +11,7 @@
 #import "CharCardsMinViewLayout.h"
 
 @interface CharCard2CollectionView()<UIScrollViewDelegate>
+@property (nonatomic) CGFloat topInset;
 @end
 
 @implementation CharCard2CollectionView
@@ -48,6 +49,10 @@
     _shadow.locations = @[ [NSNumber numberWithFloat:0], [NSNumber numberWithFloat:.8f], [NSNumber numberWithFloat:1.f] ];
     [self.layer addSublayer:_shadow];
     return _shadow;
+}
+
+-(CGFloat) maxHeight {
+    return self.superview.bounds.size.height - self.topInset;
 }
 
 -(void) layoutSublayersOfLayer:(CALayer *)layer {
@@ -90,8 +95,8 @@
         if([transitional.nextLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id)transitional.nextLayout;
         else if([transitional.currentLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id)transitional.currentLayout;
     }
-    if(maxLayout) self.maxHeight = self.superview.bounds.size.height - maxLayout.topInset;
-    else self.maxHeight = self.superview.bounds.size.height;
+    if(maxLayout) self.topInset = maxLayout.topInset;
+    else self.topInset = 0;
     
     if(minLayout) self.minHeight = minLayout.minHeight;
     else self.minHeight = 0.f;
@@ -102,7 +107,6 @@
 
 #pragma mark UIScrollViewDelegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    NSLog(@"scrol: %f", scrollView.contentOffset.y);
     if(scrollView.contentOffset.y <= 0) scrollView.contentOffset = CGPointMake(0, 0);
 }
 @end
