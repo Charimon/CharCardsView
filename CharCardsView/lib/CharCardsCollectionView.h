@@ -27,5 +27,6 @@
 -(void) setState:(CharCardsViewState) state;
 
 -(void) push:(id) data withIdentifier:(NSString *) identifier;
+-(void) push:(id) data withIdentifier:(NSString *) identifier completion:(void (^)(BOOL finished))completion;
 -(void) push:(id) data withIdentifier:(NSString *) identifier state:(CharCardsViewState) state;
 @end

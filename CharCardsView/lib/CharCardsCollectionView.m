@@ -161,10 +161,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
                 self.shouldRestartTransition = YES;
                 self.currentTransitioningLayout = nil;
                 
-                NSLog(@"finished: %@", finish?@"YES":@"NO");
-                NSLog(@"completed: %@", completed?@"YES":@"NO");
-                
-                NSLog(@"collectionView: %@", self.collectionView.collectionViewLayout);
+                self.panRecognizer.enabled = YES;
                 
                 if(self.collectionView.collectionViewLayout == self.minLayout && finish) {
                     [self.delegate cardsView:self didChangeState:CharCardsViewStateMin fromOldState:state];
@@ -243,6 +240,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
                 else if(-velocity.y < -CC2_SNAP_VELOCITY) [self.collectionView cancelInteractiveTransition];
                 else if(-translation.y < maxDistance*CC2_SNAP_RATIO) [self.collectionView cancelInteractiveTransition];
                 else [self.collectionView finishInteractiveTransition];
+                self.panRecognizer.enabled = NO;
             } else if([transitionalLayout.currentLayout isKindOfClass:[CharCardsMaxViewLayout class]] && [transitionalLayout.nextLayout isKindOfClass:[CharCardsMinViewLayout class]]) {
                 CharCardsMaxViewLayout *currentLayout = (id)transitionalLayout.currentLayout;
                 CharCardsMinViewLayout *nextLayout = (id)transitionalLayout.nextLayout;
@@ -252,6 +250,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
                 else if(velocity.y < -CC2_SNAP_VELOCITY) [self.collectionView cancelInteractiveTransition];
                 else if(translation.y < maxDistance*CC2_SNAP_RATIO) [self.collectionView cancelInteractiveTransition];
                 else [self.collectionView finishInteractiveTransition];
+                self.panRecognizer.enabled = NO;
             }
         }
     }
@@ -284,7 +283,8 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     [self.maxLayout invalidateLayout];
 }
 
--(void) push:(id) data withIdentifier:(NSString *) identifier {
+-(void) push:(id) data withIdentifier:(NSString *) identifier { [self push:data withIdentifier:identifier completion:nil]; }
+-(void) push:(id) data withIdentifier:(NSString *) identifier completion:(void (^)(BOOL finished))completion {
     NSIndexPath *path = [NSIndexPath indexPathForRow:self.cardsType.count inSection:0];
     [self.cardsType addObject:identifier];
     [self.cardsData addObject:data];
@@ -294,8 +294,11 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     } completion:^(BOOL finished) {
         if(self.collectionView.collectionViewLayout == self.maxLayout) self.topCard.scrollView.scrollEnabled = YES;
         else self.topCard.scrollView.scrollEnabled = NO;
+        
+        if(completion) completion(finished);
     }];
 }
+
 -(void) push:(id) data withIdentifier:(NSString *) identifier state:(CharCardsViewState) state {
     if(state == CharCardsViewStateNone) return;
     else if(state == CharCardsViewStateMin) {
