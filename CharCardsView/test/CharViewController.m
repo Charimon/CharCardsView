@@ -8,11 +8,11 @@
 
 #import "CharViewController.h"
 #import "CharCardsView.h"
-#import "CharCards2CollectionView.h"
+#import "CharCardsCollectionView.h"
 #import "CharCustomCardView.h"
 #import "UIColor+Random.h"
 #import "CharCustomCardCollectionView.h"
-#import "CharCard2CollectionView.h"
+#import "CharCardCollectionView.h"
 #import <MapKit/MapKit.h>
 
 @interface CharViewController ()

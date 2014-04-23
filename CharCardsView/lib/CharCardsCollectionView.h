@@ -1,40 +1,32 @@
 //
-//  CharCardsCollectionView.h
+//  CharCards2CollectionView.h
 //  CharCardsView
 //
-//  Created by Andrew Charkin on 4/19/14.
+//  Created by Andrew Charkin on 4/22/14.
 //  Copyright (c) 2014 Charimon. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "CharCardCollectionView.h"
 #import "CharCardsConstants.h"
-
-@class CharCardsCollectionView;
+#import "CharCardCollectionView.h"
+@class CharCards2CollectionView;
 
 @protocol CharCardsCollectionViewDelegate <NSObject>
 @optional
--(void) cardsView:(CharCardsCollectionView *) cardsView willChangeState:(CharCardsViewState) newState fromOldState:(CharCardsViewState) oldState forIdentifier:(NSString *) identifier data:(id) data;
--(void) cardsView:(CharCardsCollectionView *) cardsView didChangeState:(CharCardsViewState) newState fromOldState:(CharCardsViewState) oldState forIdentifier:(NSString *) identifier data:(id) data;
--(void) cardsView:(CharCardsCollectionView *) cardsView didChangeVerticalPositionFromBottom:(CGFloat) position inHeight:(CGFloat) height forIdentifier:(NSString *) identifier data:(id) data;
+-(void) cardsView:(CharCards2CollectionView *) cardsView willChangeState:(CharCardsViewState) newState fromOldState:(CharCardsViewState) oldState;
+-(void) cardsView:(CharCards2CollectionView *) cardsView didChangeState:(CharCardsViewState) newState fromOldState:(CharCardsViewState) oldState;
 @end
 
-@interface CharCardsCollectionView : UIView
+@interface CharCards2CollectionView : UIView
 @property (nonatomic) CGFloat minHeight;
-@property (strong, nonatomic) UIPanGestureRecognizer *panRecognizer;
+@property (nonatomic) CGFloat topInset;
+@property (strong, nonatomic, readonly) CharCardCollectionView *topCard;
+@property (nonatomic) CharCardsViewState currentState;
+@property (weak, nonatomic) id<CharCardsCollectionViewDelegate> delegate;
 
-//state changes only AFTER animation finishes
-@property (nonatomic) CharCardsViewState state;
-@property (strong, nonatomic, readonly) CharCardCollectionView *visibleCard;
-@property (weak, nonatomic) id<CharCardsCollectionViewDelegate> cardsDelegate;
--(void)registerClass:(Class)cardClass forCardWithReuseIdentifier:(NSString *)identifier;
+-(void) registerClass:(Class)cardClass forCardWithReuseIdentifier:(NSString *)identifier;
+-(void) setState:(CharCardsViewState) state;
 
-
--(void) setState:(CharCardsViewState) state animated:(BOOL) animated;
-//appends at current state, or MIN if current state is NONE
--(void) appendWithIdentifier: (NSString *) identifier data:(id) data animated:(BOOL) animated;
--(void) appendWithIdentifier: (NSString *) identifier data:(id) data atState:(CharCardsViewState) state animated:(BOOL) animated;
-
-
-
+-(void) push:(id) data withIdentifier:(NSString *) identifier;
+-(void) push:(id) data withIdentifier:(NSString *) identifier state:(CharCardsViewState) state;
 @end

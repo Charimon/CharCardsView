@@ -1,162 +1,130 @@
 //
-//  CharCardCollectionView.m
+//  CharCard2CollectionView.m
 //  CharCardsView
 //
-//  Created by Andrew Charkin on 4/19/14.
+//  Created by Andrew Charkin on 4/22/14.
 //  Copyright (c) 2014 Charimon. All rights reserved.
 //
 
 #import "CharCardCollectionView.h"
-#import "CharCardsCollectionView.h"
+#import "CharCardsMaxViewLayout.h"
+#import "CharCardsMinViewLayout.h"
 
-@interface CharCardCollectionView() <UIGestureRecognizerDelegate, UIScrollViewDelegate>
-@property (strong, nonatomic) NSLayoutConstraint *scrollViewTopConstraint;
-@property (strong, nonatomic) CAGradientLayer *shadow;
-@property (strong, nonatomic) UIView *shadowView;
-@property (nonatomic) CGFloat shadowTopOffset;
+@interface CharCardCollectionView()<UIScrollViewDelegate>
+@property (nonatomic) CGFloat topInset;
 @end
 
-CGFloat const CC_GRADIENT_SIZE = 6.f;
-
 @implementation CharCardCollectionView
--(instancetype) initWithFrame:(CGRect)frame {
+
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
-    if(self) {
-        self.contentView.backgroundColor = [UIColor clearColor];
-        [self.contentView addConstraints:@[[NSLayoutConstraint constraintWithItem:self.scrollView
-                                                            attribute:NSLayoutAttributeLeading
-                                                            relatedBy:NSLayoutRelationEqual
-                                                               toItem:self.contentView
-                                                            attribute:NSLayoutAttributeLeading
-                                                           multiplier:1.f
-                                                             constant:0.f],
-                               [NSLayoutConstraint constraintWithItem:self.scrollView
-                                                            attribute:NSLayoutAttributeTrailing
-                                                            relatedBy:NSLayoutRelationEqual
-                                                               toItem:self.contentView
-                                                            attribute:NSLayoutAttributeTrailing
-                                                           multiplier:1.f
-                                                             constant:0.f],
-                               [NSLayoutConstraint constraintWithItem:self.scrollView
-                                                            attribute:NSLayoutAttributeBottom
-                                                            relatedBy:NSLayoutRelationEqual
-                                                               toItem:self.contentView
-                                                            attribute:NSLayoutAttributeBottom
-                                                           multiplier:1.f
-                                                             constant:0.f],
-                                           [NSLayoutConstraint constraintWithItem:self.shadowView
-                                                                        attribute:NSLayoutAttributeLeading
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:self.contentView
-                                                                        attribute:NSLayoutAttributeLeading
-                                                                       multiplier:1.f
-                                                                         constant:0.f],
-                                           [NSLayoutConstraint constraintWithItem:self.shadowView
-                                                                        attribute:NSLayoutAttributeTrailing
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:self.contentView
-                                                                        attribute:NSLayoutAttributeTrailing
-                                                                       multiplier:1.f
-                                                                         constant:0.f],
-                                           [NSLayoutConstraint constraintWithItem:self.shadowView
-                                                                        attribute:NSLayoutAttributeTop
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:self.scrollView
-                                                                        attribute:NSLayoutAttributeTop
-                                                                       multiplier:1.f
-                                                                         constant:-CC_GRADIENT_SIZE],
-                                           [NSLayoutConstraint constraintWithItem:self.shadowView
-                                                                        attribute:NSLayoutAttributeHeight
-                                                                        relatedBy:NSLayoutRelationEqual
-                                                                           toItem:nil
-                                                                        attribute:NSLayoutAttributeNotAnAttribute
-                                                                       multiplier:0.f
-                                                                         constant:CC_GRADIENT_SIZE],
-                               ]];
-        self.scrollViewTopConstraint = [NSLayoutConstraint constraintWithItem:self.scrollView
-                                                                    attribute:NSLayoutAttributeTop
-                                                                    relatedBy:NSLayoutRelationEqual
-                                                                       toItem:self.contentView
-                                                                    attribute:NSLayoutAttributeTop
-                                                                   multiplier:1.f
-                                                                     constant:0.f];
-        [self.contentView addConstraint:self.scrollViewTopConstraint];
-        
-        [self addGestureRecognizer:self.maxInsetTapRecognizer];
+    if (self) {
+        self.scrollView.frame = frame;
+        self.shadowHeight = 6.f;
     }
     return self;
-}
-
--(UIView *) shadowView {
-    if(_shadowView) return _shadowView;
-    _shadowView = [[UIView alloc] init];
-    
-    self.shadow = [CAGradientLayer layer];
-    self.shadow.colors = @[ (id)[UIColor colorWithWhite:79.f/255.f alpha:0].CGColor, (id)[UIColor colorWithWhite:79.f/255.f alpha:.22f].CGColor, (id)[UIColor colorWithWhite:79.f/255.f alpha:.6f].CGColor ];
-    self.shadow.locations = @[ [NSNumber numberWithFloat:0], [NSNumber numberWithFloat:.8f], [NSNumber numberWithFloat:1.f] ];
-    [_shadowView.layer addSublayer:self.shadow];
-    
-    [self.contentView addSubview:_shadowView];
-    _shadowView.translatesAutoresizingMaskIntoConstraints = NO;
-    return _shadowView;
-}
-
--(UITapGestureRecognizer *) maxInsetTapRecognizer {
-    if(_maxInsetTapRecognizer) return _maxInsetTapRecognizer;
-    _maxInsetTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(maxInsetTapped:)];
-    _maxInsetTapRecognizer.delegate = self;
-    return _maxInsetTapRecognizer;
-}
-
--(void) maxInsetTapped: (UITapGestureRecognizer *) maxInsetTapRecognizer{
-    [self.cardsCollectionView setState:CharCardsViewStateMin animated:YES];
 }
 
 -(UIScrollView *) scrollView {
     if(_scrollView) return _scrollView;
     _scrollView = [[UIScrollView alloc] init];
-    [self.contentView addSubview:_scrollView];
-    _scrollView.opaque = YES;
+    _scrollView.backgroundColor = [UIColor whiteColor];
+    _scrollView.delaysContentTouches = YES;
     _scrollView.delegate = self;
-    _scrollView.clipsToBounds = NO;
-    _scrollView.translatesAutoresizingMaskIntoConstraints = NO;
+    _scrollView.scrollEnabled = NO;
+    [self.contentView addSubview:_scrollView];
     return _scrollView;
 }
 
--(void) layoutSubviews {
-    self.shadow.frame = self.shadowView.bounds;
+-(void) setInsetView:(UIView *)insetView {
+    _insetView = insetView;
+    [self addSubview:insetView];
+    [self bringSubviewToFront:self.contentView];
 }
 
--(void) updateWithState:(CharCardsViewState) state data:(id)data {}
--(void) willChangeState:(CharCardsViewState) newState fromOldState: (CharCardsViewState) oldState {
-    if(newState == CharCardsViewStateMax) self.scrollViewTopConstraint.constant = self.maxTopInset;
-    else self.scrollViewTopConstraint.constant = 0;
-    [self layoutIfNeeded];
-}
--(void) didChangeState:(CharCardsViewState) newState fromOldState: (CharCardsViewState) oldState {}
--(void) didChangeVerticalPositionFromBottom:(CGFloat) position inHeight:(CGFloat) height {
-    self.scrollViewTopConstraint.constant =  (self.maxTopInset)*(position/height);
+-(CAGradientLayer *) shadow {
+    if(_shadow) return _shadow;
+    _shadow = [CAGradientLayer layer];
+    _shadow.colors = @[ (id)[UIColor colorWithWhite:79.f/255.f alpha:0].CGColor, (id)[UIColor colorWithWhite:79.f/255.f alpha:.22f].CGColor, (id)[UIColor colorWithWhite:79.f/255.f alpha:.6f].CGColor ];
+    _shadow.locations = @[ [NSNumber numberWithFloat:0], [NSNumber numberWithFloat:.8f], [NSNumber numberWithFloat:1.f] ];
+    [self.layer addSublayer:_shadow];
+    return _shadow;
 }
 
-#pragma mark UIScrollViewDelegate
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    if(scrollView.contentOffset.y <= 0) {
-        scrollView.contentOffset = CGPointMake(0, 0);
-        self.cardsCollectionView.panRecognizer.enabled = YES;
-    } else {
-        self.cardsCollectionView.panRecognizer.enabled = NO;
+-(CGFloat) maxHeight {
+    return self.superview.bounds.size.height - self.topInset;
+}
+
+-(void) layoutSublayersOfLayer:(CALayer *)layer {
+    [super layoutSublayersOfLayer:layer];
+    if(layer == self.layer) {
+        self.shadow.bounds = CGRectMake(0, 0, layer.bounds.size.width, self.shadowHeight);
+        self.shadow.position = CGPointMake(0, -self.shadowHeight);
+        self.shadow.anchorPoint = CGPointMake(0, 0);
     }
 }
 
-#pragma mark UIGestureRecognizerDelegate
--(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    if(gestureRecognizer == self.maxInsetTapRecognizer) {
-        return !CGRectContainsPoint(self.scrollView.bounds, [touch locationInView:self.scrollView]);
-    } else return YES;
-}
--(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
+-(void) applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
+    [super applyLayoutAttributes:layoutAttributes];
+    self.scrollView.frame = CGRectMake(0, 0, layoutAttributes.size.width, layoutAttributes.size.height);
+    
+    CGFloat percentChange = 0;
+    
+    if((self.maxHeight > 0 || self.minHeight > 0) && (self.minHeight != self.maxHeight)) {
+        percentChange = (layoutAttributes.size.height - self.minHeight)/(self.maxHeight - self.minHeight);
+    }
+    CGFloat insetHeight = self.superview.frame.size.height - self.maxHeight;
+    if(self.maxHeight == 0) insetHeight = 0;
+    
+    if(insetHeight < 0) insetHeight = 0;
+    self.insetView.frame = CGRectMake(0, -insetHeight*percentChange, layoutAttributes.size.width, insetHeight);
 }
 
+- (void)willTransitionFromLayout:(UICollectionViewLayout *)oldLayout toLayout:(UICollectionViewLayout *)newLayout {
+    [super willTransitionFromLayout:oldLayout toLayout:newLayout];
+    
+    CharCardsMaxViewLayout *maxLayout;
+    CharCardsMinViewLayout *minLayout;
+    if([newLayout isKindOfClass:[CharCardsMaxViewLayout class]]) maxLayout = (id) newLayout;
+    else if([newLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id) newLayout;
+    else if([newLayout isKindOfClass:[UICollectionViewTransitionLayout class]]) {
+        UICollectionViewTransitionLayout *transitional = (id) newLayout;
+        if([transitional.nextLayout isKindOfClass:[CharCardsMaxViewLayout class]]) maxLayout = (id)transitional.nextLayout;
+        else if([transitional.currentLayout isKindOfClass:[CharCardsMaxViewLayout class]]) maxLayout = (id)transitional.currentLayout;
+        
+        if([transitional.nextLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id)transitional.nextLayout;
+        else if([transitional.currentLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id)transitional.currentLayout;
+    }
+    if(maxLayout) self.topInset = maxLayout.topInset;
+    else self.topInset = 0;
+    
+    if(minLayout) self.minHeight = minLayout.minHeight;
+    else self.minHeight = 0.f;
+}
+
+-(void) updateWithData:(id) data layout:(UICollectionViewLayout *) layout {
+    CharCardsMaxViewLayout *maxLayout;
+    CharCardsMinViewLayout *minLayout;
+    if([layout isKindOfClass:[CharCardsMaxViewLayout class]]) maxLayout = (id) layout;
+    else if([layout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id) layout;
+    else if([layout isKindOfClass:[UICollectionViewTransitionLayout class]]) {
+        UICollectionViewTransitionLayout *transitional = (id) layout;
+        if([transitional.nextLayout isKindOfClass:[CharCardsMaxViewLayout class]]) maxLayout = (id)transitional.nextLayout;
+        else if([transitional.currentLayout isKindOfClass:[CharCardsMaxViewLayout class]]) maxLayout = (id)transitional.currentLayout;
+        
+        if([transitional.nextLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id)transitional.nextLayout;
+        else if([transitional.currentLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id)transitional.currentLayout;
+    }
+    if(maxLayout) self.topInset = maxLayout.topInset;
+    else self.topInset = 0;
+    
+    if(minLayout) self.minHeight = minLayout.minHeight;
+    else self.minHeight = 0.f;
+}
+
+
+#pragma mark UIScrollViewDelegate
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if(scrollView.contentOffset.y <= 0) scrollView.contentOffset = CGPointMake(0, 0);
+}
 @end

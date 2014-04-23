@@ -1,38 +1,36 @@
 //
-//  CharCardsCollectionView.m
+//  CharCards2CollectionView.m
 //  CharCardsView
 //
-//  Created by Andrew Charkin on 4/19/14.
+//  Created by Andrew Charkin on 4/22/14.
 //  Copyright (c) 2014 Charimon. All rights reserved.
 //
 
 #import "CharCardsCollectionView.h"
 #import "CharCardsMinViewLayout.h"
+#import "CharCardsMaxViewLayout.h"
 
-@interface CharCardsCollectionView() <UICollectionViewDataSource, UIGestureRecognizerDelegate>
+@interface CharCards2CollectionView() <UICollectionViewDataSource, UIGestureRecognizerDelegate>
 @property (strong, nonatomic) UICollectionView *collectionView;
+@property (strong, nonatomic) UITapGestureRecognizer *tapRecognizer;
+@property (strong, nonatomic) UIPanGestureRecognizer *panRecognizer;
+
+@property (strong, nonatomic) CharCardsMinViewLayout *minLayout;
+@property (strong, nonatomic) CharCardsMaxViewLayout *maxLayout;
+@property (strong, nonatomic) UICollectionViewLayout *currentTransitioningLayout;
+@property (nonatomic) BOOL shouldRestartTransition;
+
+@property (strong, nonatomic, readwrite) CharCardCollectionView *topCard;
 
 //cardsType have to be in sync
 @property (strong, nonatomic) NSMutableArray *cardsType;
 @property (strong, nonatomic) NSMutableArray *cardsData;
-
-//@property (strong, nonatomic) UITapGestureRecognizer *topInsetTapRecognizer;
-@property (strong, nonatomic) UITapGestureRecognizer *minStateTapRecognizer;
-
-@property (atomic) BOOL panning;
-
-//only used for collectionView:cellForItemAtIndexPath:
-@property (nonatomic) CharCardsViewState desiredState;
 @end
 
-@implementation CharCardsCollectionView
+@implementation CharCards2CollectionView
 
-
-CGFloat const CCV_DEFAULT_VERTICAL_DURATION = .5f;
-CGFloat const CCV_DEFAULT_VERTICAL_DAMPING = .8f;
-CGFloat const CCV_DEFAULT_VERTICAL_VELOCITY = 1.1f;
-CGFloat const CCV_SNAP_RATIO = .3333333f;
-
+CGFloat const CC2_SNAP_RATIO = .3333333f;
+CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 
 -(instancetype) init {
     self = [super init];
@@ -40,8 +38,8 @@ CGFloat const CCV_SNAP_RATIO = .3333333f;
         self.clipsToBounds = YES;
         self.cardsType = [[NSMutableArray alloc] init];
         self.cardsData = [[NSMutableArray alloc] init];
-//        [self addGestureRecognizer:self.minStateTapRecognizer];
-//        [self addGestureRecognizer:self.panRecognizer];
+        self.shouldRestartTransition = YES;
+        self.currentState = CharCardsViewStateNone;
         
         [self addConstraints:@[[NSLayoutConstraint constraintWithItem:self.collectionView
                                                             attribute:NSLayoutAttributeLeading
@@ -72,178 +70,184 @@ CGFloat const CCV_SNAP_RATIO = .3333333f;
                                                            multiplier:1.f
                                                              constant:0.f],
                                ]];
+        
+        [self addGestureRecognizer:self.tapRecognizer];
+        [self addGestureRecognizer:self.panRecognizer];
     }
     return self;
 }
 
-//-(CharCardCollectionView *) visibleCard {
-//    NSArray *visibleCells = [self.collectionView visibleCells];
-//    if(visibleCells.count > 0) {
-//        return [visibleCells objectAtIndex:0];
-//    } else return nil;
-//}
-//
-//-(UITapGestureRecognizer *) minStateTapRecognizer {
-//    if(_minStateTapRecognizer) return _minStateTapRecognizer;
-//    _minStateTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(minStateTapped:)];
-//    _minStateTapRecognizer.delegate = self;
-//    return _minStateTapRecognizer;
-//}
-//-(void) minStateTapped: (UITapGestureRecognizer *) minStateTapRecognizer {
-//    [self _setState:CharCardsViewStateMax withVelocity:CCV_DEFAULT_VERTICAL_VELOCITY];
-//}
-
--(void) _setState:(CharCardsViewState) state withVelocity:(CGFloat) velocity{
-    [UIView animateWithDuration:CCV_DEFAULT_VERTICAL_DURATION
-                          delay:0
-         usingSpringWithDamping:CCV_DEFAULT_VERTICAL_DAMPING
-          initialSpringVelocity:velocity
-                        options:UIViewAnimationOptionBeginFromCurrentState
-                     animations:^{
-//                         if(state == CharCardsViewStateNone) self.collectionViewTopConstraint.constant = 0;
-//                         else if(state == CharCardsViewStateMin) self.collectionViewTopConstraint.constant = -self.minHeight;
-//                         else if(state == CharCardsViewStateMax) self.collectionViewTopConstraint.constant = -self.bounds.size.height;
-                         
-                         if([self.cardsDelegate respondsToSelector:@selector(cardsView:willChangeState:fromOldState:forIdentifier:data:)]) {
-                             [self.cardsDelegate cardsView:self willChangeState:state fromOldState:self.state forIdentifier:nil data:nil];
-                         }
-//                         [self.collectionView.visibleCells enumerateObjectsUsingBlock:^(CharCardCollectionView *card, NSUInteger idx, BOOL *stop) {
-//                             [card willChangeState:state fromOldState:self.state];
-//                         }];
-                         [self layoutIfNeeded];
-                     }
-                     completion:^(BOOL finished) {
-                         if(finished) {
-//                             if([self.cardsDelegate respondsToSelector:@selector(cardsView:didChangeState:fromOldState:forIdentifier:data:)]) {
-//                                 [self.cardsDelegate cardsView:self didChangeState:state fromOldState:self.state forIdentifier:nil data:nil];
-//                             }
-//                             
-//                             [self.collectionView.visibleCells enumerateObjectsUsingBlock:^(CharCardCollectionView *card, NSUInteger idx, BOOL *stop) {
-//                                 [card didChangeState:state fromOldState:self.state];
-//                                 [card.scrollView setContentOffset:CGPointZero animated:NO];
-//                                 if(state == CharCardsViewStateMax) {card.scrollView.scrollEnabled = YES;}
-//                             }];
-//                             
-//                             if(state == CharCardsViewStateNone){
-//                                 self.cardsType = [[NSMutableArray alloc] init];
-//                                 self.cardsData = [[NSMutableArray alloc] init];
-//                                 
-//                                 NSInteger count = [self.collectionView numberOfItemsInSection:0];
-//                                 NSMutableArray *removePaths = [[NSMutableArray alloc] initWithCapacity:count];
-//                                 
-//                                 for(NSInteger i=0; i<count; i++) {
-//                                     [removePaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-//                                 }
-//                                 
-//                                 [self.collectionView performBatchUpdates:^{
-//                                     [self.collectionView deleteItemsAtIndexPaths:removePaths];
-//                                 } completion:^(BOOL finished) {}];
-//                             } else if(state == CharCardsViewStateMin) {
-//                                 self.minStateTapRecognizer.enabled = YES;
-//                             } else if(state == CharCardsViewStateMax) {
-//                                 self.minStateTapRecognizer.enabled = NO;
-//                             }
-                             
-//                             self.state = state;
-                         }
-                     }];
+-(CharCardsViewState ) state {
+    if(self.collectionView.collectionViewLayout == self.minLayout) return CharCardsViewStateMin;
+    else if(self.collectionView.collectionViewLayout == self.maxLayout) return CharCardsViewStateMax;
+    else return CharCardsViewStateNone;
 }
 
-//-(UIPanGestureRecognizer *) panRecognizer {
-//    if(_panRecognizer) return _panRecognizer;
-//    _panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragging:)];
-//    _panRecognizer.delegate = self;
-//    return _panRecognizer;
-//}
+-(CharCardsMinViewLayout *) minLayout {
+    if(_minLayout) return _minLayout;
+    _minLayout = [[CharCardsMinViewLayout alloc] initWithMinHeight:self.minHeight];
+    return _minLayout;
+}
 
--(void) dragging:(UIPanGestureRecognizer *) dragRecognizer {
-    if(dragRecognizer.state == UIGestureRecognizerStateBegan) {
-//        self.panning = YES;
-//        self.minStateTapRecognizer.enabled = NO;
-    } else if(dragRecognizer.state == UIGestureRecognizerStateChanged) {
-        CGPoint translation = [dragRecognizer translationInView:dragRecognizer.view];
-        
-//        if(self.card.contentView.contentOffset.y > 0) {
-//            [dragRecognizer setTranslation:CGPointZero inView:dragRecognizer.view];
-//            return;
-//        }
-        
-//        if(self.state == CharCardsViewStateMin) {
-//            self.collectionViewTopConstraint.constant = -self.minHeight + translation.y;
-//            if(self.collectionViewTopConstraint.constant > -self.minHeight){
-//                self.collectionViewTopConstraint.constant = -self.minHeight;
-//                [dragRecognizer setTranslation:CGPointZero inView:dragRecognizer.view];
-//            }
-//            if(self.collectionViewTopConstraint.constant < -self.bounds.size.height){
-//                self.collectionViewTopConstraint.constant = -self.bounds.size.height;
-//                [dragRecognizer setTranslation:CGPointMake(0, translation.y) inView:dragRecognizer.view];
-//            }
-//        } else if(self.state == CharCardsViewStateMax) {
-//            self.collectionViewTopConstraint.constant = -self.bounds.size.height + translation.y;
-//            if(self.collectionViewTopConstraint.constant > -self.minHeight){
-//                self.collectionViewTopConstraint.constant = -self.minHeight;
-//                [dragRecognizer setTranslation:CGPointMake(0, translation.y) inView:dragRecognizer.view];
-//            }
-//            if(self.collectionViewTopConstraint.constant < -self.bounds.size.height){
-//                self.collectionViewTopConstraint.constant = -self.bounds.size.height;
-//                [dragRecognizer setTranslation:CGPointZero inView:dragRecognizer.view];
-//            }
-//        }
-//        CGFloat distanceFromBottom = -self.collectionViewTopConstraint.constant - self.minHeight;
-//        CGFloat maxDistance = self.collectionView.bounds.size.height - self.minHeight;
-//        
-//        [self.collectionView.visibleCells enumerateObjectsUsingBlock:^(CharCardCollectionView *card, NSUInteger idx, BOOL *stop) {
-//            [card didChangeVerticalPositionFromBottom:distanceFromBottom inHeight:maxDistance];
-//            if([self.cardsDelegate respondsToSelector:@selector(cardsView:didChangeVerticalPositionFromBottom:inHeight:forIdentifier:data:)]) {
-//                [self.cardsDelegate cardsView:self didChangeVerticalPositionFromBottom:distanceFromBottom inHeight:maxDistance forIdentifier:@"" data:nil];
-//            }
-//            card.scrollView.scrollEnabled = NO;
-//        }];
-        
-    } else if(dragRecognizer.state == UIGestureRecognizerStateEnded ||
-              dragRecognizer.state == UIGestureRecognizerStateCancelled ||
-              dragRecognizer.state == UIGestureRecognizerStateFailed) {
-        
-//        self.panning = NO;
-//        CGFloat maxDistance = self.collectionView.bounds.size.height - self.minHeight;
-//        CGFloat distanceFromBottom = -self.collectionViewTopConstraint.constant;
-//        
-//        
-//        CGFloat distanceFromTop = maxDistance-distanceFromBottom;
-//        CGFloat yVelocity = [dragRecognizer velocityInView:dragRecognizer.view].y;
-//
-//        if(self.state == CharCardsViewStateMin) {
-//            if(yVelocity < -1000){
-//                [self _setState:CharCardsViewStateMax withVelocity:ABS(yVelocity/distanceFromTop)];
-//            }
-//            else if(distanceFromBottom < maxDistance*CCV_SNAP_RATIO){
-//                [self _setState:CharCardsViewStateMin withVelocity:CCV_DEFAULT_VERTICAL_VELOCITY];
-//            }
-//            else {
-//                NSLog(@"distance: %f", distanceFromTop);
-//                [self _setState:CharCardsViewStateMax withVelocity:ABS(yVelocity/distanceFromTop)];
-//            }
-//        } else if(self.state == CharCardsViewStateMax) {
-//            if(yVelocity > 1000) [self _setState:CharCardsViewStateMin withVelocity:ABS(yVelocity/distanceFromBottom)];
-//            else if( (maxDistance-distanceFromBottom) < maxDistance*CCV_SNAP_RATIO) [self _setState:CharCardsViewStateMax withVelocity:CCV_DEFAULT_VERTICAL_VELOCITY];
-//            else [self _setState:CharCardsViewStateMin withVelocity:ABS(yVelocity/distanceFromBottom)];
-//        }
+-(CharCardsMaxViewLayout *) maxLayout {
+    if(_maxLayout) return _maxLayout;
+    _maxLayout = [[CharCardsMaxViewLayout alloc] initWithTopInset:self.topInset];
+    return _maxLayout;
+}
+
+-(CharCardCollectionView *) topCard {
+    if([self.collectionView visibleCells].count > 0) return [[self.collectionView visibleCells] objectAtIndex:0];
+    else return nil;
+}
+
+-(UITapGestureRecognizer *) tapRecognizer {
+    if(_tapRecognizer) return _tapRecognizer;
+    _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapRecognizerTapped:)];
+    _tapRecognizer.delegate = self;
+    return _tapRecognizer;
+}
+
+-(void) tapRecognizerTapped: (UITapGestureRecognizer *) tapRecognizer {
+    CGPoint tapPoint = [tapRecognizer locationInView:self.collectionView];
+    if(self.topCard.insetView && CGRectContainsPoint(self.topCard.insetView.bounds, tapPoint)) return;
+
+    if(self.collectionView.collectionViewLayout == self.minLayout && [self.collectionView indexPathForItemAtPoint:tapPoint]) {
+        [self.delegate cardsView:self willChangeState:CharCardsViewStateMax fromOldState:self.currentState];
+        __typeof__(self) __weak weakSelf = self;
+        [self.collectionView setCollectionViewLayout:self.maxLayout animated:YES completion:^(BOOL finished) {
+            if(finished) {
+                weakSelf.topCard.scrollView.scrollEnabled = YES;
+                [weakSelf.delegate cardsView:weakSelf didChangeState:CharCardsViewStateMax fromOldState:weakSelf.currentState];
+                weakSelf.currentState = CharCardsViewStateMax;
+            }
+        }];
+    } else if(self.collectionView.collectionViewLayout == self.maxLayout && ![self.collectionView indexPathForItemAtPoint:tapPoint]) {
+        [self.delegate cardsView:self willChangeState:CharCardsViewStateMin fromOldState:self.currentState];
+        __typeof__(self) __weak weakSelf = self;
+        [self.collectionView setCollectionViewLayout:self.minLayout animated:YES completion:^(BOOL finished) {
+            if(finished) {
+                weakSelf.topCard.scrollView.scrollEnabled = NO;
+                [weakSelf.delegate cardsView:weakSelf didChangeState:CharCardsViewStateMin fromOldState:weakSelf.currentState];
+                weakSelf.currentState = CharCardsViewStateMin;
+            }
+        }];
     }
 }
 
--(void) setMinHeight:(CGFloat)minHeight {
-    _minHeight = minHeight;
-    CharCardsMinViewLayout *layout = (id)self.collectionView.collectionViewLayout;
-    layout.minHeight = minHeight;
-    [layout invalidateLayout];
+-(UIPanGestureRecognizer *) panRecognizer {
+    if(_panRecognizer) return _panRecognizer;
+    _panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panning:)];
+    _panRecognizer.delegate = self;
+    return _panRecognizer;
+}
+
+-(void) panning:(UIPanGestureRecognizer *) panRecognizer {
+    if(panRecognizer.state == UIGestureRecognizerStateBegan) {
+        if(self.topCard.scrollView.contentOffset.y < 0) self.topCard.scrollView.scrollEnabled = NO;
+        
+        UICollectionViewLayout *newLayout = (self.collectionView.collectionViewLayout == self.maxLayout)?self.minLayout:self.maxLayout;
+        if(self.shouldRestartTransition && self.currentTransitioningLayout != self.collectionView.collectionViewLayout) {
+            self.shouldRestartTransition = NO;
+            self.currentTransitioningLayout = [self.collectionView startInteractiveTransitionToCollectionViewLayout:newLayout completion:^(BOOL completed, BOOL finish) {
+                if(self.collectionView.collectionViewLayout == self.maxLayout) self.topCard.scrollView.scrollEnabled = YES;
+                else self.topCard.scrollView.scrollEnabled = NO;
+                
+                self.shouldRestartTransition = YES;
+                self.currentTransitioningLayout = nil;
+                
+                if(newLayout == self.minLayout) {
+                    [self.delegate cardsView:self didChangeState:CharCardsViewStateMin fromOldState:self.currentState];
+                    self.currentState = CharCardsViewStateMin;
+                }
+                else if(newLayout == self.maxLayout) {
+                    [self.delegate cardsView:self didChangeState:CharCardsViewStateMax fromOldState:self.currentState];
+                    self.currentState = CharCardsViewStateMax;
+                }
+                
+            }];
+        }
+    } else if(panRecognizer.state == UIGestureRecognizerStateChanged) {
+        if(![self.collectionView.collectionViewLayout isKindOfClass:[UICollectionViewTransitionLayout class]]) return;
+        if(self.topCard.scrollView.contentOffset.y > 0) {
+            [panRecognizer setTranslation:CGPointZero inView:panRecognizer.view];
+            return;
+        }
+        
+        self.topCard.scrollView.scrollEnabled = NO;
+        
+        CGPoint translation = [panRecognizer translationInView:panRecognizer.view];
+        UICollectionViewTransitionLayout *transitionalLayout = (id)self.collectionView.collectionViewLayout;
+        
+        if([transitionalLayout.currentLayout isKindOfClass:[CharCardsMinViewLayout class]] && [transitionalLayout.nextLayout isKindOfClass:[CharCardsMaxViewLayout class]]) {
+            CharCardsMinViewLayout *currentLayout = (id)transitionalLayout.currentLayout;
+            CharCardsMaxViewLayout *nextLayout = (id)transitionalLayout.nextLayout;
+            CGFloat maxDistance = self.collectionView.bounds.size.height - currentLayout.minHeight - nextLayout.topInset;
+            
+            if(translation.y < 0) {
+                transitionalLayout.transitionProgress = -translation.y/maxDistance;
+                if(transitionalLayout.transitionProgress > 1) [panRecognizer setTranslation:CGPointMake(0, translation.y) inView:panRecognizer.view];
+            } else {
+                transitionalLayout.transitionProgress = 0.f;
+                [panRecognizer setTranslation:CGPointZero inView:panRecognizer.view];
+            }
+            
+        } else if([transitionalLayout.currentLayout isKindOfClass:[CharCardsMaxViewLayout class]] && [transitionalLayout.nextLayout isKindOfClass:[CharCardsMinViewLayout class]]) {
+            CharCardsMaxViewLayout *currentLayout = (id)transitionalLayout.currentLayout;
+            CharCardsMinViewLayout *nextLayout = (id)transitionalLayout.nextLayout;
+            CGFloat maxDistance = self.collectionView.bounds.size.height - currentLayout.topInset - nextLayout.minHeight;
+            
+            if(translation.y > 0) {
+                transitionalLayout.transitionProgress = translation.y/maxDistance;
+                if(transitionalLayout.transitionProgress > 1) [panRecognizer setTranslation:CGPointZero inView:panRecognizer.view];
+            } else {
+                transitionalLayout.transitionProgress = 0.f;
+                [panRecognizer setTranslation:CGPointMake(0, translation.y) inView:panRecognizer.view];
+            }
+        }
+        
+    } else if(panRecognizer.state == UIGestureRecognizerStateEnded ||
+              panRecognizer.state == UIGestureRecognizerStateCancelled ||
+              panRecognizer.state == UIGestureRecognizerStateFailed) {
+        if(![self.collectionView.collectionViewLayout isKindOfClass:[UICollectionViewTransitionLayout class]]) return;
+        if(self.topCard.scrollView.contentOffset.y > 0) {
+            [panRecognizer setTranslation:CGPointZero inView:panRecognizer.view];
+            self.topCard.scrollView.scrollEnabled = YES;
+            return;
+        }
+        
+        CGPoint translation = [panRecognizer translationInView:panRecognizer.view];
+        CGPoint velocity = [panRecognizer velocityInView:panRecognizer.view];
+        UICollectionViewTransitionLayout *transitionalLayout = (id)self.collectionView.collectionViewLayout;
+        
+        NSLog(@"TRANSITION");
+        if(self.collectionView.collectionViewLayout == self.currentTransitioningLayout) {
+            NSLog(@"TRANSITION SAME");
+            if([transitionalLayout.currentLayout isKindOfClass:[CharCardsMinViewLayout class]] && [transitionalLayout.nextLayout isKindOfClass:[CharCardsMaxViewLayout class]]) {
+                CharCardsMinViewLayout *currentLayout = (id)transitionalLayout.currentLayout;
+                CharCardsMaxViewLayout *nextLayout = (id)transitionalLayout.nextLayout;
+                CGFloat maxDistance = self.collectionView.bounds.size.height - currentLayout.minHeight - nextLayout.topInset;
+                
+                if(-velocity.y > CC2_SNAP_VELOCITY) [self.collectionView finishInteractiveTransition];
+                else if(-velocity.y < -CC2_SNAP_VELOCITY) [self.collectionView cancelInteractiveTransition];
+                else if(-translation.y < maxDistance*CC2_SNAP_RATIO) [self.collectionView cancelInteractiveTransition];
+                else [self.collectionView finishInteractiveTransition];
+            } else if([transitionalLayout.currentLayout isKindOfClass:[CharCardsMaxViewLayout class]] && [transitionalLayout.nextLayout isKindOfClass:[CharCardsMinViewLayout class]]) {
+                CharCardsMaxViewLayout *currentLayout = (id)transitionalLayout.currentLayout;
+                CharCardsMinViewLayout *nextLayout = (id)transitionalLayout.nextLayout;
+                CGFloat maxDistance = self.collectionView.bounds.size.height - currentLayout.topInset - nextLayout.minHeight;
+                
+                if(velocity.y > CC2_SNAP_VELOCITY) [self.collectionView finishInteractiveTransition];
+                else if(velocity.y < -CC2_SNAP_VELOCITY) [self.collectionView cancelInteractiveTransition];
+                else if(translation.y < maxDistance*CC2_SNAP_RATIO) [self.collectionView cancelInteractiveTransition];
+                else [self.collectionView finishInteractiveTransition];
+            }
+        }
+    }
 }
 
 -(UICollectionView *) collectionView {
     if(_collectionView) return _collectionView;
-    CharCardsMinViewLayout* layout = [[CharCardsMinViewLayout alloc] init];
-    layout.minHeight = self.minHeight;
-    
-    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+    _collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.minLayout];
     _collectionView.pagingEnabled = YES;
     _collectionView.dataSource = self;
     _collectionView.allowsSelection = NO;
@@ -251,81 +255,129 @@ CGFloat const CCV_SNAP_RATIO = .3333333f;
     _collectionView.showsVerticalScrollIndicator = NO;
     _collectionView.clipsToBounds = NO;
     _collectionView.translatesAutoresizingMaskIntoConstraints = NO;
+    _collectionView.backgroundColor = [UIColor clearColor];
     
     [self addSubview:_collectionView];
     return _collectionView;
 }
 
-- (void)registerClass:(Class)cardClass forCardWithReuseIdentifier:(NSString *)identifier {
-    [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:identifier];
+-(void) setMinHeight:(CGFloat)minHeight {
+    _minHeight = minHeight;
+    self.minLayout.minHeight = minHeight;
+    [self.minLayout invalidateLayout];
 }
--(void) setState:(CharCardsViewState) state animated:(BOOL) animated {
-    self.desiredState = state;
-    [self _setState:state withVelocity:CCV_DEFAULT_VERTICAL_VELOCITY];
+-(void) setTopInset:(CGFloat)topInset {
+    _topInset = topInset;
+    self.maxLayout.topInset = topInset;
+    [self.maxLayout invalidateLayout];
 }
 
--(void) appendWithIdentifier: (NSString *) identifier data:(id) data animated:(BOOL) animated; {
-    if(self.state == CharCardsViewStateNone) [self appendWithIdentifier:identifier data:data atState:CharCardsViewStateMin animated:animated];
-    else [self appendWithIdentifier:identifier data:data atState:self.state animated:animated];
-}
--(void) appendWithIdentifier: (NSString *) identifier data:(id) data atState:(CharCardsViewState) state animated:(BOOL) animated {
-    if(!identifier || state == CharCardsViewStateNone) return;
+-(void) push:(id) data withIdentifier:(NSString *) identifier {
     NSIndexPath *path = [NSIndexPath indexPathForRow:self.cardsType.count inSection:0];
     [self.cardsType addObject:identifier];
     [self.cardsData addObject:data];
     
     [self.collectionView performBatchUpdates:^{
-        self.desiredState = state;
         [self.collectionView insertItemsAtIndexPaths:@[path]];
     } completion:^(BOOL finished) {
-//        [self.collectionView scrollToItemAtIndexPath:path atScrollPosition:UICollectionViewScrollPositionLeft animated:YES];
-//        
-//        if(self.cardsType.count == 1 || self.state != state) {
-//            [self _setState:state withVelocity:CCV_DEFAULT_VERTICAL_VELOCITY];
-//        }
+        if(self.collectionView.collectionViewLayout == self.maxLayout) self.topCard.scrollView.scrollEnabled = YES;
+        else self.topCard.scrollView.scrollEnabled = NO;
     }];
 }
+-(void) push:(id) data withIdentifier:(NSString *) identifier state:(CharCardsViewState) state {
+    if(state == CharCardsViewStateNone) return;
+    else if(state == CharCardsViewStateMin) {
+        [self.delegate cardsView:self willChangeState:state fromOldState:self.currentState];
+        __typeof__(self) __weak weakSelf = self;
+        [self.collectionView setCollectionViewLayout:self.minLayout animated:YES completion:^(BOOL finished) {
+            if(finished) {
+                weakSelf.topCard.scrollView.scrollEnabled = NO;
+                [weakSelf.delegate cardsView:weakSelf didChangeState:state fromOldState:weakSelf.currentState];
+                weakSelf.currentState = state;
+            }
+        }];
+        [self push:data withIdentifier:identifier];
+    } else if(state == CharCardsViewStateMax) {
+        [self.delegate cardsView:self willChangeState:state fromOldState:self.currentState];
+        __typeof__(self) __weak weakSelf = self;
+        [self.collectionView setCollectionViewLayout:self.maxLayout animated:YES completion:^(BOOL finished) {
+            if(finished) {
+                weakSelf.topCard.scrollView.scrollEnabled = YES;
+                [weakSelf.delegate cardsView:weakSelf didChangeState:state fromOldState:weakSelf.currentState];
+                weakSelf.currentState = state;
+            }
+        }];
+        [self push:data withIdentifier:identifier];
+    }
+}
 
-//-(void) scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-//    self.cardsType = [[NSMutableArray alloc] initWithObjects:self.cardsType.lastObject, nil] ;
-//    self.cardsData = [[NSMutableArray alloc] initWithObjects:self.cardsData.lastObject, nil] ;
-//    [self.collectionView reloadData];
-//
-//}
+-(void) setState:(CharCardsViewState) state {
+    self.topCard.scrollView.scrollEnabled = NO;
+    if(state == CharCardsViewStateNone) {
+        NSMutableArray *pathsToRemove = [NSMutableArray array];
+        for(NSUInteger i=0; i<self.cardsType.count; i++) { [pathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];}
+        self.cardsType = [NSMutableArray array];
+        self.cardsData = [NSMutableArray array];
+        [self.delegate cardsView:self willChangeState:state fromOldState:self.currentState];
+        [self.collectionView performBatchUpdates:^{ [self.collectionView deleteItemsAtIndexPaths:pathsToRemove];} completion:^(BOOL finished) {
+            self.currentState = state;
+        }];
+    } else if(state == CharCardsViewStateMin) {
+        __typeof__(self) __weak weakSelf = self;
+        [weakSelf.delegate cardsView:weakSelf willChangeState:state fromOldState:weakSelf.currentState];
+        [self.collectionView setCollectionViewLayout:self.minLayout animated:YES completion:^(BOOL finished) {
+            if(finished) {
+                weakSelf.topCard.scrollView.scrollEnabled = NO;
+                [weakSelf.delegate cardsView:weakSelf didChangeState:state fromOldState:weakSelf.currentState];
+                weakSelf.currentState = state;
+            }
+        }];
+    } else if(state == CharCardsViewStateMax) {
+        __typeof__(self) __weak weakSelf = self;
+        [weakSelf.delegate cardsView:weakSelf willChangeState:state fromOldState:weakSelf.currentState];
+        [self.collectionView setCollectionViewLayout:self.maxLayout animated:YES completion:^(BOOL finished) {
+            if(finished) {
+                weakSelf.topCard.scrollView.scrollEnabled = YES;
+                [weakSelf.delegate cardsView:weakSelf didChangeState:state fromOldState:weakSelf.currentState];
+                weakSelf.currentState = state;
+            }
+        }];
+
+    }
+}
+
+-(void)registerClass:(Class)cardClass forCardWithReuseIdentifier:(NSString *)identifier {
+    [self.collectionView registerClass:cardClass forCellWithReuseIdentifier:identifier];
+}
 
 #pragma mark UICollectionViewDataSource
 -(NSInteger) numberOfSectionsInCollectionView:(UICollectionView *)collectionView {return 1;}
 -(NSInteger) collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.cardsType.count;
 }
--(UICollectionViewCell *) collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+-(CharCardCollectionView *) collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     NSString *identifier = [self.cardsType objectAtIndex:indexPath.row];
-//    id data = [self.cardsData objectAtIndex:indexPath.row];
-
-    UICollectionViewCell *card = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
-    card.contentView.backgroundColor = [UIColor blueColor];
-//    card.cardsCollectionView = self;
-//    [card updateWithState:(self.state == CharCardsViewStateNone?self.desiredState:self.state) data:data];
+    id data = [self.cardsData objectAtIndex:indexPath.row];
+    CharCardCollectionView *card = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
+    [card updateWithData:data layout:self.collectionView.collectionViewLayout];
     return card;
 }
 
-#pragma mark UIGestureRecognizerDelegate
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    if(gestureRecognizer == self.minStateTapRecognizer) {
-        return self.state == CharCardsViewStateMin;
-    } else if(gestureRecognizer == self.panRecognizer) {
-        return CGRectContainsPoint(self.collectionView.bounds, [touch locationInView:self.collectionView]);
-    } else return YES;
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    if(self.collectionView.collectionViewLayout == self.minLayout) {
+        CGPoint cPoint = [self convertPoint:point toView:self.collectionView];
+        return [self.collectionView indexPathForItemAtPoint:cPoint] != nil;
+    } else return [super pointInside:point withEvent:event];
 }
 
+#pragma mark UIGestureRecognizerDelegate
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     return YES;
 }
 
-- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
-    CGPoint collectinoViewPoint = [self convertPoint:point toView:self.collectionView];
-    BOOL pointInside = [self.collectionView pointInside:collectinoViewPoint withEvent:event];
-    return pointInside;
+-(void) setNeedsDisplay {
+    [super setNeedsDisplay];
+    [self.collectionView.collectionViewLayout invalidateLayout];
 }
 
 @end
