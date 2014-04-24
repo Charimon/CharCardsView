@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface CharCardsMaxViewLayout : UICollectionViewLayout
+
 @property (nonatomic) CGFloat topInset;
 -(instancetype) initWithTopInset:(CGFloat) topInset;
 @end

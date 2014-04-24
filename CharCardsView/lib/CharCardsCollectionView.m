@@ -180,7 +180,10 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         self.topCard.scrollView.scrollEnabled = NO;
         
         CGPoint translation = [panRecognizer translationInView:panRecognizer.view];
-        UICollectionViewTransitionLayout *transitionalLayout = (id)self.collectionView.collectionViewLayout;
+        UICollectionViewTransitionLayout *transitionalLayout;
+        if([self.collectionView.collectionViewLayout isKindOfClass:[UICollectionViewTransitionLayout class]]) {
+            transitionalLayout = (id)self.collectionView.collectionViewLayout;
+        }
         
         if([transitionalLayout.currentLayout isKindOfClass:[CharCardsMinViewLayout class]] && [transitionalLayout.nextLayout isKindOfClass:[CharCardsMaxViewLayout class]]) {
             CharCardsMinViewLayout *currentLayout = (id)transitionalLayout.currentLayout;
@@ -188,22 +191,27 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
             CGFloat maxDistance = self.collectionView.bounds.size.height - currentLayout.minHeight - nextLayout.topInset;
             
             if(translation.y < 0) {
+                NSLog(@"PROG1");
                 transitionalLayout.transitionProgress = -translation.y/maxDistance;
                 if(transitionalLayout.transitionProgress > 1) [panRecognizer setTranslation:CGPointMake(0, translation.y) inView:panRecognizer.view];
             } else {
+                NSLog(@"PROG2");
                 transitionalLayout.transitionProgress = 0.f;
                 [panRecognizer setTranslation:CGPointZero inView:panRecognizer.view];
             }
             
-        } else if([transitionalLayout.currentLayout isKindOfClass:[CharCardsMaxViewLayout class]] && [transitionalLayout.nextLayout isKindOfClass:[CharCardsMinViewLayout class]]) {
+        } else if([transitionalLayout.currentLayout isKindOfClass:[CharCardsMaxViewLayout class]] && [transitionalLayout.nextLayout isKindOfClass:
+                                                                                                      [CharCardsMinViewLayout class]]) {
             CharCardsMaxViewLayout *currentLayout = (id)transitionalLayout.currentLayout;
             CharCardsMinViewLayout *nextLayout = (id)transitionalLayout.nextLayout;
             CGFloat maxDistance = self.collectionView.bounds.size.height - currentLayout.topInset - nextLayout.minHeight;
             
             if(translation.y > 0) {
+                NSLog(@"PROG3");
                 transitionalLayout.transitionProgress = translation.y/maxDistance;
                 if(transitionalLayout.transitionProgress > 1) [panRecognizer setTranslation:CGPointZero inView:panRecognizer.view];
             } else {
+                NSLog(@"PROG4");
                 transitionalLayout.transitionProgress = 0.f;
                 [panRecognizer setTranslation:CGPointMake(0, translation.y) inView:panRecognizer.view];
             }
@@ -277,10 +285,10 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 }
 
 -(void) push:(id) data withIdentifier:(NSString *) identifier completion:(void (^)(BOOL finished))completion {
+    self.panRecognizer.enabled = NO;
     CharCardsViewState oldState = CharCardsViewStateNone;
     if(self.collectionView.collectionViewLayout == self.minLayout) oldState = CharCardsViewStateMin;
     else if(self.collectionView.collectionViewLayout == self.maxLayout) oldState = CharCardsViewStateMax;
-    if(oldState != CharCardsViewStateMin) [self _setState:CharCardsViewStateMin fromState:oldState];
     
     NSIndexPath *path = [NSIndexPath indexPathForRow:self.cardsType.count inSection:0];
     [self.cardsType addObject:identifier];
@@ -290,6 +298,8 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         [self.collectionView insertItemsAtIndexPaths:@[path]];
     } completion:^(BOOL finished) {
         if(completion) completion(finished);
+        self.panRecognizer.enabled = YES;
+        if(oldState == CharCardsViewStateNone) [self _setState:CharCardsViewStateMin fromState:oldState];
     }];
 }
 
@@ -324,15 +334,17 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 }
 
 -(void) _setState:(CharCardsViewState) newState fromState:(CharCardsViewState) oldState {
+    BOOL transitional = [[self.collectionView collectionViewLayout] isKindOfClass:[UICollectionViewTransitionLayout class]];
+    
     [UIView animateWithDuration:0.6f
                           delay:0
          usingSpringWithDamping:.8f initialSpringVelocity:1.1f
                         options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-                            if(newState == CharCardsViewStateNone)
+                            if(newState == CharCardsViewStateNone && !transitional)
                                 self.collectionView.collectionViewLayout = self.noneLayout;
-                            else if(newState == CharCardsViewStateMin)
+                            else if(newState == CharCardsViewStateMin && !transitional)
                                 self.collectionView.collectionViewLayout = self.minLayout;
-                            else if(newState == CharCardsViewStateMax)
+                            else if(newState == CharCardsViewStateMax && !transitional)
                                 self.collectionView.collectionViewLayout = self.maxLayout;
                             [self.delegate cardsView:self willChangeState:newState fromOldState:oldState];
                             
