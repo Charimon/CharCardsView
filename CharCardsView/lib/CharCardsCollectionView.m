@@ -291,7 +291,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     } completion:^(BOOL finished) {}];
 }
 
--(void) setState:(CharCardsViewState) state animation:(void (^)())animation completion:(void (^)(BOOL finished))completion {
+-(void) setState:(CharCardsViewState) state {
     self.topCard.scrollView.scrollEnabled = NO;
     if(state == CharCardsViewStateNone) {
         CharCardsViewState oldState = CharCardsViewStateNone;
