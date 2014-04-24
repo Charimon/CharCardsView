@@ -24,9 +24,8 @@
 @property (weak, nonatomic) id<CharCardsCollectionViewDelegate> delegate;
 
 -(void) registerClass:(Class)cardClass forCardWithReuseIdentifier:(NSString *)identifier;
--(void) setState:(CharCardsViewState) state;
+-(void) setState:(CharCardsViewState) state animation:(void (^)())animation completion:(void (^)(BOOL finished))completion;
 
 -(void) push:(id) data withIdentifier:(NSString *) identifier;
--(void) push:(id) data withIdentifier:(NSString *) identifier completion:(void (^)(BOOL finished))completion;
--(void) push:(id) data withIdentifier:(NSString *) identifier state:(CharCardsViewState) state;
+-(void) push:(id) data withIdentifier:(NSString *) identifier animation:(void (^)())animation completion:(void (^)(BOOL finished))completion;
 @end

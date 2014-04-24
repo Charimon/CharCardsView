@@ -287,14 +287,22 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     [self.maxLayout invalidateLayout];
 }
 
--(void) push:(id) data withIdentifier:(NSString *) identifier { [self push:data withIdentifier:identifier completion:nil]; }
--(void) push:(id) data withIdentifier:(NSString *) identifier completion:(void (^)(BOOL finished))completion {
+-(void) push:(id) data withIdentifier:(NSString *) identifier { [self push:data withIdentifier:identifier animation:nil completion:nil]; }
+-(void) push:(id) data withIdentifier:(NSString *) identifier animation:(void (^)())animation completion:(void (^)(BOOL finished))completion {
     NSIndexPath *path = [NSIndexPath indexPathForRow:self.cardsType.count inSection:0];
     [self.cardsType addObject:identifier];
     [self.cardsData addObject:data];
     
     [self.collectionView performBatchUpdates:^{
         [self.collectionView insertItemsAtIndexPaths:@[path]];
+        
+        [UIView animateWithDuration:.6f
+                              delay:0
+             usingSpringWithDamping:.8f initialSpringVelocity:1.1f
+                            options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                                if(animation) animation();
+                            } completion:nil];
+        
     } completion:^(BOOL finished) {
         if(self.collectionView.collectionViewLayout == self.maxLayout) self.topCard.scrollView.scrollEnabled = YES;
         else self.topCard.scrollView.scrollEnabled = NO;
@@ -303,44 +311,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     }];
 }
 
--(void) push:(id) data withIdentifier:(NSString *) identifier state:(CharCardsViewState) state {
-    if(state == CharCardsViewStateNone) return;
-    else if(state == CharCardsViewStateMin) {
-        CharCardsViewState state = CharCardsViewStateNone;
-        if(self.collectionView.collectionViewLayout == self.minLayout) state = CharCardsViewStateMin;
-        else if(self.collectionView.collectionViewLayout == self.maxLayout) state = CharCardsViewStateMax;
-        
-//        [self.delegate cardsView:self willChangeState:state fromOldState:state];
-//        __typeof__(self) __weak weakSelf = self;
-//        [self.collectionView setCollectionViewLayout:self.minLayout animated:YES completion:^(BOOL finished) {
-//            if(finished) {
-//                weakSelf.topCard.scrollView.scrollEnabled = NO;
-//                [weakSelf.delegate cardsView:weakSelf didChangeState:state fromOldState:state];
-//            }
-//        }];
-        
-        [self _setState:state fromState:state];
-        [self push:data withIdentifier:identifier];
-    } else if(state == CharCardsViewStateMax) {
-        CharCardsViewState state = CharCardsViewStateNone;
-        if(self.collectionView.collectionViewLayout == self.minLayout) state = CharCardsViewStateMin;
-        else if(self.collectionView.collectionViewLayout == self.maxLayout) state = CharCardsViewStateMax;
-        
-        [self _setState:state fromState:state];
-//        
-//        [self.delegate cardsView:self willChangeState:state fromOldState:state];
-//        __typeof__(self) __weak weakSelf = self;
-//        [self.collectionView setCollectionViewLayout:self.maxLayout animated:YES completion:^(BOOL finished) {
-//            if(finished) {
-//                weakSelf.topCard.scrollView.scrollEnabled = YES;
-//                [weakSelf.delegate cardsView:weakSelf didChangeState:state fromOldState:state];
-//            }
-//        }];
-        [self push:data withIdentifier:identifier];
-    }
-}
-
--(void) setState:(CharCardsViewState) state {
+-(void) setState:(CharCardsViewState) state animation:(void (^)())animation completion:(void (^)(BOOL finished))completion {
     self.topCard.scrollView.scrollEnabled = NO;
     if(state == CharCardsViewStateNone) {
         NSMutableArray *pathsToRemove = [NSMutableArray array];
@@ -352,8 +323,20 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         if(self.collectionView.collectionViewLayout == self.minLayout) oldState = CharCardsViewStateMin;
         else if(self.collectionView.collectionViewLayout == self.maxLayout) oldState = CharCardsViewStateMax;
         
+        
+        [UIView animateWithDuration:.6f
+                              delay:0
+             usingSpringWithDamping:.8f initialSpringVelocity:1.1f
+                            options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                                if(animation) animation();
+                            } completion:nil];
         [self.delegate cardsView:self willChangeState:state fromOldState:oldState];
-        [self.collectionView performBatchUpdates:^{ [self.collectionView deleteItemsAtIndexPaths:pathsToRemove];} completion:^(BOOL finished) {}];
+        [self.collectionView performBatchUpdates:^{
+            [self.collectionView deleteItemsAtIndexPaths:pathsToRemove];
+            
+            
+            
+        } completion:^(BOOL finished) {}];
     } else if(state == CharCardsViewStateMin) {
         CharCardsViewState oldState = CharCardsViewStateNone;
         if(self.collectionView.collectionViewLayout == self.minLayout) oldState = CharCardsViewStateMin;
