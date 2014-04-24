@@ -276,7 +276,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     [self.maxLayout invalidateLayout];
 }
 
--(void) push:(id) data withIdentifier:(NSString *) identifier {
+-(void) push:(id) data withIdentifier:(NSString *) identifier completion:(void (^)(BOOL finished))completion {
     CharCardsViewState oldState = CharCardsViewStateNone;
     if(self.collectionView.collectionViewLayout == self.minLayout) oldState = CharCardsViewStateMin;
     else if(self.collectionView.collectionViewLayout == self.maxLayout) oldState = CharCardsViewStateMax;
@@ -288,7 +288,9 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     
     [self.collectionView performBatchUpdates:^{
         [self.collectionView insertItemsAtIndexPaths:@[path]];
-    } completion:^(BOOL finished) {}];
+    } completion:^(BOOL finished) {
+        if(completion) completion(finished);
+    }];
 }
 
 -(void) setState:(CharCardsViewState) state {

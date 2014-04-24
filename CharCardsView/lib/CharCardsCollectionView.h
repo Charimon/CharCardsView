@@ -26,5 +26,5 @@
 -(void) registerClass:(Class)cardClass forCardWithReuseIdentifier:(NSString *)identifier;
 -(void) setState:(CharCardsViewState) state;
 
--(void) push:(id) data withIdentifier:(NSString *) identifier;
+-(void) push:(id) data withIdentifier:(NSString *) identifier completion:(void (^)(BOOL finished))completion;
 @end
