@@ -31,6 +31,7 @@
 		33C955A91906B32F00937C32 /* CharCardsTransitionalViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955A81906B32F00937C32 /* CharCardsTransitionalViewLayout.m */; };
 		33C955AD1906B8EC00937C32 /* CharCardCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955AC1906B8EC00937C32 /* CharCardCollectionView.m */; };
 		33C955B01907259900937C32 /* CharCardsLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955AF1907259900937C32 /* CharCardsLayoutAttributes.m */; };
+		33C955B51908A73F00937C32 /* CharCardsNoneViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955B41908A73F00937C32 /* CharCardsNoneViewLayout.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +86,8 @@
 		33C955AC1906B8EC00937C32 /* CharCardCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardCollectionView.m; path = lib/CharCardCollectionView.m; sourceTree = "<group>"; };
 		33C955AE1907259900937C32 /* CharCardsLayoutAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsLayoutAttributes.h; path = lib/CharCardsLayoutAttributes.h; sourceTree = "<group>"; };
 		33C955AF1907259900937C32 /* CharCardsLayoutAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsLayoutAttributes.m; path = lib/CharCardsLayoutAttributes.m; sourceTree = "<group>"; };
+		33C955B31908A73F00937C32 /* CharCardsNoneViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsNoneViewLayout.h; path = lib/CharCardsNoneViewLayout.h; sourceTree = "<group>"; };
+		33C955B41908A73F00937C32 /* CharCardsNoneViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsNoneViewLayout.m; path = lib/CharCardsNoneViewLayout.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -223,6 +226,8 @@
 				332FA1881902CB1B003BA9C3 /* CharCardsMinViewLayout.m */,
 				33C955A41906973200937C32 /* CharCardsMaxViewLayout.h */,
 				33C955A51906973200937C32 /* CharCardsMaxViewLayout.m */,
+				33C955B31908A73F00937C32 /* CharCardsNoneViewLayout.h */,
+				33C955B41908A73F00937C32 /* CharCardsNoneViewLayout.m */,
 				33C955A71906B32F00937C32 /* CharCardsTransitionalViewLayout.h */,
 				33C955A81906B32F00937C32 /* CharCardsTransitionalViewLayout.m */,
 			);
@@ -339,6 +344,7 @@
 			files = (
 				33BAF45B18F6489C004EC40F /* UIColor+Random.m in Sources */,
 				33C955AD1906B8EC00937C32 /* CharCardCollectionView.m in Sources */,
+				33C955B51908A73F00937C32 /* CharCardsNoneViewLayout.m in Sources */,
 				33C955A31906771200937C32 /* CharCardsCollectionView.m in Sources */,
 				332FA1891902CB1B003BA9C3 /* CharCardsMinViewLayout.m in Sources */,
 				338A53D718F1696B00E4CDBA /* CharAppDelegate.m in Sources */,

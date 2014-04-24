@@ -16,7 +16,7 @@
 #import <MapKit/MapKit.h>
 
 @interface CharViewController ()
-@property (strong, nonatomic) CharCards2CollectionView *cardsView;
+@property (strong, nonatomic) CharCardsCollectionView *cardsView;
 @property (strong, nonatomic) UIButton *noneStateButton;
 @property (strong, nonatomic) UIButton *minStateButton;
 @property (strong, nonatomic) UIButton *maxStateButton;
@@ -202,7 +202,7 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
     return _noneStateButton;
 }
 -(void) noneStateButtonClicked:(id) sender {
-    [self.cardsView setState:CharCardsViewStateNone];
+    [self.cardsView setState:CharCardsViewStateNone animation:nil completion:nil];
 }
 
 -(UIButton *) minStateButton {
@@ -222,8 +222,7 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
     UIColor *randColor = [UIColor randomColor];
     card.contentView.backgroundColor = randColor;
     card.shadow.backgroundColor = randColor.CGColor;
-    [self.cardsView push:@"" withIdentifier:CARD_VIEW_ID state:CharCardsViewStateMin];
-//    [self.cardsView appendWithIdentifier:CARD_VIEW_ID data:[UIColor randomColor] atState:CharCardsViewStateMin animated:YES];
+    [self.cardsView push:@"" withIdentifier:CARD_VIEW_ID animation:nil completion:nil];
 }
 
 -(UIButton *) maxStateButton {
@@ -243,7 +242,8 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
     UIColor *randColor = [UIColor randomColor];
     card.contentView.backgroundColor = randColor;
     card.shadow.backgroundColor = randColor.CGColor;
-    [self.cardsView push:@"" withIdentifier:CARD_VIEW_ID state:CharCardsViewStateMax];
+    [self.cardsView push:@"" withIdentifier:CARD_VIEW_ID animation:nil completion:nil];
+//    [self.cardsView push:@"" withIdentifier:CARD_VIEW_ID state:CharCardsViewStateMax];
 //    [self.cardsView appendWithIdentifier:CARD_VIEW_ID data:[UIColor randomColor] atState:CharCardsViewStateMax animated:YES];
 }
 
@@ -279,9 +279,9 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
     }
 }
 
--(CharCards2CollectionView *) cardsView {
+-(CharCardsCollectionView *) cardsView {
     if(_cardsView) return _cardsView;
-    _cardsView = [[CharCards2CollectionView alloc] init];
+    _cardsView = [[CharCardsCollectionView alloc] init];
     [_cardsView registerClass:[CharCustomCardCollectionView class] forCardWithReuseIdentifier:CARD_VIEW_ID];
     _cardsView.minHeight = MIN_HEIGHT;
     _cardsView.topInset = MAX_TOP_INSET;
