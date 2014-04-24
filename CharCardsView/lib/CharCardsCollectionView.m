@@ -141,6 +141,9 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     if(panRecognizer.state == UIGestureRecognizerStateBegan) {
         if(self.topCard.scrollView.contentOffset.y < 0) self.topCard.scrollView.scrollEnabled = NO;
         
+        CGPoint transition = [panRecognizer translationInView:self.panRecognizer.view];
+        if(self.topCard.scrollView.scrollEnabled && transition.y < 0) return;
+        
         UICollectionViewLayout *newLayout = (self.collectionView.collectionViewLayout == self.maxLayout)?self.minLayout:self.maxLayout;
         if(self.shouldRestartTransition && self.currentTransitioningLayout != self.collectionView.collectionViewLayout) {
             self.shouldRestartTransition = NO;
@@ -300,6 +303,8 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         if(completion) completion(finished);
         self.panRecognizer.enabled = YES;
         if(oldState == CharCardsViewStateNone) [self _setState:CharCardsViewStateMin fromState:oldState];
+        if(self.collectionView.collectionViewLayout == self.maxLayout) self.topCard.scrollView.scrollEnabled = YES;
+        else self.topCard.scrollView.scrollEnabled = NO;
     }];
 }
 
