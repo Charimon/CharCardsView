@@ -194,11 +194,9 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
             CGFloat maxDistance = self.collectionView.bounds.size.height - currentLayout.minHeight - nextLayout.topInset;
             
             if(translation.y < 0) {
-                NSLog(@"PROG1");
                 transitionalLayout.transitionProgress = -translation.y/maxDistance;
                 if(transitionalLayout.transitionProgress > 1) [panRecognizer setTranslation:CGPointMake(0, translation.y) inView:panRecognizer.view];
             } else {
-                NSLog(@"PROG2");
                 transitionalLayout.transitionProgress = 0.f;
                 [panRecognizer setTranslation:CGPointZero inView:panRecognizer.view];
             }
@@ -210,11 +208,9 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
             CGFloat maxDistance = self.collectionView.bounds.size.height - currentLayout.topInset - nextLayout.minHeight;
             
             if(translation.y > 0) {
-                NSLog(@"PROG3");
                 transitionalLayout.transitionProgress = translation.y/maxDistance;
-                if(transitionalLayout.transitionProgress > 1) [panRecognizer setTranslation:CGPointZero inView:panRecognizer.view];
+                if(transitionalLayout.transitionProgress > 1) [panRecognizer setTranslation:CGPointMake(0, translation.y) inView:panRecognizer.view];
             } else {
-                NSLog(@"PROG4");
                 transitionalLayout.transitionProgress = 0.f;
                 [panRecognizer setTranslation:CGPointMake(0, translation.y) inView:panRecognizer.view];
             }
