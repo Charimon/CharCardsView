@@ -341,12 +341,14 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
                           delay:0
          usingSpringWithDamping:.8f initialSpringVelocity:1.1f
                         options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-                            if(newState == CharCardsViewStateNone && !transitional)
+                            if(newState == CharCardsViewStateNone && !transitional) {
                                 self.collectionView.collectionViewLayout = self.noneLayout;
-                            else if(newState == CharCardsViewStateMin && !transitional)
+                            } else if(newState == CharCardsViewStateMin && !transitional) {
                                 self.collectionView.collectionViewLayout = self.minLayout;
-                            else if(newState == CharCardsViewStateMax && !transitional)
+                                [self.topCard.scrollView setContentOffset:CGPointZero animated:NO];
+                            } else if(newState == CharCardsViewStateMax && !transitional) {
                                 self.collectionView.collectionViewLayout = self.maxLayout;
+                            }
                             [self.delegate cardsView:self willChangeState:newState fromOldState:oldState];
                             
                         } completion:^(BOOL finished) {
