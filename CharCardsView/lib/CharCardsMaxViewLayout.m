@@ -67,6 +67,13 @@
     attributes.alpha = 1.f;
     attributes.size = CGSizeMake(self.collectionView.bounds.size.width, height);
     attributes.center = CGPointMake(attrCenterX, attrCenterY);
+    
+    if(self.transitionType == CharCardsTransitionSlideFromRight) {
+        attributes.center = CGPointMake(attrCenterX, attrCenterY);
+    } else if(self.transitionType == CharCardsTransitionSlideOverFromRight) {
+        attributes.center = CGPointMake(self.collectionView.bounds.size.width + self.collectionView.center.x, self.collectionView.bounds.size.height - height/2);
+    }
+    
     return attributes;
 }
 
@@ -86,7 +93,13 @@
     
     attributes.alpha = 1.f;
     attributes.size = CGSizeMake(self.collectionView.bounds.size.width, height);
-    attributes.center = CGPointMake(attrCenterX, attrCenterY);
+    
+    if(self.transitionType == CharCardsTransitionSlideFromRight) {
+        attributes.center = CGPointMake(attrCenterX, attrCenterY);
+    } else if(self.transitionType == CharCardsTransitionSlideOverFromRight) {
+        attributes.center = CGPointMake(self.collectionView.bounds.size.width + self.collectionView.center.x, self.collectionView.bounds.size.height - height/2);
+    }
+    
     return attributes;
 }
 
@@ -110,6 +123,13 @@
     attributes.alpha = 1.f;
     attributes.size = CGSizeMake(self.collectionView.bounds.size.width, self.collectionView.bounds.size.height - self.topInset);
     attributes.center = CGPointMake(attrCenterX, attrCenterY + self.topInset/2);
+    
+    if(self.transitionType == CharCardsTransitionSlideFromRight) {
+        attributes.center = CGPointMake(attrCenterX, attrCenterY + self.topInset/2);
+    } else if(self.transitionType == CharCardsTransitionSlideOverFromRight) {
+        attributes.center = CGPointMake(self.collectionView.center.x, attrCenterY + self.topInset/2);
+    }
+    
     return attributes;
 }
 

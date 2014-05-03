@@ -17,5 +17,5 @@ typedef NS_ENUM(NSInteger, CharCardsViewState) {
 
 typedef NS_ENUM(NSUInteger, CharCardsTransitionType) {
     CharCardsTransitionSlideFromRight,
-    CharCardsTransitionSlidOverFromRight
+    CharCardsTransitionSlideOverFromRight
 };

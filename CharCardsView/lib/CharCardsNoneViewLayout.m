@@ -58,7 +58,12 @@
     if (![self.insertIndexPaths containsObject:itemIndexPath]) return attributes;
     
     attributes.alpha = 1.f;
-    attributes.center = CGPointMake(self.collectionView.center.x, self.collectionView.bounds.size.height + self.height/2);
+    
+    if(self.transitionType == CharCardsTransitionSlideFromRight) {
+        attributes.center = CGPointMake(self.collectionView.center.x, self.collectionView.bounds.size.height + self.height/2);
+    } else if(self.transitionType == CharCardsTransitionSlideOverFromRight) {
+        attributes.center = CGPointMake(3*self.collectionView.bounds.size.width/2, self.collectionView.center.y);
+    }
     attributes.size = CGSizeMake(self.collectionView.bounds.size.width, self.height);
     return attributes;
 }
@@ -70,7 +75,13 @@
     if (![self.deleteIndexPaths containsObject:itemIndexPath]) return attributes;
     
     attributes.alpha = 1.f;
-    attributes.center = CGPointMake(self.collectionView.center.x, self.collectionView.bounds.size.height + self.height/2);
+    
+    if(self.transitionType == CharCardsTransitionSlideFromRight) {
+        attributes.center = CGPointMake(self.collectionView.center.x, self.collectionView.bounds.size.height + self.height/2);
+    } else if(self.transitionType == CharCardsTransitionSlideOverFromRight) {
+        attributes.center = CGPointMake(3*self.collectionView.bounds.size.width/2, self.collectionView.center.y);
+    }
+    
     attributes.size = CGSizeMake(self.collectionView.bounds.size.width, self.height);
     return attributes;
 }
@@ -88,7 +99,13 @@
 -(UICollectionViewLayoutAttributes *) layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
     attributes.alpha = 1.f;
-    attributes.center = CGPointMake(self.collectionView.center.x, self.collectionView.bounds.size.height + self.height/2 - 1);
+    
+    if(self.transitionType == CharCardsTransitionSlideFromRight) {
+        attributes.center = CGPointMake(self.collectionView.center.x, self.collectionView.bounds.size.height + self.height/2 - 1);
+    } else if(self.transitionType == CharCardsTransitionSlideOverFromRight) {
+        attributes.center = CGPointMake(3*self.collectionView.bounds.size.width/2 - 1, self.collectionView.center.y);
+    }
+    
     attributes.size = CGSizeMake(self.collectionView.bounds.size.width, self.height);
     return attributes;
 }
