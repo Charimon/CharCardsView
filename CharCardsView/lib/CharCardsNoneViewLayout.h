@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CharCardsConstants.h"
 
 @interface CharCardsNoneViewLayout : UICollectionViewLayout
-
+@property (nonatomic) CharCardsTransitionType transitionType;
 @end

@@ -18,13 +18,19 @@
 @end
 
 @interface CharCardsCollectionView : UIView
+-(instancetype) initWithTransitionType: (CharCardsTransitionType) transitionType;
+
 @property (nonatomic) CGFloat minHeight;
 @property (nonatomic) CGFloat topInset;
 @property (strong, nonatomic, readonly) CharCardCollectionView *topCard;
 @property (weak, nonatomic) id<CharCardsCollectionViewDelegate> delegate;
 
+@property (nonatomic) BOOL panningEnabled;
+@property (nonatomic) BOOL tapEnabled;
+
 -(void) registerClass:(Class)cardClass forCardWithReuseIdentifier:(NSString *)identifier;
 -(void) setState:(CharCardsViewState) state;
 
--(void) push:(id) data withIdentifier:(NSString *) identifier completion:(void (^)(BOOL finished))completion;
+-(void) push:(id)data withIdentifier:(NSString *) identifier completion:(void (^)(BOOL finished))completion;
+-(void) push:(id)data withIdentifier:(NSString *) identifier state:(CharCardsViewState) state completion:(void (^)(BOOL finished))completion;
 @end

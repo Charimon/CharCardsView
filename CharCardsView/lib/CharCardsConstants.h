@@ -8,8 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSUInteger, CharCardsViewState) {
-    CharCardsViewStateNone,
-    CharCardsViewStateMin,
-    CharCardsViewStateMax
+typedef NS_ENUM(NSInteger, CharCardsViewState) {
+    CharCardsViewStateCurrent = -1,
+    CharCardsViewStateNone = 0,
+    CharCardsViewStateMin = 1,
+    CharCardsViewStateMax = 2
+};
+
+typedef NS_ENUM(NSUInteger, CharCardsTransitionType) {
+    CharCardsTransitionSlideFromRight,
+    CharCardsTransitionSlidOverFromRight
 };

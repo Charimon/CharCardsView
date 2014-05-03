@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CharCardsConstants.h"
 
 @interface CharCardsMaxViewLayout : UICollectionViewLayout
 
 @property (nonatomic) CGFloat topInset;
 -(instancetype) initWithTopInset:(CGFloat) topInset;
+@property (nonatomic) CharCardsTransitionType transitionType;
 @end

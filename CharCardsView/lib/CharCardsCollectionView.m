@@ -20,6 +20,7 @@
 @property (strong, nonatomic) CharCardsMinViewLayout *minLayout;
 @property (strong, nonatomic) CharCardsMaxViewLayout *maxLayout;
 @property (strong, nonatomic) UICollectionViewLayout *currentTransitioningLayout;
+@property (nonatomic) CharCardsTransitionType transitionType;
 @property (nonatomic) BOOL shouldRestartTransition;
 
 @property (strong, nonatomic, readwrite) CharCardCollectionView *topCard;
@@ -37,6 +38,8 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 -(instancetype) init {
     self = [super init];
     if(self) {
+        self.panningEnabled = YES;
+        self.tapEnabled = YES;
         self.clipsToBounds = YES;
         self.cardsType = [[NSMutableArray alloc] init];
         self.cardsData = [[NSMutableArray alloc] init];
@@ -74,6 +77,17 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         
         [self addGestureRecognizer:self.tapRecognizer];
         [self addGestureRecognizer:self.panRecognizer];
+        
+        self.tapRecognizer.enabled = self.tapEnabled;
+        self.panRecognizer.enabled = self.panningEnabled;
+    }
+    return self;
+}
+
+-(instancetype) initWithTransitionType: (CharCardsTransitionType) transitionType {
+    self = [self init];
+    if(self) {
+        self.transitionType = transitionType;
     }
     return self;
 }
@@ -88,18 +102,21 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 -(CharCardsNoneViewLayout *) noneLayout {
     if(_noneLayout) return _noneLayout;
     _noneLayout = [[CharCardsNoneViewLayout alloc] init];
+    _noneLayout.transitionType = self.transitionType;
     return _noneLayout;
 }
 
 -(CharCardsMinViewLayout *) minLayout {
     if(_minLayout) return _minLayout;
     _minLayout = [[CharCardsMinViewLayout alloc] initWithMinHeight:self.minHeight];
+    _minLayout.transitionType = self.transitionType;
     return _minLayout;
 }
 
 -(CharCardsMaxViewLayout *) maxLayout {
     if(_maxLayout) return _maxLayout;
     _maxLayout = [[CharCardsMaxViewLayout alloc] initWithTopInset:self.topInset];
+    _maxLayout.transitionType = self.transitionType;
     return _maxLayout;
 }
 
@@ -159,7 +176,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
                 self.shouldRestartTransition = YES;
                 self.currentTransitioningLayout = nil;
                 
-                self.panRecognizer.enabled = YES;
+                if(self.panningEnabled) self.panRecognizer.enabled = YES;
                 
                 if(self.collectionView.collectionViewLayout == self.minLayout && finish) {
                     [self.delegate cardsView:self didChangeState:CharCardsViewStateMin fromOldState:state];
@@ -284,10 +301,17 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 }
 
 -(void) push:(id) data withIdentifier:(NSString *) identifier completion:(void (^)(BOOL finished))completion {
+    [self push:data withIdentifier:identifier state:CharCardsViewStateMin completion:completion];
+}
+
+-(void) push:(id)data withIdentifier:(NSString *) identifier state:(CharCardsViewState) state completion:(void (^)(BOOL finished))completion {
     self.panRecognizer.enabled = NO;
+    
     CharCardsViewState oldState = CharCardsViewStateNone;
     if(self.collectionView.collectionViewLayout == self.minLayout) oldState = CharCardsViewStateMin;
     else if(self.collectionView.collectionViewLayout == self.maxLayout) oldState = CharCardsViewStateMax;
+    
+    if(state == CharCardsViewStateCurrent) state = (oldState == CharCardsViewStateNone)?CharCardsViewStateMin:oldState;
     
     NSIndexPath *path = [NSIndexPath indexPathForRow:self.cardsType.count inSection:0];
     [self.cardsType addObject:identifier];
@@ -297,8 +321,10 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         [self.collectionView insertItemsAtIndexPaths:@[path]];
     } completion:^(BOOL finished) {
         if(completion) completion(finished);
-        self.panRecognizer.enabled = YES;
-        if(oldState == CharCardsViewStateNone) [self _setState:CharCardsViewStateMin fromState:oldState];
+        
+        if(self.panningEnabled) self.panRecognizer.enabled = YES;
+        
+        if(oldState == CharCardsViewStateNone) [self _setState:state fromState:oldState];
         if(self.collectionView.collectionViewLayout == self.maxLayout) self.topCard.scrollView.scrollEnabled = YES;
         else self.topCard.scrollView.scrollEnabled = NO;
     }];

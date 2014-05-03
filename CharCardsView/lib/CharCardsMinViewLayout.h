@@ -13,4 +13,5 @@
 
 @property (nonatomic) CGFloat minHeight;
 -(instancetype) initWithMinHeight:(CGFloat) minHeight;
+@property (nonatomic) CharCardsTransitionType transitionType;
 @end

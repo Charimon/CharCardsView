@@ -25,9 +25,7 @@
     return self;
 }
 
-+(Class) layoutAttributesClass {
-    return [CharCardsLayoutAttributes class];
-}
++(Class) layoutAttributesClass { return [CharCardsLayoutAttributes class]; }
 
 -(void) prepareLayout {
     [super prepareLayout];
@@ -40,8 +38,7 @@
     self.deleteIndexPaths = [NSMutableSet set];
     self.insertIndexPaths = [NSMutableSet set];
     
-    for (UICollectionViewUpdateItem *update in updateItems)
-    {
+    for (UICollectionViewUpdateItem *update in updateItems) {
         if (update.updateAction == UICollectionUpdateActionDelete) [self.deleteIndexPaths addObject:update.indexPathBeforeUpdate];
         else if (update.updateAction == UICollectionUpdateActionInsert) [self.insertIndexPaths addObject:update.indexPathAfterUpdate];
     }
