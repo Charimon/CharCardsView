@@ -28,6 +28,8 @@
 @property (nonatomic) BOOL panningEnabled;
 @property (nonatomic) BOOL tapEnabled;
 
+@property (nonatomic) BOOL propagateTapEvents;
+
 -(void) registerClass:(Class)cardClass forCardWithReuseIdentifier:(NSString *)identifier;
 -(void) setState:(CharCardsViewState) state;
 

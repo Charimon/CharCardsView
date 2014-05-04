@@ -125,6 +125,16 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     else return nil;
 }
 
+-(void) setTapEnabled:(BOOL)tapEnabled {
+    _tapEnabled = tapEnabled;
+    self.tapRecognizer.enabled = tapEnabled;
+}
+
+-(void) setPanningEnabled:(BOOL)panningEnabled {
+    _panningEnabled = panningEnabled;
+    self.panRecognizer.enabled = panningEnabled;
+}
+
 -(UITapGestureRecognizer *) tapRecognizer {
     if(_tapRecognizer) return _tapRecognizer;
     _tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapRecognizerTapped:)];
@@ -179,13 +189,13 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
                 if(self.panningEnabled) self.panRecognizer.enabled = YES;
                 
                 if(self.collectionView.collectionViewLayout == self.minLayout && finish) {
-                    [self.delegate cardsView:self didChangeState:CharCardsViewStateMin fromOldState:state];
+                    [self _setState:CharCardsViewStateMin fromState:state];
                 } else if(self.collectionView.collectionViewLayout == self.maxLayout && finish) {
-                    [self.delegate cardsView:self didChangeState:CharCardsViewStateMax fromOldState:state];
+                    [self _setState:CharCardsViewStateMax fromState:state];
                 } else if(self.collectionView.collectionViewLayout == self.minLayout && !finish) {
-                    [self.delegate cardsView:self didChangeState:CharCardsViewStateMin fromOldState:CharCardsViewStateMin];
+                    [self _setState:CharCardsViewStateMin fromState:CharCardsViewStateMin];
                 } else if(self.collectionView.collectionViewLayout == self.maxLayout && !finish) {
-                    [self.delegate cardsView:self didChangeState:CharCardsViewStateMax fromOldState:CharCardsViewStateMax];
+                    [self _setState:CharCardsViewStateMax fromState:CharCardsViewStateMax];
                 }
                 
             }];
@@ -296,6 +306,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 }
 -(void) setTopInset:(CGFloat)topInset {
     _topInset = topInset;
+    NSLog(@"set inset: %f", topInset);
     self.maxLayout.topInset = topInset;
     [self.maxLayout invalidateLayout];
 }
@@ -393,6 +404,8 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 -(CharCardCollectionView *) collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     NSString *identifier = [self.cardsType objectAtIndex:indexPath.row];
     id data = [self.cardsData objectAtIndex:indexPath.row];
+    if(data == [NSNull null]) data = nil;
+    
     CharCardCollectionView *card = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     [card updateWithData:data layout:self.collectionView.collectionViewLayout];
     return card;
@@ -404,6 +417,9 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     } else if(self.collectionView.collectionViewLayout == self.minLayout) {
         CGPoint cPoint = [self convertPoint:point toView:self.collectionView];
         return [self.collectionView indexPathForItemAtPoint:cPoint] != nil;
+    } else if(self.propagateTapEvents) {
+        CGPoint tPoint = [self convertPoint:point toView:self.topCard];
+        return [self.topCard pointInside:tPoint withEvent:event];
     } else return [super pointInside:point withEvent:event];
 }
 

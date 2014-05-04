@@ -7,11 +7,12 @@
 //
 
 #import "CharCardCollectionView.h"
+#import "CharCardsCollectionView.h"
+
 #import "CharCardsMaxViewLayout.h"
 #import "CharCardsMinViewLayout.h"
 
 @interface CharCardCollectionView()<UIScrollViewDelegate>
-@property (nonatomic) CGFloat topInset;
 @end
 
 @implementation CharCardCollectionView
@@ -52,7 +53,7 @@
 }
 
 -(CGFloat) maxHeight {
-    return self.superview.bounds.size.height - self.topInset;
+    return self.superview.bounds.size.height - self.cardsView.topInset;
 }
 
 -(void) layoutSublayersOfLayer:(CALayer *)layer {
@@ -64,14 +65,43 @@
     }
 }
 
+-(CharCardsCollectionView *) cardsView {
+    if([self.superview.superview isKindOfClass:[CharCardsCollectionView class]]) {
+        return (CharCardsCollectionView *)self.superview.superview;
+    } else {
+        return nil;
+    }
+}
+
+
+-(void) didMoveToSuperview {
+    [super didMoveToSuperview];
+    if([self.superview isKindOfClass:[UICollectionView class]]) {
+        self.cardsView = (CharCardsCollectionView *) self.superview;
+        
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidChangeFrame:) name:UIKeyboardDidChangeFrameNotification object:nil];
+    } else {
+        self.cardsView = nil;
+        [self resignFirstResponder];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+    }
+}
+
+
 -(void) applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
     [super applyLayoutAttributes:layoutAttributes];
     self.scrollView.frame = CGRectMake(0, 0, layoutAttributes.size.width, layoutAttributes.size.height);
     
     CGFloat percentChange = 0;
     
-    if((self.maxHeight > 0 || self.minHeight > 0) && (self.minHeight != self.maxHeight)) {
-        percentChange = (layoutAttributes.size.height - self.minHeight)/(self.maxHeight - self.minHeight);
+    if((self.maxHeight > 0 || self.cardsView.minHeight > 0) && (self.cardsView.minHeight != self.maxHeight)) {
+        percentChange = (layoutAttributes.size.height - self.cardsView.minHeight)/(self.maxHeight - self.cardsView.minHeight);
     }
     CGFloat insetHeight = self.superview.frame.size.height - self.maxHeight;
     if(self.maxHeight == 0) insetHeight = 0;
@@ -95,11 +125,6 @@
         if([transitional.nextLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id)transitional.nextLayout;
         else if([transitional.currentLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id)transitional.currentLayout;
     }
-    if(maxLayout) self.topInset = maxLayout.topInset;
-    else self.topInset = 0;
-    
-    if(minLayout) self.minHeight = minLayout.minHeight;
-    else self.minHeight = 0.f;
 }
 
 -(void) updateWithData:(id) data layout:(UICollectionViewLayout *) layout {
@@ -115,11 +140,6 @@
         if([transitional.nextLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id)transitional.nextLayout;
         else if([transitional.currentLayout isKindOfClass:[CharCardsMinViewLayout class]]) minLayout = (id)transitional.currentLayout;
     }
-    if(maxLayout) self.topInset = maxLayout.topInset;
-    else self.topInset = 0;
-    
-    if(minLayout) self.minHeight = minLayout.minHeight;
-    else self.minHeight = 0.f;
 }
 
 
@@ -127,4 +147,23 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if(scrollView.contentOffset.y <= 0) scrollView.contentOffset = CGPointMake(0, 0);
 }
+
+#pragma mark NSNotificationCenter keybaord
+-(void) keyboardWillShow: (NSNotification *) notification {
+    CGRect keyboardFrameEnd = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    keyboardFrameEnd = [self.contentView convertRect:keyboardFrameEnd fromView:nil];
+    
+    CGFloat bottomInset = self.contentView.frame.size.height - keyboardFrameEnd.origin.y;
+    self.scrollView.contentInset = UIEdgeInsetsMake(0, 0, bottomInset, 0);
+    self.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, bottomInset, 0);
+}
+-(void) keyboardDidShow: (NSNotification *) notification {}
+-(void) keyboardWillHide: (NSNotification *) notification {
+    self.scrollView.contentInset = UIEdgeInsetsZero;
+    self.scrollView.scrollIndicatorInsets = UIEdgeInsetsZero;
+}
+-(void) keyboardDidHide: (NSNotification *) notification {}
+-(void) keyboardWillChangeFrame: (NSNotification *) notification {}
+-(void) keyboardDidChangeFrame: (NSNotification *) notification {}
+
 @end
