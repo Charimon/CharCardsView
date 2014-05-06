@@ -172,9 +172,10 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         if(self.shouldRestartTransition && self.currentTransitioningLayout != self.collectionView.collectionViewLayout) {
             self.shouldRestartTransition = NO;
             
-            CharCardsViewState state = [self currentState];
-            
+            CharCardsViewState oldState = [self currentState];
             self.currentTransitioningLayout = [self.collectionView startInteractiveTransitionToCollectionViewLayout:newLayout completion:^(BOOL completed, BOOL finish) {
+                
+                CharCardsViewState state = [self currentState];
                 if(state == CharCardsViewStateMax) self.topCard.scrollView.scrollEnabled = YES;
                 else self.topCard.scrollView.scrollEnabled = NO;
                 
@@ -184,9 +185,9 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
                 if(self.panningEnabled) self.panRecognizer.enabled = YES;
                 
                 if(state == CharCardsViewStateMin && finish) {
-                    [self _setState:CharCardsViewStateMin fromState:state];
+                    [self _setState:state fromState:oldState];
                 } else if(state == CharCardsViewStateMax && finish) {
-                    [self _setState:state fromState:state];
+                    [self _setState:state fromState:oldState];
                 } else if( state == CharCardsViewStateMin && !finish) {
                     [self _setState:state fromState:CharCardsViewStateMin];
                 } else if( state == CharCardsViewStateMax && !finish) {
