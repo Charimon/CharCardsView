@@ -92,11 +92,11 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     return self;
 }
 
--(CharCardsViewState ) state {
+-(CharCardsViewState) currentState {
     if(self.collectionView.collectionViewLayout == self.minLayout) return CharCardsViewStateMin;
     else if(self.collectionView.collectionViewLayout == self.maxLayout) return CharCardsViewStateMax;
     else if(self.collectionView.collectionViewLayout == self.noneLayout) return CharCardsViewStateNone;
-    else return CharCardsViewStateNone;
+    else return CharCardsViewStateTransitioning;
 }
 
 -(CharCardsNoneViewLayout *) noneLayout {
@@ -146,13 +146,10 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     CGPoint tapPoint = [tapRecognizer locationInView:self.collectionView];
     if(self.topCard.insetView && CGRectContainsPoint(self.topCard.insetView.bounds, tapPoint)) return;
 
-    CharCardsViewState state = CharCardsViewStateNone;
-    if(self.collectionView.collectionViewLayout == self.minLayout) state = CharCardsViewStateMin;
-    else if(self.collectionView.collectionViewLayout == self.maxLayout) state = CharCardsViewStateMax;
-    
-    if(self.collectionView.collectionViewLayout == self.minLayout && [self.collectionView indexPathForItemAtPoint:tapPoint]) {
+    CharCardsViewState state = [self currentState];
+    if(state == CharCardsViewStateMin && [self.collectionView indexPathForItemAtPoint:tapPoint]) {
         [self _setState:CharCardsViewStateMax fromState:state];
-    } else if(self.collectionView.collectionViewLayout == self.maxLayout && ![self.collectionView indexPathForItemAtPoint:tapPoint]) {
+    } else if(state == CharCardsViewStateMax && ![self.collectionView indexPathForItemAtPoint:tapPoint]) {
         [self _setState:CharCardsViewStateMin fromState:state];
     }
 }
@@ -171,16 +168,14 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         CGPoint transition = [panRecognizer translationInView:self.panRecognizer.view];
         if(self.topCard.scrollView.scrollEnabled && transition.y < 0) return;
         
-        UICollectionViewLayout *newLayout = (self.collectionView.collectionViewLayout == self.maxLayout)?self.minLayout:self.maxLayout;
+        UICollectionViewLayout *newLayout = ([self currentState] == CharCardsViewStateMax)?self.minLayout:self.maxLayout;
         if(self.shouldRestartTransition && self.currentTransitioningLayout != self.collectionView.collectionViewLayout) {
             self.shouldRestartTransition = NO;
             
-            CharCardsViewState state = CharCardsViewStateNone;
-            if(self.collectionView.collectionViewLayout == self.minLayout) state = CharCardsViewStateMin;
-            else if(self.collectionView.collectionViewLayout == self.maxLayout) state = CharCardsViewStateMax;
+            CharCardsViewState state = [self currentState];
             
             self.currentTransitioningLayout = [self.collectionView startInteractiveTransitionToCollectionViewLayout:newLayout completion:^(BOOL completed, BOOL finish) {
-                if(self.collectionView.collectionViewLayout == self.maxLayout) self.topCard.scrollView.scrollEnabled = YES;
+                if(state == CharCardsViewStateMax) self.topCard.scrollView.scrollEnabled = YES;
                 else self.topCard.scrollView.scrollEnabled = NO;
                 
                 self.shouldRestartTransition = YES;
@@ -188,14 +183,14 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
                 
                 if(self.panningEnabled) self.panRecognizer.enabled = YES;
                 
-                if(self.collectionView.collectionViewLayout == self.minLayout && finish) {
+                if(state == CharCardsViewStateMin && finish) {
                     [self _setState:CharCardsViewStateMin fromState:state];
-                } else if(self.collectionView.collectionViewLayout == self.maxLayout && finish) {
-                    [self _setState:CharCardsViewStateMax fromState:state];
-                } else if(self.collectionView.collectionViewLayout == self.minLayout && !finish) {
-                    [self _setState:CharCardsViewStateMin fromState:CharCardsViewStateMin];
-                } else if(self.collectionView.collectionViewLayout == self.maxLayout && !finish) {
-                    [self _setState:CharCardsViewStateMax fromState:CharCardsViewStateMax];
+                } else if(state == CharCardsViewStateMax && finish) {
+                    [self _setState:state fromState:state];
+                } else if( state == CharCardsViewStateMin && !finish) {
+                    [self _setState:state fromState:CharCardsViewStateMin];
+                } else if( state == CharCardsViewStateMax && !finish) {
+                    [self _setState:state fromState:CharCardsViewStateMax];
                 }
                 
             }];
@@ -318,9 +313,8 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 -(void) push:(id)data withIdentifier:(NSString *) identifier state:(CharCardsViewState) state completion:(void (^)(BOOL finished))completion {
     self.panRecognizer.enabled = NO;
     
-    CharCardsViewState oldState = CharCardsViewStateNone;
-    if(self.collectionView.collectionViewLayout == self.minLayout) oldState = CharCardsViewStateMin;
-    else if(self.collectionView.collectionViewLayout == self.maxLayout) oldState = CharCardsViewStateMax;
+    CharCardsViewState oldState = [self currentState];
+    if(oldState == CharCardsViewStateTransitioning) oldState = CharCardsViewStateMin;
     
     if(state == CharCardsViewStateCurrent) state = (oldState == CharCardsViewStateNone)?CharCardsViewStateMin:oldState;
     
@@ -336,7 +330,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         if(self.panningEnabled) self.panRecognizer.enabled = YES;
         
         if(oldState == CharCardsViewStateNone) [self _setState:state fromState:oldState];
-        if(self.collectionView.collectionViewLayout == self.maxLayout) self.topCard.scrollView.scrollEnabled = YES;
+        if([self currentState] == CharCardsViewStateMax) self.topCard.scrollView.scrollEnabled = YES;
         else self.topCard.scrollView.scrollEnabled = NO;
     }];
 }
@@ -344,9 +338,8 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 -(void) setState:(CharCardsViewState) state {
     self.topCard.scrollView.scrollEnabled = NO;
     if(state == CharCardsViewStateNone) {
-        CharCardsViewState oldState = CharCardsViewStateNone;
-        if(self.collectionView.collectionViewLayout == self.minLayout) oldState = CharCardsViewStateMin;
-        else if(self.collectionView.collectionViewLayout == self.maxLayout) oldState = CharCardsViewStateMax;
+        CharCardsViewState oldState = [self currentState];
+        if(oldState == CharCardsViewStateTransitioning) oldState = CharCardsViewStateMin;
         [self _setState:state fromState:oldState];
         
         NSMutableArray *pathsToRemove = [NSMutableArray array];
@@ -359,14 +352,12 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         } completion:^(BOOL finished) {}];
         
     } else if(state == CharCardsViewStateMin) {
-        CharCardsViewState oldState = CharCardsViewStateNone;
-        if(self.collectionView.collectionViewLayout == self.minLayout) oldState = CharCardsViewStateMin;
-        else if(self.collectionView.collectionViewLayout == self.maxLayout) oldState = CharCardsViewStateMax;
+        CharCardsViewState oldState = [self currentState];
+        if(oldState == CharCardsViewStateTransitioning) oldState = CharCardsViewStateMin;
         [self _setState:state fromState:oldState];
     } else if(state == CharCardsViewStateMax) {
-        CharCardsViewState oldState = CharCardsViewStateNone;
-        if(self.collectionView.collectionViewLayout == self.minLayout) oldState = CharCardsViewStateMin;
-        else if(self.collectionView.collectionViewLayout == self.maxLayout) oldState = CharCardsViewStateMax;
+        CharCardsViewState oldState = [self currentState];
+        if(oldState == CharCardsViewStateTransitioning) oldState = CharCardsViewStateMin;
         [self _setState:state fromState:oldState];
     }
 }
@@ -412,9 +403,9 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 }
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
-    if(self.collectionView.collectionViewLayout == self.noneLayout) {
-        return NO;
-    } else if(self.collectionView.collectionViewLayout == self.minLayout) {
+    CharCardsViewState state = [self currentState];
+    if(state == CharCardsViewStateNone) { return NO;}
+    else if(state == CharCardsViewStateMin) {
         CGPoint cPoint = [self convertPoint:point toView:self.collectionView];
         return [self.collectionView indexPathForItemAtPoint:cPoint] != nil;
     } else if(self.propagateTapEvents) {

@@ -12,7 +12,8 @@ typedef NS_ENUM(NSInteger, CharCardsViewState) {
     CharCardsViewStateCurrent = -1,
     CharCardsViewStateNone = 0,
     CharCardsViewStateMin = 1,
-    CharCardsViewStateMax = 2
+    CharCardsViewStateMax = 2,
+    CharCardsViewStateTransitioning = 3
 };
 
 typedef NS_ENUM(NSUInteger, CharCardsTransitionType) {
