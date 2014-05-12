@@ -279,7 +279,7 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
 
 -(CharCardsCollectionView *) cardsView {
     if(_cardsView) return _cardsView;
-    _cardsView = [[CharCardsCollectionView alloc] initWithTransitionType:CharCardsTransitionSlidOverFromRight];
+    _cardsView = [[CharCardsCollectionView alloc] initWithTransitionType:CharCardsTransitionSlideFromRight];
     [_cardsView registerClass:[CharCustomCardCollectionView class] forCardWithReuseIdentifier:CARD_VIEW_ID];
     _cardsView.minHeight = MIN_HEIGHT;
     _cardsView.topInset = MAX_TOP_INSET;
