@@ -290,7 +290,6 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 }
 -(void) setTopInset:(CGFloat)topInset {
     _topInset = topInset;
-    NSLog(@"set inset: %f", topInset);
     self.maxLayout.topInset = topInset;
     [self.maxLayout invalidateLayout];
 }
@@ -357,7 +356,6 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     BOOL transitional = [[self.collectionView collectionViewLayout] isKindOfClass:[UICollectionViewTransitionLayout class]];
     
     self.newState = newState;
-    NSLog(@"CCV newState: %d", newState);
     [UIView animateWithDuration:0.6f
                           delay:0
          usingSpringWithDamping:.8f initialSpringVelocity:1.1f
