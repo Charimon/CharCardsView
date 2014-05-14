@@ -148,12 +148,12 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 -(void) tapRecognizerTapped: (UITapGestureRecognizer *) tapRecognizer {
     CGPoint tapPoint = [tapRecognizer locationInView:self.collectionView];
     if(self.topCard.insetView && CGRectContainsPoint(self.topCard.insetView.bounds, tapPoint)) return;
-
+    
     CharCardsViewState state = [self currentState];
     if(state == CharCardsViewStateMin && [self.collectionView indexPathForItemAtPoint:tapPoint]) {
-        [self _setState:CharCardsViewStateMax fromState:state completion:nil];
+        [self _setState:CharCardsViewStateMax fromState:state animation:YES completion:nil];
     } else if(state == CharCardsViewStateMax && ![self.collectionView indexPathForItemAtPoint:tapPoint]) {
-        [self _setState:CharCardsViewStateMin fromState:state completion:nil];
+        [self _setState:CharCardsViewStateMin fromState:state animation:YES completion:nil];
     }
 }
 
@@ -185,15 +185,16 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
             self.transitionLayout = nil;
             
             CharCardsViewState state = [self currentState];
+            
             __typeof__(self) __weak weakSelf = self;
             if(state == CharCardsViewStateMin && finish) {
-                [self _setState:state fromState:oldState completion:^(BOOL finished) { weakSelf.panRecognizer.enabled = YES; }];
+                [self _setState:state fromState:oldState animation:NO completion:^(BOOL finished) { weakSelf.panRecognizer.enabled = YES; }];
             } else if(state == CharCardsViewStateMax && finish) {
-                [self _setState:state fromState:oldState completion:^(BOOL finished) { weakSelf.panRecognizer.enabled = YES; }];
+                [self _setState:state fromState:oldState animation:NO completion:^(BOOL finished) { weakSelf.panRecognizer.enabled = YES; }];
             } else if( state == CharCardsViewStateMin && !finish) {
-                [self _setState:state fromState:CharCardsViewStateMin completion:^(BOOL finished) { weakSelf.panRecognizer.enabled = YES; }];
+                [self _setState:state fromState:CharCardsViewStateMin animation:NO completion:^(BOOL finished) { weakSelf.panRecognizer.enabled = YES; }];
             } else if( state == CharCardsViewStateMax && !finish) {
-                [self _setState:state fromState:CharCardsViewStateMax completion:^(BOOL finished) { weakSelf.panRecognizer.enabled = YES; }];
+                [self _setState:state fromState:CharCardsViewStateMax animation:NO completion:^(BOOL finished) { weakSelf.panRecognizer.enabled = YES; }];
             }
         }];
         
@@ -290,6 +291,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 }
 -(void) setTopInset:(CGFloat)topInset {
     _topInset = topInset;
+    NSLog(@"set inset: %f", topInset);
     self.maxLayout.topInset = topInset;
     [self.maxLayout invalidateLayout];
 }
@@ -319,7 +321,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         
         if(self.panningEnabled) self.panRecognizer.enabled = YES;
         
-        if(oldState == CharCardsViewStateNone) [self _setState:self.newState fromState:oldState completion:nil];
+        if(oldState == CharCardsViewStateNone) [self _setState:self.newState fromState:oldState animation:YES completion:nil];
         if([self currentState] == CharCardsViewStateMax) self.topCard.scrollView.scrollEnabled = YES;
         else self.topCard.scrollView.scrollEnabled = NO;
     }];
@@ -330,7 +332,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     if(state == CharCardsViewStateNone) {
         CharCardsViewState oldState = [self currentState];
         if(oldState == CharCardsViewStateTransitioning) oldState = CharCardsViewStateMin;
-        [self _setState:state fromState:oldState completion:nil];
+        [self _setState:state fromState:oldState animation:YES completion:nil];
         
         NSMutableArray *pathsToRemove = [NSMutableArray array];
         for(NSUInteger i=0; i<self.cardsType.count; i++) { [pathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];}
@@ -344,37 +346,51 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     } else if(state == CharCardsViewStateMin) {
         CharCardsViewState oldState = [self currentState];
         if(oldState == CharCardsViewStateTransitioning) oldState = CharCardsViewStateMin;
-        [self _setState:state fromState:oldState completion:nil];
+        [self _setState:state fromState:oldState animation:YES completion:nil];
     } else if(state == CharCardsViewStateMax) {
         CharCardsViewState oldState = [self currentState];
         if(oldState == CharCardsViewStateTransitioning) oldState = CharCardsViewStateMin;
-        [self _setState:state fromState:oldState completion:nil];
+        [self _setState:state fromState:oldState animation:YES completion:nil];
     }
 }
 
--(void) _setState:(CharCardsViewState) newState fromState:(CharCardsViewState) oldState completion:(void (^)(BOOL finished))completion {
+-(void) _setState:(CharCardsViewState) newState fromState:(CharCardsViewState) oldState animation:(BOOL) animation completion:(void (^)(BOOL finished))completion {
     BOOL transitional = [[self.collectionView collectionViewLayout] isKindOfClass:[UICollectionViewTransitionLayout class]];
     
     self.newState = newState;
-    [UIView animateWithDuration:0.6f
-                          delay:0
-         usingSpringWithDamping:.8f initialSpringVelocity:1.1f
-                        options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-                            if(self.newState == CharCardsViewStateNone && !transitional) {
-                                self.collectionView.collectionViewLayout = self.noneLayout;
-                            } else if(self.newState == CharCardsViewStateMin && !transitional) {
-                                self.collectionView.collectionViewLayout = self.minLayout;
-                                [self.topCard.scrollView setContentOffset:CGPointZero animated:NO];
-                            } else if(self.newState == CharCardsViewStateMax && !transitional) {
-                                self.collectionView.collectionViewLayout = self.maxLayout;
-                            }
-                            [self.delegate cardsView:self willChangeState:self.newState fromOldState:oldState];
-                            
-                        } completion:^(BOOL finished) {
-                            if(completion) completion(finished);
-                            self.topCard.scrollView.scrollEnabled = (self.newState == CharCardsViewStateMax);
-                            [self.delegate cardsView:self didChangeState:self.newState fromOldState:oldState];
-                        }];
+    if(animation) {
+        [UIView animateWithDuration:0.6f
+                              delay:0
+             usingSpringWithDamping:.8f initialSpringVelocity:1.1f
+                            options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+                                if(self.newState == CharCardsViewStateNone && !transitional) {
+                                    self.collectionView.collectionViewLayout = self.noneLayout;
+                                } else if(self.newState == CharCardsViewStateMin && !transitional) {
+                                    self.collectionView.collectionViewLayout = self.minLayout;
+                                    [self.topCard.scrollView setContentOffset:CGPointZero animated:NO];
+                                } else if(self.newState == CharCardsViewStateMax && !transitional) {
+                                    self.collectionView.collectionViewLayout = self.maxLayout;
+                                }
+                                [self.delegate cardsView:self willChangeState:self.newState fromOldState:oldState];
+                            } completion:^(BOOL finished) {
+                                if(completion) completion(finished);
+                                self.topCard.scrollView.scrollEnabled = (self.newState == CharCardsViewStateMax);
+                                [self.delegate cardsView:self didChangeState:self.newState fromOldState:oldState];
+                            }];
+    } else {
+        if(self.newState == CharCardsViewStateNone && !transitional) {
+            self.collectionView.collectionViewLayout = self.noneLayout;
+        } else if(self.newState == CharCardsViewStateMin && !transitional) {
+            self.collectionView.collectionViewLayout = self.minLayout;
+            [self.topCard.scrollView setContentOffset:CGPointZero animated:NO];
+        } else if(self.newState == CharCardsViewStateMax && !transitional) {
+            self.collectionView.collectionViewLayout = self.maxLayout;
+        }
+        [self.delegate cardsView:self willChangeState:self.newState fromOldState:oldState];
+        if(completion) completion(YES);
+        self.topCard.scrollView.scrollEnabled = (self.newState == CharCardsViewStateMax);
+        [self.delegate cardsView:self didChangeState:self.newState fromOldState:oldState];
+    }
 }
 
 -(void)registerClass:(Class)cardClass forCardWithReuseIdentifier:(NSString *)identifier { [self.collectionView registerClass:cardClass forCellWithReuseIdentifier:identifier]; }
@@ -405,12 +421,6 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         return [self.topCard pointInside:tPoint withEvent:event];
     } else return [super pointInside:point withEvent:event];
 }
-
-//#pragma mark UICollectionViewDelegate
-//- (UICollectionViewTransitionLayout *)collectionView:(UICollectionView *)collectionView transitionLayoutForOldLayout:(UICollectionViewLayout *)fromLayout newLayout:(UICollectionViewLayout *)toLayout
-//{
-//    return [[TLTransitionLayout alloc] initWithCurrentLayout:fromLayout nextLayout:toLayout supplementaryKinds:nil];
-//}
 
 #pragma mark UIGestureRecognizerDelegate
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
