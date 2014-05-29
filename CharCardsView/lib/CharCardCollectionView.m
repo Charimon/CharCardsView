@@ -127,6 +127,14 @@
     }
 }
 
+-(void) didTransitionFromLayout:(UICollectionViewLayout *)oldLayout toLayout:(UICollectionViewLayout *)newLayout {
+    if([newLayout isKindOfClass:[CharCardsMaxViewLayout class]] && self.insetView) {
+        self.shadow.opacity = 0.f;
+    } else {
+        self.shadow.opacity = 1.f;
+    }
+}
+
 -(void) updateWithData:(id) data layout:(UICollectionViewLayout *) layout {
     CharCardsMaxViewLayout *maxLayout;
     CharCardsMinViewLayout *minLayout;

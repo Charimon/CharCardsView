@@ -291,7 +291,6 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 }
 -(void) setTopInset:(CGFloat)topInset {
     _topInset = topInset;
-    NSLog(@"set inset: %f", topInset);
     self.maxLayout.topInset = topInset;
     [self.maxLayout invalidateLayout];
 }
