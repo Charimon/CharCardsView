@@ -102,6 +102,24 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     else return CharCardsViewStateTransitioning;
 }
 
+-(CharCardsViewState) stateFromLayout:(UICollectionViewLayout *) layout {
+    if(layout == self.minLayout) return CharCardsViewStateMin;
+    else if(layout == self.maxLayout) return CharCardsViewStateMax;
+    else if(layout == self.noneLayout) return CharCardsViewStateNone;
+    else return CharCardsViewStateNone;
+}
+
+-(CharCardsViewState) destinationState {
+    if(self.collectionView.collectionViewLayout == self.minLayout) return CharCardsViewStateMin;
+    else if(self.collectionView.collectionViewLayout == self.maxLayout) return CharCardsViewStateMax;
+    else if(self.collectionView.collectionViewLayout == self.noneLayout) return CharCardsViewStateNone;
+    else if([self.collectionView.collectionViewLayout isKindOfClass:[UICollectionViewTransitionLayout class]]) {
+        UICollectionViewTransitionLayout *transitionalLayout = (id)self.collectionView.collectionViewLayout;
+        return [self stateFromLayout:[transitionalLayout nextLayout]];
+    }
+    else return CharCardsViewStateNone;
+}
+
 -(CharCardsNoneViewLayout *) noneLayout {
     if(_noneLayout) return _noneLayout;
     _noneLayout = [[CharCardsNoneViewLayout alloc] init];
@@ -295,11 +313,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     [self.maxLayout invalidateLayout];
 }
 
--(void) push:(id) data withIdentifier:(NSString *) identifier completion:(void (^)(BOOL finished))completion {
-    [self push:data withIdentifier:identifier state:CharCardsViewStateMin completion:completion];
-}
-
--(void) push:(id)data withIdentifier:(NSString *) identifier state:(CharCardsViewState) state completion:(void (^)(BOOL finished))completion {
+-(void) push:(id)data withIdentifier:(NSString *) identifier state:(CharCardsViewState) state completion:(void (^)(BOOL finished, CharCardsViewState state))completion {
     self.panRecognizer.enabled = NO;
     
     CharCardsViewState oldState = [self currentState];
@@ -316,7 +330,10 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         [self.collectionView insertItemsAtIndexPaths:@[path]];
     } completion:^(BOOL finished) {
         if(self.newState != state) finished = NO;
-        if(completion) completion(finished);
+        
+        CharCardsViewState destinationState = [self destinationState];
+        
+        if(completion) completion(finished, destinationState);
         
         if(self.panningEnabled) self.panRecognizer.enabled = YES;
         
