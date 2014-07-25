@@ -108,6 +108,7 @@
     
     if(insetHeight < 0) insetHeight = 0;
     self.insetView.frame = CGRectMake(0, -insetHeight*percentChange, layoutAttributes.size.width, insetHeight);
+
 }
 
 - (void)willTransitionFromLayout:(UICollectionViewLayout *)oldLayout toLayout:(UICollectionViewLayout *)newLayout {

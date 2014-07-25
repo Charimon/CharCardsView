@@ -32,6 +32,15 @@
     }
 }
 
+-(void)prepareForTransitionToLayout:(UICollectionViewLayout *)newLayout {
+    self.height = 0;
+//    if([newLayout isKindOfClass:[CharCardsMinViewLayout class]]) {
+//        self.height = ((CharCardsMinViewLayout *)newLayout).minHeight;
+//    } else if([newLayout isKindOfClass:[CharCardsMaxViewLayout class]]) {
+//        self.height = self.collectionView.bounds.size.height - ((CharCardsMaxViewLayout *)newLayout).topInset;
+//    }
+}
+
 -(void) prepareForCollectionViewUpdates:(NSArray *)updateItems {
     [super prepareForCollectionViewUpdates:updateItems];
     

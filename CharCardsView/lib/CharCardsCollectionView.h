@@ -27,6 +27,7 @@
 
 @property (nonatomic) BOOL panningEnabled;
 @property (nonatomic) BOOL tapEnabled;
+@property (nonatomic) CGFloat animationDuration;
 
 @property (nonatomic) BOOL propagateTapEvents;
 
@@ -34,6 +35,5 @@
 -(void) setState:(CharCardsViewState) state;
 -(CharCardsViewState) currentState;
 
--(void) push:(id)data withIdentifier:(NSString *) identifier completion:(void (^)(BOOL finished))completion;
 -(void) push:(id)data withIdentifier:(NSString *) identifier state:(CharCardsViewState) state completion:(void (^)(BOOL finished, CharCardsViewState state))completion;
 @end

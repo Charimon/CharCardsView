@@ -47,6 +47,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         self.cardsType = [[NSMutableArray alloc] init];
         self.cardsData = [[NSMutableArray alloc] init];
         self.shouldRestartTransition = YES;
+        self.animationDuration = 0.6f;
         
         [self addConstraints:@[[NSLayoutConstraint constraintWithItem:self.collectionView
                                                             attribute:NSLayoutAttributeLeading
@@ -337,7 +338,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         
         if(self.panningEnabled) self.panRecognizer.enabled = YES;
         
-        if(oldState == CharCardsViewStateNone) [self _setState:self.newState fromState:oldState animation:YES completion:nil];
+        if(oldState == CharCardsViewStateNone || self.newState != [self currentState]) [self _setState:self.newState fromState:oldState animation:YES completion:nil];
         if([self currentState] == CharCardsViewStateMax) self.topCard.scrollView.scrollEnabled = YES;
         else self.topCard.scrollView.scrollEnabled = NO;
     }];
@@ -351,13 +352,15 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         [self _setState:state fromState:oldState animation:YES completion:nil];
         
         NSMutableArray *pathsToRemove = [NSMutableArray array];
-        for(NSUInteger i=0; i<self.cardsType.count; i++) { [pathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];}
+        for(NSUInteger i=0; i<self.cardsType.count; i++) {
+            [pathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+        }
         self.cardsType = [NSMutableArray array];
         self.cardsData = [NSMutableArray array];
         
         [self.collectionView performBatchUpdates:^{
             [self.collectionView deleteItemsAtIndexPaths:pathsToRemove];
-        } completion:^(BOOL finished) {}];
+        } completion:nil];
         
     } else if(state == CharCardsViewStateMin) {
         CharCardsViewState oldState = [self currentState];
@@ -375,7 +378,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
     
     self.newState = newState;
     if(animation) {
-        [UIView animateWithDuration:0.6f
+        [UIView animateWithDuration:self.animationDuration
                               delay:0
              usingSpringWithDamping:.8f initialSpringVelocity:1.1f
                             options:UIViewAnimationOptionBeginFromCurrentState animations:^{
@@ -413,9 +416,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 
 #pragma mark UICollectionViewDataSource
 -(NSInteger) numberOfSectionsInCollectionView:(UICollectionView *)collectionView {return 1;}
--(NSInteger) collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.cardsType.count;
-}
+-(NSInteger) collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {return self.cardsType.count;}
 -(CharCardCollectionView *) collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     NSString *identifier = [self.cardsType objectAtIndex:indexPath.row];
     id data = [self.cardsData objectAtIndex:indexPath.row];
@@ -428,21 +429,18 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
     CharCardsViewState state = [self currentState];
-    if(state == CharCardsViewStateNone) { return NO;}
-    else if(state == CharCardsViewStateMin) {
-        CGPoint cPoint = [self convertPoint:point toView:self.collectionView];
-        return [self.collectionView indexPathForItemAtPoint:cPoint] != nil;
-    } else if(self.propagateTapEvents) {
-        CGPoint tPoint = [self convertPoint:point toView:self.topCard];
-        return [self.topCard pointInside:tPoint withEvent:event];
-    } else return [super pointInside:point withEvent:event];
+    if(state == CharCardsViewStateNone) return NO;
+    else if(state == CharCardsViewStateMin)
+        return [self.collectionView indexPathForItemAtPoint:[self convertPoint:point toView:self.collectionView]] != nil;
+    else if(self.propagateTapEvents)
+        return [self.topCard pointInside:[self convertPoint:point toView:self.topCard] withEvent:event];
+    else return [super pointInside:point withEvent:event];
 }
 
 #pragma mark UIGestureRecognizerDelegate
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     return YES;
 }
-
 -(void) setNeedsDisplay {
     [super setNeedsDisplay];
     [self.collectionView.collectionViewLayout invalidateLayout];

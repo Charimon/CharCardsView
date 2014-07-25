@@ -7,9 +7,7 @@
 //
 
 #import "CharViewController.h"
-#import "CharCardsView.h"
 #import "CharCardsCollectionView.h"
-#import "CharCustomCardView.h"
 #import "UIColor+Random.h"
 #import "CharCustomCardCollectionView.h"
 #import "CharCardCollectionView.h"
@@ -217,12 +215,11 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
     return _minStateButton;
 }
 -(void) minStateButtonClicked:(id) sender {
-    CharCustomCardView *card = [[CharCustomCardView alloc] initWithMinHeight:MIN_HEIGHT];
-    card.maxTopInset = MAX_TOP_INSET;
-    UIColor *randColor = [UIColor randomColor];
-    card.contentView.backgroundColor = randColor;
-    card.shadow.backgroundColor = randColor.CGColor;
-    [self.cardsView push:@"" withIdentifier:CARD_VIEW_ID completion:nil];
+    if(!self.cardsView.topCard || self.autoStateButton.selected) {
+        [self.cardsView push:@"" withIdentifier:CARD_VIEW_ID state:CharCardsViewStateMin completion:nil];
+    } else {
+        [self.cardsView setState:CharCardsViewStateMin];
+    }
 }
 
 -(UIButton *) maxStateButton {
@@ -237,19 +234,18 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
     return _maxStateButton;
 }
 -(void) maxStateButtonClicked:(id) sender {
-    CharCustomCardView *card = [[CharCustomCardView alloc] initWithMinHeight:MIN_HEIGHT];
-    card.maxTopInset = MAX_TOP_INSET;
-    UIColor *randColor = [UIColor randomColor];
-    card.contentView.backgroundColor = randColor;
-    card.shadow.backgroundColor = randColor.CGColor;
-    [self.cardsView push:@"" withIdentifier:CARD_VIEW_ID completion:nil];
+    if(!self.cardsView.topCard || self.autoStateButton.selected) {
+        [self.cardsView push:@"" withIdentifier:CARD_VIEW_ID state:CharCardsViewStateMax completion:nil];
+    } else {
+        [self.cardsView setState:CharCardsViewStateMax];
+    }
 }
 
 -(UIButton *) autoStateButton {
     if(_autoStateButton) return _autoStateButton;
     _autoStateButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_autoStateButton setTitle:@"auto" forState:UIControlStateNormal];
-    [_autoStateButton setTitle:@"AUTO" forState:UIControlStateSelected];
+    [_autoStateButton setTitle:@"change" forState:UIControlStateNormal];
+    [_autoStateButton setTitle:@"add" forState:UIControlStateSelected];
     [_autoStateButton setContentEdgeInsets:UIEdgeInsetsMake(20, 0, 20, 0)];
     [_autoStateButton addTarget:self action:@selector(autoStateButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     _autoStateButton.backgroundColor = [UIColor randomColor];
@@ -259,20 +255,20 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
 }
 -(void) autoStateButtonClicked:(UIButton *) sender {
     sender.selected = !sender.selected;
-    if(sender.selected) {
-        self.autoTimer = [NSTimer scheduledTimerWithTimeInterval:2.f target:self selector:@selector(autoChange:) userInfo:nil repeats:YES];
-    } else {
-        [self.autoTimer invalidate];
-    }
+//    if(sender.selected) {
+//        self.autoTimer = [NSTimer scheduledTimerWithTimeInterval:2.f target:self selector:@selector(autoChange:) userInfo:nil repeats:YES];
+//    } else {
+//        [self.autoTimer invalidate];
+//    }
 }
 
 -(void) autoChange: (NSTimer *) sender {
     if(sender.isValid) {
-        CharCustomCardView *card = [[CharCustomCardView alloc] initWithMinHeight:MIN_HEIGHT];
-        card.maxTopInset = MAX_TOP_INSET;
-        UIColor *randColor = [UIColor randomColor];
-        card.contentView.backgroundColor = randColor;
-        card.shadow.backgroundColor = randColor.CGColor;
+//        CharCustomCardView *card = [[CharCustomCardView alloc] initWithMinHeight:MIN_HEIGHT];
+//        card.maxTopInset = MAX_TOP_INSET;
+//        UIColor *randColor = [UIColor randomColor];
+//        card.contentView.backgroundColor = randColor;
+//        card.shadow.backgroundColor = randColor.CGColor;
 //        [self.cardsView appendCard:card animated:YES];
     }
 }
@@ -280,6 +276,7 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
 -(CharCardsCollectionView *) cardsView {
     if(_cardsView) return _cardsView;
     _cardsView = [[CharCardsCollectionView alloc] initWithTransitionType:CharCardsTransitionSlideFromRight];
+    _cardsView.animationDuration = 4.f;
     [_cardsView registerClass:[CharCustomCardCollectionView class] forCardWithReuseIdentifier:CARD_VIEW_ID];
     _cardsView.minHeight = MIN_HEIGHT;
     _cardsView.topInset = MAX_TOP_INSET;

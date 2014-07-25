@@ -21,10 +21,7 @@
 		338A53E218F1696B00E4CDBA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 338A53CA18F1696B00E4CDBA /* UIKit.framework */; };
 		338A53EA18F1696B00E4CDBA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 338A53E818F1696B00E4CDBA /* InfoPlist.strings */; };
 		338A53EC18F1696B00E4CDBA /* CharCardsViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A53EB18F1696B00E4CDBA /* CharCardsViewTests.m */; };
-		338A540B18F1F92400E4CDBA /* CharCardsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A540818F1F92400E4CDBA /* CharCardsView.m */; };
-		338A540C18F1F92400E4CDBA /* CharCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A540A18F1F92400E4CDBA /* CharCardView.m */; };
 		338A540F18F1F92E00E4CDBA /* CharViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A540E18F1F92E00E4CDBA /* CharViewController.m */; };
-		338A541218F1F98B00E4CDBA /* CharCustomCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 338A541118F1F98B00E4CDBA /* CharCustomCardView.m */; };
 		33BAF45B18F6489C004EC40F /* UIColor+Random.m in Sources */ = {isa = PBXBuildFile; fileRef = 33BAF45A18F6489C004EC40F /* UIColor+Random.m */; };
 		33C955A31906771200937C32 /* CharCardsCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955A21906771200937C32 /* CharCardsCollectionView.m */; };
 		33C955A61906973200937C32 /* CharCardsMaxViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955A51906973200937C32 /* CharCardsMaxViewLayout.m */; };
@@ -66,14 +63,8 @@
 		338A53E918F1696B00E4CDBA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		338A53EB18F1696B00E4CDBA /* CharCardsViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CharCardsViewTests.m; sourceTree = "<group>"; };
 		338A540618F1F92400E4CDBA /* CharCardsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsConstants.h; path = lib/CharCardsConstants.h; sourceTree = "<group>"; };
-		338A540718F1F92400E4CDBA /* CharCardsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsView.h; path = lib/CharCardsView.h; sourceTree = "<group>"; };
-		338A540818F1F92400E4CDBA /* CharCardsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsView.m; path = lib/CharCardsView.m; sourceTree = "<group>"; };
-		338A540918F1F92400E4CDBA /* CharCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardView.h; path = lib/CharCardView.h; sourceTree = "<group>"; };
-		338A540A18F1F92400E4CDBA /* CharCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardView.m; path = lib/CharCardView.m; sourceTree = "<group>"; };
 		338A540D18F1F92E00E4CDBA /* CharViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharViewController.h; path = test/CharViewController.h; sourceTree = "<group>"; };
 		338A540E18F1F92E00E4CDBA /* CharViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharViewController.m; path = test/CharViewController.m; sourceTree = "<group>"; };
-		338A541018F1F98B00E4CDBA /* CharCustomCardView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharCustomCardView.h; sourceTree = "<group>"; };
-		338A541118F1F98B00E4CDBA /* CharCustomCardView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CharCustomCardView.m; sourceTree = "<group>"; };
 		33BAF45918F6489C004EC40F /* UIColor+Random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Random.h"; sourceTree = "<group>"; };
 		33BAF45A18F6489C004EC40F /* UIColor+Random.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Random.m"; sourceTree = "<group>"; };
 		33C955A11906771200937C32 /* CharCardsCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsCollectionView.h; path = lib/CharCardsCollectionView.h; sourceTree = "<group>"; };
@@ -191,10 +182,6 @@
 			children = (
 				33C955B11907259F00937C32 /* attributes */,
 				33C955AA1906B35300937C32 /* layouts */,
-				338A540718F1F92400E4CDBA /* CharCardsView.h */,
-				338A540818F1F92400E4CDBA /* CharCardsView.m */,
-				338A540918F1F92400E4CDBA /* CharCardView.h */,
-				338A540A18F1F92400E4CDBA /* CharCardView.m */,
 				338A540618F1F92400E4CDBA /* CharCardsConstants.h */,
 				33C955A11906771200937C32 /* CharCardsCollectionView.h */,
 				33C955A21906771200937C32 /* CharCardsCollectionView.m */,
@@ -209,8 +196,6 @@
 			children = (
 				338A540D18F1F92E00E4CDBA /* CharViewController.h */,
 				338A540E18F1F92E00E4CDBA /* CharViewController.m */,
-				338A541018F1F98B00E4CDBA /* CharCustomCardView.h */,
-				338A541118F1F98B00E4CDBA /* CharCustomCardView.m */,
 				33BAF45918F6489C004EC40F /* UIColor+Random.h */,
 				33BAF45A18F6489C004EC40F /* UIColor+Random.m */,
 				332FA1841902C1E3003BA9C3 /* CharCustomCardCollectionView.h */,
@@ -350,13 +335,10 @@
 				338A53D718F1696B00E4CDBA /* CharAppDelegate.m in Sources */,
 				33C955A91906B32F00937C32 /* CharCardsTransitionalViewLayout.m in Sources */,
 				33C955B01907259900937C32 /* CharCardsLayoutAttributes.m in Sources */,
-				338A540C18F1F92400E4CDBA /* CharCardView.m in Sources */,
-				338A540B18F1F92400E4CDBA /* CharCardsView.m in Sources */,
 				33C955A61906973200937C32 /* CharCardsMaxViewLayout.m in Sources */,
 				338A540F18F1F92E00E4CDBA /* CharViewController.m in Sources */,
 				338A53D318F1696B00E4CDBA /* main.m in Sources */,
 				332FA1861902C1E3003BA9C3 /* CharCustomCardCollectionView.m in Sources */,
-				338A541218F1F98B00E4CDBA /* CharCustomCardView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

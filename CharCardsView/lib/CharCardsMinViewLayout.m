@@ -7,7 +7,9 @@
 //
 
 #import "CharCardsMinViewLayout.h"
+#import "CharCardsNoneViewLayout.h"
 #import "CharCardsLayoutAttributes.h"
+
 @interface CharCardsMinViewLayout()
 @property (nonatomic, strong) NSMutableSet *deleteIndexPaths;
 @property (nonatomic, strong) NSMutableSet *insertIndexPaths;
