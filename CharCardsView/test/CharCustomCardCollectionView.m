@@ -7,6 +7,7 @@
 //
 
 #import "CharCustomCardCollectionView.h"
+#import "CharCardsNoneViewLayout.h"
 #import "UIColor+Random.h"
 
 @interface CharCustomCardCollectionView()
@@ -26,7 +27,8 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.scrollView.backgroundColor = [UIColor randomColor];
+        self.backgroundColor = [UIColor blackColor];
+//        self.scrollView.backgroundColor = [UIColor randomColor];
     }
     return self;
 }
@@ -64,9 +66,15 @@
 
 -(void) applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
     [super applyLayoutAttributes:layoutAttributes];
+    
+    CGSize size = layoutAttributes.size;
+    if([layoutAttributes isKindOfClass:[CharCollectionViewNoneLayoutAttributes class]]) {
+        CGSize originalSize = ((CharCollectionViewNoneLayoutAttributes *)layoutAttributes).originalSize;
+        if(originalSize.height > 0) size = originalSize;
+    }
     CGFloat thumbWidth = HEIGHT;
-    CGFloat thumbHeight = MIN(MAX_IMG_HEIGHT, layoutAttributes.size.height);
-    if(layoutAttributes.size.height > HEIGHT) thumbWidth = layoutAttributes.size.width;
+    CGFloat thumbHeight = MIN(MAX_IMG_HEIGHT, size.height);
+    if(size.height > HEIGHT) thumbWidth = size.width;
     
     self.thumbnailView.frame = CGRectMake(0, 0, thumbWidth, thumbHeight);
 }

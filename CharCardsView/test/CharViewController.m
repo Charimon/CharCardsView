@@ -57,8 +57,8 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
                                 [NSLayoutConstraint constraintWithItem:self.mapView
                                                              attribute:NSLayoutAttributeBottom
                                                              relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.view
-                                                             attribute:NSLayoutAttributeBottom
+                                                                toItem:self.noneStateButton
+                                                             attribute:NSLayoutAttributeTop
                                                             multiplier:1.f
                                                               constant:0.f],
                                 
@@ -160,7 +160,7 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
                                                                 toItem:self.noneStateButton
                                                              attribute:NSLayoutAttributeTop
                                                             multiplier:1.f
-                                                              constant:0.f],
+                                                              constant:-50.f],
                                 [NSLayoutConstraint constraintWithItem:self.cardsView
                                                              attribute:NSLayoutAttributeLeading
                                                              relatedBy:NSLayoutRelationEqual
@@ -276,11 +276,11 @@ NSString *const CARD_VIEW_ID = @"CARD_VIEW_ID";
 -(CharCardsCollectionView *) cardsView {
     if(_cardsView) return _cardsView;
     _cardsView = [[CharCardsCollectionView alloc] initWithTransitionType:CharCardsTransitionSlideFromRight];
-    _cardsView.animationDuration = 4.f;
+//    _cardsView.animationDuration = 0.f;
     [_cardsView registerClass:[CharCustomCardCollectionView class] forCardWithReuseIdentifier:CARD_VIEW_ID];
     _cardsView.minHeight = MIN_HEIGHT;
     _cardsView.topInset = MAX_TOP_INSET;
-    _cardsView.backgroundColor = [UIColor clearColor];
+    _cardsView.backgroundColor = [UIColor colorWithRed:1.f green:0.f blue:0.f alpha:.5];
     _cardsView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:_cardsView];
     return _cardsView;

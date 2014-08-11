@@ -22,6 +22,8 @@
     if (self) {
         self.scrollView.frame = frame;
         self.shadowHeight = 6.f;
+        self.backgroundColor = [UIColor colorWithRed:0.f green:1.f blue:1.f alpha:.5f];
+        self.scrollView.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }
@@ -97,7 +99,6 @@
 -(void) applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
     [super applyLayoutAttributes:layoutAttributes];
     self.scrollView.frame = CGRectMake(0, 0, layoutAttributes.size.width, layoutAttributes.size.height);
-    
     CGFloat percentChange = 0;
     
     if((self.maxHeight > 0 || self.cardsView.minHeight > 0) && (self.cardsView.minHeight != self.maxHeight)) {

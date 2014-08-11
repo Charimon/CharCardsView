@@ -12,3 +12,7 @@
 @interface CharCardsNoneViewLayout : UICollectionViewLayout
 @property (nonatomic) CharCardsTransitionType transitionType;
 @end
+
+@interface CharCollectionViewNoneLayoutAttributes : UICollectionViewLayoutAttributes
+@property (nonatomic) CGSize originalSize;
+@end

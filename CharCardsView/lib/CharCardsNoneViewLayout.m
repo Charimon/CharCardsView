@@ -16,29 +16,17 @@
 @property (nonatomic) NSUInteger numberOfItems;
 @property (nonatomic) BOOL animatingBoundsChange;
 @property (nonatomic) CGFloat height;
+@property (nonatomic) CGFloat originalHeight;
 @end
 
+#define CHAR_EPSILON (.25f)
+
 @implementation CharCardsNoneViewLayout
+
 -(void) prepareLayout {
     [super prepareLayout];
     self.numberOfItems = [self.collectionView numberOfItemsInSection:0];
-}
-
-- (void)prepareForTransitionFromLayout:(UICollectionViewLayout*)oldLayout {
-    if([oldLayout isKindOfClass:[CharCardsMinViewLayout class]]) {
-        self.height = ((CharCardsMinViewLayout *)oldLayout).minHeight;
-    } else if([oldLayout isKindOfClass:[CharCardsMaxViewLayout class]]) {
-        self.height = self.collectionView.bounds.size.height - ((CharCardsMaxViewLayout *)oldLayout).topInset;
-    }
-}
-
--(void)prepareForTransitionToLayout:(UICollectionViewLayout *)newLayout {
-    self.height = 0;
-//    if([newLayout isKindOfClass:[CharCardsMinViewLayout class]]) {
-//        self.height = ((CharCardsMinViewLayout *)newLayout).minHeight;
-//    } else if([newLayout isKindOfClass:[CharCardsMaxViewLayout class]]) {
-//        self.height = self.collectionView.bounds.size.height - ((CharCardsMaxViewLayout *)newLayout).topInset;
-//    }
+    self.height = self.collectionView.frame.size.height;
 }
 
 -(void) prepareForCollectionViewUpdates:(NSArray *)updateItems {
@@ -47,11 +35,85 @@
     self.deleteIndexPaths = [NSMutableSet set];
     self.insertIndexPaths = [NSMutableSet set];
     
-    for (UICollectionViewUpdateItem *update in updateItems)
-    {
+    for (UICollectionViewUpdateItem *update in updateItems) {
         if (update.updateAction == UICollectionUpdateActionDelete) [self.deleteIndexPaths addObject:update.indexPathBeforeUpdate];
         else if (update.updateAction == UICollectionUpdateActionInsert) [self.insertIndexPaths addObject:update.indexPathAfterUpdate];
     }
+}
+
++ (Class)layoutAttributesClass {
+    return [CharCollectionViewNoneLayoutAttributes class];
+}
+
+-(CGSize)collectionViewContentSize { return self.collectionView.bounds.size;}
+
+-(NSArray *) layoutAttributesForElementsInRect:(CGRect)rect {
+    NSMutableArray *attributes = [NSMutableArray array];
+    for(NSUInteger i=0; i<self.numberOfItems; i++) {
+        [attributes addObject:[self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0]]];
+    }
+    return attributes;
+}
+
+-(CharCollectionViewNoneLayoutAttributes *) layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
+    CharCollectionViewNoneLayoutAttributes *attributes = [CharCollectionViewNoneLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+
+    attributes.alpha = 1.f;
+    attributes.size = CGSizeMake(self.collectionView.frame.size.width, self.height);
+    attributes.originalSize = CGSizeMake(self.collectionView.frame.size.width, self.originalHeight);
+    attributes.center = CGPointMake(self.collectionView.center.x, self.collectionView.frame.size.height + self.height/2 - CHAR_EPSILON);
+    return attributes;
+}
+
+-(UICollectionViewLayoutAttributes *) finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)indexPath {
+    if(self.animatingBoundsChange) return [self layoutAttributesForItemAtIndexPath:indexPath];
+    
+    UICollectionViewLayoutAttributes *attributes = [super finalLayoutAttributesForDisappearingItemAtIndexPath: indexPath];
+    if(![self.deleteIndexPaths containsObject:indexPath]) return attributes;
+    
+    attributes.alpha = 1.f;
+    attributes.center = CGPointMake(self.collectionView.center.x, self.collectionView.frame.size.height + self.height/2 - 1);
+
+    return attributes;
+}
+
+
+-(void)prepareForTransitionToLayout:(UICollectionViewLayout *)newLayout {
+    if([newLayout isKindOfClass:[CharCardsMaxViewLayout class]]) {
+        self.height = self.collectionView.frame.size.height - ((CharCardsMaxViewLayout *)newLayout).topInset;
+        self.originalHeight = self.height;
+    } else if([newLayout isKindOfClass:[CharCardsMinViewLayout class]]) {
+        self.height = ((CharCardsMinViewLayout *)newLayout).minHeight;
+        self.originalHeight = self.height;
+    } else {
+        self.originalHeight = self.height;
+        self.height = self.collectionView.frame.size.height;
+    }
+}
+
+-(void)prepareForTransitionFromLayout:(UICollectionViewLayout *)oldLayout {
+    if([oldLayout isKindOfClass:[CharCardsMaxViewLayout class]]) {
+        self.height = self.collectionView.frame.size.height - ((CharCardsMaxViewLayout *)oldLayout).topInset;
+        self.originalHeight = self.height;
+    } else if([oldLayout isKindOfClass:[CharCardsMinViewLayout class]]) {
+        self.height = ((CharCardsMinViewLayout *)oldLayout).minHeight;
+        self.originalHeight = self.height;
+    } else {
+        self.originalHeight = self.height;
+        self.height = self.collectionView.frame.size.height;
+    }
+}
+
+-(BOOL) shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds { return YES; }
+
+-(void) prepareForAnimatedBoundsChange:(CGRect)oldBounds {
+    [super prepareForAnimatedBoundsChange:oldBounds];
+    self.animatingBoundsChange = YES;
+}
+
+-(void) finalizeAnimatedBoundsChange {
+    [super finalizeAnimatedBoundsChange];
+    self.animatingBoundsChange = NO;
 }
 
 - (void)finalizeCollectionViewUpdates {
@@ -60,74 +122,13 @@
     self.insertIndexPaths = nil;
 }
 
--(UICollectionViewLayoutAttributes *) initialLayoutAttributesForAppearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-    if(self.animatingBoundsChange) return nil;
-    
-    UICollectionViewLayoutAttributes *attributes = [super initialLayoutAttributesForAppearingItemAtIndexPath: itemIndexPath];
-    if (![self.insertIndexPaths containsObject:itemIndexPath]) return attributes;
-    
-    attributes.alpha = 1.f;
-    
-    if(self.transitionType == CharCardsTransitionSlideFromRight) {
-        attributes.center = CGPointMake(self.collectionView.center.x, self.collectionView.bounds.size.height + self.height/2);
-    } else if(self.transitionType == CharCardsTransitionSlideOverFromRight) {
-        attributes.center = CGPointMake(3*self.collectionView.bounds.size.width/2, self.collectionView.center.y);
-    }
-    attributes.size = CGSizeMake(self.collectionView.bounds.size.width, self.height);
+@end
+
+
+@implementation CharCollectionViewNoneLayoutAttributes
+- (id)copyWithZone:(NSZone *)zone {
+    CharCollectionViewNoneLayoutAttributes *attributes = [super copyWithZone:zone];
+    attributes.originalSize = _originalSize;
     return attributes;
 }
-
--(UICollectionViewLayoutAttributes *) finalLayoutAttributesForDisappearingItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-    if (self.animatingBoundsChange) return [self layoutAttributesForItemAtIndexPath:itemIndexPath];
-    
-    UICollectionViewLayoutAttributes *attributes = [super finalLayoutAttributesForDisappearingItemAtIndexPath: itemIndexPath];
-    if (![self.deleteIndexPaths containsObject:itemIndexPath]) return attributes;
-    
-    attributes.alpha = 1.f;
-    
-    if(self.transitionType == CharCardsTransitionSlideFromRight) {
-        attributes.center = CGPointMake(self.collectionView.center.x, self.collectionView.bounds.size.height + self.height/2);
-    } else if(self.transitionType == CharCardsTransitionSlideOverFromRight) {
-        attributes.center = CGPointMake(3*self.collectionView.bounds.size.width/2, self.collectionView.center.y);
-    }
-    
-    attributes.size = CGSizeMake(self.collectionView.bounds.size.width, self.height);
-    return attributes;
-}
-
--(CGSize)collectionViewContentSize { return self.collectionView.bounds.size;}
-
--(NSArray *) layoutAttributesForElementsInRect:(CGRect)rect {
-    NSMutableArray *attributes = [NSMutableArray array];
-    for(NSUInteger i=0; i<self.numberOfItems; i++) {
-        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
-        [attributes addObject:[self layoutAttributesForItemAtIndexPath:indexPath]];
-    }
-    return attributes;
-}
--(UICollectionViewLayoutAttributes *) layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-    attributes.alpha = 1.f;
-    
-    if(self.transitionType == CharCardsTransitionSlideFromRight) {
-        attributes.center = CGPointMake(self.collectionView.center.x, self.collectionView.bounds.size.height + self.height/2 - 1);
-    } else if(self.transitionType == CharCardsTransitionSlideOverFromRight) {
-        attributes.center = CGPointMake(3*self.collectionView.bounds.size.width/2 - 1, self.collectionView.center.y);
-    }
-    
-    attributes.size = CGSizeMake(self.collectionView.bounds.size.width, self.height);
-    return attributes;
-}
-
--(void) prepareForAnimatedBoundsChange:(CGRect)oldBounds {
-    [super prepareForAnimatedBoundsChange:oldBounds];
-    self.animatingBoundsChange = YES;
-}
-
--(void)finalizeAnimatedBoundsChange {
-    [super finalizeAnimatedBoundsChange];
-    self.animatingBoundsChange = NO;
-}
--(BOOL) shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds { return YES; }
-
 @end

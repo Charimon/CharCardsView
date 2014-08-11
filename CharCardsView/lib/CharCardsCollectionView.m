@@ -44,6 +44,7 @@ CGFloat const CC2_SNAP_VELOCITY = 1000.f;
         self.panningEnabled = YES;
         self.tapEnabled = YES;
         self.clipsToBounds = YES;
+//        self.clipsToBounds = NO;
         self.cardsType = [[NSMutableArray alloc] init];
         self.cardsData = [[NSMutableArray alloc] init];
         self.shouldRestartTransition = YES;
