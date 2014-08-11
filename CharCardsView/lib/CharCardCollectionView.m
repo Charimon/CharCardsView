@@ -11,6 +11,7 @@
 
 #import "CharCardsMaxViewLayout.h"
 #import "CharCardsMinViewLayout.h"
+#import "CharCardsNoneViewLayout.h"
 
 @interface CharCardCollectionView()<UIScrollViewDelegate>
 @end
@@ -22,7 +23,6 @@
     if (self) {
         self.scrollView.frame = frame;
         self.shadowHeight = 6.f;
-        self.backgroundColor = [UIColor colorWithRed:0.f green:1.f blue:1.f alpha:.5f];
         self.scrollView.backgroundColor = [UIColor whiteColor];
     }
     return self;
@@ -98,18 +98,22 @@
 
 -(void) applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes {
     [super applyLayoutAttributes:layoutAttributes];
-    self.scrollView.frame = CGRectMake(0, 0, layoutAttributes.size.width, layoutAttributes.size.height);
-    CGFloat percentChange = 0;
     
-    if((self.maxHeight > 0 || self.cardsView.minHeight > 0) && (self.cardsView.minHeight != self.maxHeight)) {
-        percentChange = (layoutAttributes.size.height - self.cardsView.minHeight)/(self.maxHeight - self.cardsView.minHeight);
+    CGSize size = layoutAttributes.size;
+    CGFloat percentChange = 0;
+    if([layoutAttributes isKindOfClass:[CharCollectionViewNoneLayoutAttributes class]]) {
+        CGSize originalSize = ((CharCollectionViewNoneLayoutAttributes *)layoutAttributes).originalSize;
+        if(originalSize.height > 0) size = originalSize;
+    } else if((self.maxHeight > 0 || self.cardsView.minHeight > 0) && (self.cardsView.minHeight != self.maxHeight)){
+        percentChange = (size.height - self.cardsView.minHeight)/(self.maxHeight - self.cardsView.minHeight);
     }
+    
+    self.scrollView.frame = CGRectMake(0, 0, size.width, size.height);
     CGFloat insetHeight = self.superview.frame.size.height - self.maxHeight;
     if(self.maxHeight == 0) insetHeight = 0;
     
     if(insetHeight < 0) insetHeight = 0;
-    self.insetView.frame = CGRectMake(0, -insetHeight*percentChange, layoutAttributes.size.width, insetHeight);
-
+    self.insetView.frame = CGRectMake(0, -insetHeight*percentChange, size.width, insetHeight);
 }
 
 - (void)willTransitionFromLayout:(UICollectionViewLayout *)oldLayout toLayout:(UICollectionViewLayout *)newLayout {

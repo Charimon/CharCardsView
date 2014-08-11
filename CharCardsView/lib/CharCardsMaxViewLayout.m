@@ -7,7 +7,6 @@
 //
 
 #import "CharCardsMaxViewLayout.h"
-#import "CharCardsLayoutAttributes.h"
 
 @interface CharCardsMaxViewLayout()
 @property (nonatomic, strong) NSMutableSet *deleteIndexPaths;
@@ -24,8 +23,6 @@
     }
     return self;
 }
-
-+(Class) layoutAttributesClass { return [CharCardsLayoutAttributes class]; }
 
 -(void) prepareLayout {
     [super prepareLayout];
@@ -55,7 +52,7 @@
     CGFloat centerY = self.collectionView.center.y + self.topInset/2;
     
     if(self.numberOfItems > 1) {
-        centerX = self.collectionView.bounds.size.width + self.collectionView.center.x;
+        centerX = self.collectionView.bounds.size.width + self.collectionView.center.x-1;
     }
     
     attributes.alpha = 1.f;

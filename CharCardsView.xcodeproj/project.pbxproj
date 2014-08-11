@@ -27,7 +27,6 @@
 		33C955A61906973200937C32 /* CharCardsMaxViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955A51906973200937C32 /* CharCardsMaxViewLayout.m */; };
 		33C955A91906B32F00937C32 /* CharCardsTransitionalViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955A81906B32F00937C32 /* CharCardsTransitionalViewLayout.m */; };
 		33C955AD1906B8EC00937C32 /* CharCardCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955AC1906B8EC00937C32 /* CharCardCollectionView.m */; };
-		33C955B01907259900937C32 /* CharCardsLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955AF1907259900937C32 /* CharCardsLayoutAttributes.m */; };
 		33C955B51908A73F00937C32 /* CharCardsNoneViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 33C955B41908A73F00937C32 /* CharCardsNoneViewLayout.m */; };
 /* End PBXBuildFile section */
 
@@ -75,8 +74,6 @@
 		33C955A81906B32F00937C32 /* CharCardsTransitionalViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsTransitionalViewLayout.m; path = lib/CharCardsTransitionalViewLayout.m; sourceTree = "<group>"; };
 		33C955AB1906B8EC00937C32 /* CharCardCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardCollectionView.h; path = lib/CharCardCollectionView.h; sourceTree = "<group>"; };
 		33C955AC1906B8EC00937C32 /* CharCardCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardCollectionView.m; path = lib/CharCardCollectionView.m; sourceTree = "<group>"; };
-		33C955AE1907259900937C32 /* CharCardsLayoutAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsLayoutAttributes.h; path = lib/CharCardsLayoutAttributes.h; sourceTree = "<group>"; };
-		33C955AF1907259900937C32 /* CharCardsLayoutAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsLayoutAttributes.m; path = lib/CharCardsLayoutAttributes.m; sourceTree = "<group>"; };
 		33C955B31908A73F00937C32 /* CharCardsNoneViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharCardsNoneViewLayout.h; path = lib/CharCardsNoneViewLayout.h; sourceTree = "<group>"; };
 		33C955B41908A73F00937C32 /* CharCardsNoneViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CharCardsNoneViewLayout.m; path = lib/CharCardsNoneViewLayout.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -180,7 +177,6 @@
 		338A53F518F16A6300E4CDBA /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				33C955B11907259F00937C32 /* attributes */,
 				33C955AA1906B35300937C32 /* layouts */,
 				338A540618F1F92400E4CDBA /* CharCardsConstants.h */,
 				33C955A11906771200937C32 /* CharCardsCollectionView.h */,
@@ -217,15 +213,6 @@
 				33C955A81906B32F00937C32 /* CharCardsTransitionalViewLayout.m */,
 			);
 			name = layouts;
-			sourceTree = "<group>";
-		};
-		33C955B11907259F00937C32 /* attributes */ = {
-			isa = PBXGroup;
-			children = (
-				33C955AE1907259900937C32 /* CharCardsLayoutAttributes.h */,
-				33C955AF1907259900937C32 /* CharCardsLayoutAttributes.m */,
-			);
-			name = attributes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -334,7 +321,6 @@
 				332FA1891902CB1B003BA9C3 /* CharCardsMinViewLayout.m in Sources */,
 				338A53D718F1696B00E4CDBA /* CharAppDelegate.m in Sources */,
 				33C955A91906B32F00937C32 /* CharCardsTransitionalViewLayout.m in Sources */,
-				33C955B01907259900937C32 /* CharCardsLayoutAttributes.m in Sources */,
 				33C955A61906973200937C32 /* CharCardsMaxViewLayout.m in Sources */,
 				338A540F18F1F92E00E4CDBA /* CharViewController.m in Sources */,
 				338A53D318F1696B00E4CDBA /* main.m in Sources */,
